@@ -53,6 +53,7 @@ namespace lyrics
 	private:
 		static void Error( const ErrorCode errorCode )
 		{
+			using std::cout;
 			using std::cerr;
 
 			constexpr char ERROR[] = "Error";

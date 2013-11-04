@@ -31,6 +31,7 @@ namespace lyrics
 
 		static void Warning( const WarningCode warningCode, const Location location )
 		{
+			using std::cout;
 			using std::cerr;
 
 			constexpr char WARNING[] = "Warning";
@@ -38,7 +39,7 @@ namespace lyrics
 			switch ( warningCode )
 			{
 			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
-				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence.";
+				cout << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence.";
 				break;
 
 			default:
@@ -49,6 +50,7 @@ namespace lyrics
 
 		static void Error( const ErrorCode errorCode, const Location location )
 		{
+			using std::cout;
 			using std::cerr;
 
 			constexpr char ERROR[] = "Error";
@@ -56,7 +58,7 @@ namespace lyrics
 			switch ( errorCode )
 			{
 			case ErrorCode::WRONG_CHARACTER:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character.";
+				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character.";
 				break;
 
 			default:

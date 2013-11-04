@@ -59,6 +59,7 @@ namespace
 {
 	void Error( const lyrics::ErrorCode errorCode )
 	{
+		using std::cout;
 		using std::cerr;
 
 		constexpr char ERROR[] = "Error";
@@ -66,7 +67,7 @@ namespace
 		switch ( errorCode )
 		{
 		case lyrics::ErrorCode::NO_INPUT_FILE:
-			cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input file.";
+			cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input file.";
 			break;
 
 		default:
