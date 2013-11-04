@@ -219,13 +219,14 @@ namespace lyrics
 			LogicalAndExpression();
 		}
 
-		ExpressionNode *Expression()
+		AssignmentExpressionNode *AssignmentExpression()
 		{
 			LogicalOrExpression();
 		}
 
-		AssignmentNode *Assignment()
+		ExpressionNode *Expression()
 		{
+			AssignmentExpression();
 		}
 
 		ProcedureNode *Procedure()

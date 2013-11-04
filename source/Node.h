@@ -334,9 +334,9 @@ namespace lyrics
 		ExpressionNode *right;
 	};
 
-	struct AssignmentNode : public StatementNode
+	struct AssignmentExpressionNode : public ExpressionNode
 	{
-		~AssignmentNode()
+		~AssignmentExpressionNode()
 		{
 			delete left;
 			delete right;
