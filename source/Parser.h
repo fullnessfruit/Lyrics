@@ -21,13 +21,15 @@ namespace lyrics
 	public:
 		void Parse( const list<Token> &token )
 		{
-			mCurrentToken = token.begin();
+			mCurrentToken = token.cbegin();
+			mLastToken = token.cend();
 
 			BlockNode *block = Block();
 		}
 	
 	private:
 		list<Token>::const_iterator mCurrentToken;
+		list<Token>::const_iterator mLastToken;
 
 		static void Warning( const WarningCode warningCode, const Location location )
 		{
@@ -69,7 +71,7 @@ namespace lyrics
 
 		BlockNode *Block()
 		{
-			if ( mCurrentToken->type != Token::Type::END_OF_FILE )
+			if ( mCurrentToken != mLastToken )
 			{
 				Statement();
 			}
