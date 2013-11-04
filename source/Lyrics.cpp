@@ -70,7 +70,7 @@ namespace
 			break;
 
 		default:
-			cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << '0';
+			cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
 			break;
 		}
 	}

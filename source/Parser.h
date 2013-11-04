@@ -42,7 +42,7 @@ namespace lyrics
 				break;
 
 			default:
-				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ": " << "2000";
+				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode );
 				break;
 			}
 		}
@@ -60,7 +60,7 @@ namespace lyrics
 				break;
 
 			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "2000";
+				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
 				break;
 			}
 		}

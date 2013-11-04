@@ -60,7 +60,7 @@ namespace lyrics
 			switch ( errorCode )
 			{
 			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "1000";
+				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
 				break;
 			}
 		}
