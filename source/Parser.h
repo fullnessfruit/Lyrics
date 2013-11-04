@@ -31,44 +31,6 @@ namespace lyrics
 		list<Token>::const_iterator mCurrentToken;
 		list<Token>::const_iterator mLastToken;
 
-		static void Warning( const WarningCode warningCode, const Location location )
-		{
-			using std::cout;
-			using std::cerr;
-
-			constexpr char WARNING[] = "Warning";
-
-			switch ( warningCode )
-			{
-			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
-				cout << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence.";
-				break;
-
-			default:
-				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode );
-				break;
-			}
-		}
-
-		static void Error( const ErrorCode errorCode, const Location location )
-		{
-			using std::cout;
-			using std::cerr;
-
-			constexpr char ERROR[] = "Error";
-
-			switch ( errorCode )
-			{
-			case ErrorCode::WRONG_CHARACTER:
-				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character.";
-				break;
-
-			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
-				break;
-			}
-		}
-
 		BlockNode *Block()
 		{
 			if ( mCurrentToken != mLastToken )
@@ -284,6 +246,44 @@ namespace lyrics
 
 		JumpNode *Jump()
 		{
+		}
+
+		static void Warning( const WarningCode warningCode, const Location location )
+		{
+			using std::cout;
+			using std::cerr;
+
+			constexpr char WARNING[] = "Warning";
+
+			switch ( warningCode )
+			{
+			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
+				cout << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence.";
+				break;
+
+			default:
+				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode );
+				break;
+			}
+		}
+
+		static void Error( const ErrorCode errorCode, const Location location )
+		{
+			using std::cout;
+			using std::cerr;
+
+			constexpr char ERROR[] = "Error";
+
+			switch ( errorCode )
+			{
+			case ErrorCode::WRONG_CHARACTER:
+				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character.";
+				break;
+
+			default:
+				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
+				break;
+			}
 		}
 	};
 };
