@@ -194,7 +194,12 @@ namespace lyrics
 
 	struct MemberNode : public PostfixNode
 	{
-		IdentifierNode identifier;
+		~MemberNode()
+		{
+			delete identifier;
+		}
+
+		IdentifierNode *identifier;
 	};
 
 	struct PostfixExpressionNode : public ExpressionNode
@@ -348,20 +353,27 @@ namespace lyrics
 
 	struct ProcedureNode : public StatementNode
 	{
-		IdentifierNode identifier;
+		~ProcedureNode()
+		{
+			delete identifier;
+			delete block;
+		}
+
+		IdentifierNode *identifier;
 		forward_list<ParameterNode> list;
 		forward_list<ParameterNode>::const_iterator last;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct ParameterNode : public Node
 	{
 		~ParameterNode()
 		{
+			delete identifier;
 			delete expression;
 		}
 
-		IdentifierNode identifier;
+		IdentifierNode *identifier;
 		ExpressionNode *expression;
 	};
 
@@ -369,23 +381,35 @@ namespace lyrics
 	{
 		~ClassNode()
 		{
+			delete identifier;
 			delete base;
+			delete block;
 		}
 
-		IdentifierNode identifier;
+		IdentifierNode *identifier;
 		IdentifierNode *base;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct PackageNode : public StatementNode
 	{
-		IdentifierNode identifier;
-		BlockNode block;
+		~PackageNode()
+		{
+			delete identifier;
+			delete block;
+		}
+		IdentifierNode *identifier;
+		BlockNode *block;
 	};
 
 	struct ImportNode : public StatementNode
 	{
-		IdentifierNode identifier;
+		~ImportNode()
+		{
+			delete identifier;
+		}
+
+		IdentifierNode *identifier;
 	};
 
 	struct SelectionNode : public StatementNode
@@ -412,10 +436,11 @@ namespace lyrics
 		~ElseIfNode()
 		{
 			delete expression;
+			delete block;
 		}
 
 		ExpressionNode *expression;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct CaseNode : public SelectionNode
@@ -435,10 +460,11 @@ namespace lyrics
 		~WhenNode()
 		{
 			delete expression;
+			delete block;
 		}
 
 		ExpressionNode *expression;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct IterationNode : public StatementNode
@@ -453,10 +479,11 @@ namespace lyrics
 		~WhileNode()
 		{
 			delete expression;
+			delete block;
 		}
 
 		ExpressionNode *expression;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct ForNode : public IterationNode
@@ -466,12 +493,13 @@ namespace lyrics
 			delete expression1;
 			delete expression2;
 			delete expression3;
+			delete block;
 		}
 
 		ExpressionNode *expression1;
 		ExpressionNode *expression2;
 		ExpressionNode *expression3;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct ForEachNode : public IterationNode
@@ -480,11 +508,12 @@ namespace lyrics
 		{
 			delete expression1;
 			delete expression2;
+			delete block;
 		}
 
 		PostfixExpressionNode *expression1;
 		PostfixExpressionNode *expression2;
-		BlockNode block;
+		BlockNode *block;
 	};
 
 	struct JumpNode : public StatementNode
