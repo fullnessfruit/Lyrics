@@ -35,12 +35,12 @@ namespace lyrics
 			Token tToken;
 			list<Token> token;
 
-			do
+			scanner.Scan( text, length, offset, location, tToken );
+			while ( tToken.type != Token::Type::END_OF_FILE )
 			{
-				scanner.Scan( text, length, offset, location, tToken );
 				token.push_back( tToken );
+				scanner.Scan( text, length, offset, location, tToken );
 			}
-			while ( tToken.type != Token::Type::END_OF_FILE );
 			delete [] text;
 
 			Parser parser;
