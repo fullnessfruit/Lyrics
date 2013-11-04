@@ -2,8 +2,8 @@
 #include <vector>
 #include <unordered_map>
 
-#ifndef LITERAL
-#define LITERAL
+#ifndef STRUCT_LITERAL
+#define STRUCT_LITERAL
 
 namespace lyrics
 {

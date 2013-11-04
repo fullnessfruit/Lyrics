@@ -15,13 +15,34 @@ namespace lyrics
 
 	struct Node
 	{
+		enum struct Type
+		{
+			BLOCK,
+						IDENTIFIER, LITERAL, ARRAY, HASH, PARENTHESIZED_EXPRESSION,
+							PAIR,
+					POSTFIX_EXPRESSION,
+						INDEX, CALL, MEMBER,
+					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
+				PROCEDURE,
+					PARAMETER,
+				CLASS,
+				PACKAGE,
+				IMPORT,
+					IF,
+						ELSEIF,
+					CASE,
+						WHEN,
+					WHILE, FOR, FOR_EACH,
+					REDO, BREAK, RETURN
+		};
+
 		virtual ~Node()
 		{
 		}
 
 		Location location;
 
-//		virtual constexpr Token::Type GetType() const = 0;
+		virtual Node::Type GetType() const = 0;
 
 		virtual Location GetLocation()
 		{
@@ -93,6 +114,11 @@ namespace lyrics
 
 		forward_list<StatementNode *> list;
 		forward_list<StatementNode *>::const_iterator last;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::BLOCK;
+		}
 	};
 
 	struct ExpressionNode : public StatementNode
@@ -112,11 +138,21 @@ namespace lyrics
 	struct IdentifierNode : public PrimaryExpressionNode
 	{
 		u16string identifier;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::IDENTIFIER;
+		}
 	};
 
 	struct LiteralNode : public PrimaryExpressionNode
 	{
 		Literal literal;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::LITERAL;
+		}
 	};
 
 	struct ArrayNode : public PrimaryExpressionNode
@@ -131,12 +167,22 @@ namespace lyrics
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ARRAY;
+		}
 	};
 
 	struct HashNode : public PrimaryExpressionNode
 	{
 		forward_list<PairNode> list;
 		forward_list<PairNode>::const_iterator last;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::HASH;
+		}
 	};
 
 	struct PairNode : public Node
@@ -149,6 +195,11 @@ namespace lyrics
 
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PAIR;
+		}
 	};
 
 	struct ParenthesizedExpressionNode : public PrimaryExpressionNode
@@ -159,6 +210,11 @@ namespace lyrics
 		}
 
 		ExpressionNode *expression;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PARENTHESIZED_EXPRESSION;
+		}
 	};
 
 	struct PostfixNode : public Node
@@ -176,6 +232,11 @@ namespace lyrics
 		}
 
 		ExpressionNode *expression;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::INDEX;
+		}
 	};
 
 	struct CallNode : public PostfixNode
@@ -190,6 +251,11 @@ namespace lyrics
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::CALL;
+		}
 	};
 
 	struct MemberNode : public PostfixNode
@@ -200,6 +266,11 @@ namespace lyrics
 		}
 
 		IdentifierNode *identifier;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::MEMBER;
+		}
 	};
 
 	struct PostfixExpressionNode : public ExpressionNode
@@ -212,6 +283,11 @@ namespace lyrics
 
 		ExpressionNode *expression;
 		PostfixNode *postfix;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::POSTFIX_EXPRESSION;
+		}
 	};
 
 	struct UnaryExpressionNode : public ExpressionNode
@@ -223,6 +299,11 @@ namespace lyrics
 
 		Token::Type op;
 		ExpressionNode *expression;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::UNARY_EXPRESSION;
+		}
 	};
 
 	struct MultiplicativeExpressionNode : public ExpressionNode
@@ -236,6 +317,11 @@ namespace lyrics
 		Token::Type op;
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::MULTIPLICATIVE_EXPRESSION;
+		}
 	};
 
 	struct AdditiveExpressionNode : public ExpressionNode
@@ -249,6 +335,11 @@ namespace lyrics
 		Token::Type op;
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ADDITIVE_EXPRESSION;
+		}
 	};
 
 	struct ShiftExpressionNode : public ExpressionNode
@@ -262,6 +353,11 @@ namespace lyrics
 		Token::Type op;
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::SHIFT_EXPRESSION;
+		}
 	};
 
 	struct AndExpressionNode : public ExpressionNode
@@ -274,6 +370,11 @@ namespace lyrics
 
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::AND_EXPRESSION;
+		}
 	};
 
 	struct OrExpressionNode : public ExpressionNode
@@ -287,6 +388,11 @@ namespace lyrics
 		Token::Type op;
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::OR_EXPRESSION;
+		}
 	};
 
 	struct RelationalExpressionNode : public ExpressionNode
@@ -300,6 +406,11 @@ namespace lyrics
 		Token::Type op;
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::RELATIONAL_EXPRESSION;
+		}
 	};
 
 	struct EqualityExpressionNode : public ExpressionNode
@@ -313,6 +424,11 @@ namespace lyrics
 		Token::Type op;
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::EQUALITY_EXPRESSION;
+		}
 	};
 
 	struct LogicalAndExpressionNode : public ExpressionNode
@@ -325,6 +441,11 @@ namespace lyrics
 
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::LOGICAL_AND_EXPRESSION;
+		}
 	};
 
 	struct LogicalOrExpressionNode : public ExpressionNode
@@ -337,6 +458,11 @@ namespace lyrics
 
 		ExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::LOGICAL_OR_EXPRESSION;
+		}
 	};
 
 	struct AssignmentExpressionNode : public ExpressionNode
@@ -349,6 +475,11 @@ namespace lyrics
 
 		PostfixExpressionNode *left;
 		ExpressionNode *right;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ASSIGNMENT_EXPRESSION;
+		}
 	};
 
 	struct ProcedureNode : public StatementNode
@@ -363,6 +494,11 @@ namespace lyrics
 		forward_list<ParameterNode> list;
 		forward_list<ParameterNode>::const_iterator last;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PROCEDURE;
+		}
 	};
 
 	struct ParameterNode : public Node
@@ -375,6 +511,11 @@ namespace lyrics
 
 		IdentifierNode *identifier;
 		ExpressionNode *expression;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PARAMETER;
+		}
 	};
 
 	struct ClassNode : public StatementNode
@@ -389,6 +530,11 @@ namespace lyrics
 		IdentifierNode *identifier;
 		IdentifierNode *base;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::CLASS;
+		}
 	};
 
 	struct PackageNode : public StatementNode
@@ -400,6 +546,11 @@ namespace lyrics
 		}
 		IdentifierNode *identifier;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PACKAGE;
+		}
 	};
 
 	struct ImportNode : public StatementNode
@@ -410,6 +561,11 @@ namespace lyrics
 		}
 
 		IdentifierNode *identifier;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::IMPORT;
+		}
 	};
 
 	struct SelectionNode : public StatementNode
@@ -429,6 +585,11 @@ namespace lyrics
 		forward_list<ElseIfNode> list;
 		forward_list<ElseIfNode>::const_iterator last;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::IF;
+		}
 	};
 
 	struct ElseIfNode : public Node
@@ -441,6 +602,11 @@ namespace lyrics
 
 		ExpressionNode *expression;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ELSEIF;
+		}
 	};
 
 	struct CaseNode : public SelectionNode
@@ -453,6 +619,11 @@ namespace lyrics
 		forward_list<WhenNode> list;
 		forward_list<WhenNode>::const_iterator last;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::CASE;
+		}
 	};
 
 	struct WhenNode : public Node
@@ -465,6 +636,11 @@ namespace lyrics
 
 		ExpressionNode *expression;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::WHEN;
+		}
 	};
 
 	struct IterationNode : public StatementNode
@@ -484,6 +660,11 @@ namespace lyrics
 
 		ExpressionNode *expression;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::WHILE;
+		}
 	};
 
 	struct ForNode : public IterationNode
@@ -500,6 +681,11 @@ namespace lyrics
 		ExpressionNode *expression2;
 		ExpressionNode *expression3;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::FOR;
+		}
 	};
 
 	struct ForEachNode : public IterationNode
@@ -514,6 +700,11 @@ namespace lyrics
 		PostfixExpressionNode *expression1;
 		PostfixExpressionNode *expression2;
 		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::FOR_EACH;
+		}
 	};
 
 	struct JumpNode : public StatementNode
@@ -525,10 +716,18 @@ namespace lyrics
 
 	struct RedoNode : public JumpNode
 	{
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::REDO;
+		}
 	};
 
 	struct BreakNode : public JumpNode
 	{
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::BREAK;
+		}
 	};
 
 	struct ReturnNode : public JumpNode
@@ -539,6 +738,11 @@ namespace lyrics
 		}
 
 		ExpressionNode *expression;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::RETURN;
+		}
 	};
 };
 
