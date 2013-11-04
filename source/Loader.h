@@ -7,6 +7,11 @@ namespace lyrics
 {
 	class Loader
 	{
+	private:
+		Loader()
+		{
+		}
+
 	public:
 		static bool LoadData( const char * const fileName, char *&data, unsigned int &size )
 		{

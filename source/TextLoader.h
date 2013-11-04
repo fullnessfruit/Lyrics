@@ -9,6 +9,11 @@ namespace lyrics
 {
 	class TextLoader
 	{
+	private:
+		TextLoader()
+		{
+		}
+
 	public:
 		static bool LoadText( const char * const fileName, char16_t *&text, unsigned int &length )
 		{
