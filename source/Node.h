@@ -732,6 +732,10 @@ namespace lyrics
 
 	struct ReturnNode : public JumpNode
 	{
+		ReturnNode() : expression( nullptr )
+		{
+		}
+
 		~ReturnNode()
 		{
 			delete expression;
