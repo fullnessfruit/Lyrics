@@ -23,7 +23,7 @@ namespace lyrics
 		{
 			mCurrentToken = token.begin();
 
-			Block();
+			BlockNode *block = Block();
 		}
 	
 	private:
@@ -65,7 +65,7 @@ namespace lyrics
 			}
 		}
 
-		void Block()
+		BlockNode *Block()
 		{
 			if ( mCurrentToken->type != Token::Type::END_OF_FILE )
 			{
@@ -73,7 +73,7 @@ namespace lyrics
 			}
 		}
 
-		void Statement()
+		StatementNode *Statement()
 		{
 			switch ( mCurrentToken->type )
 			{
@@ -115,7 +115,7 @@ namespace lyrics
 			}
 		}
 
-		void PrimaryExpression()
+		PrimaryExpressionNode *PrimaryExpression()
 		{
 			switch ( mCurrentToken->type )
 			{
@@ -190,95 +190,95 @@ namespace lyrics
 			}
 		}
 
-		void PostfixExpression()
+		PostfixExpressionNode *PostfixExpression()
 		{
 			PrimaryExpression();
 		}
 
-		void UnaryExpression()
+		UnaryExpressionNode *UnaryExpression()
 		{
 			PostfixExpression();
 		}
 
-		void MultiplicativeExpression()
+		MultiplicativeExpressionNode *MultiplicativeExpression()
 		{
 			UnaryExpression();
 		}
 
-		void AdditiveExpression()
+		AdditiveExpressionNode *AdditiveExpression()
 		{
 			MultiplicativeExpression();
 		}
 
-		void ShiftExpression()
+		ShiftExpressionNode *ShiftExpression()
 		{
 			AdditiveExpression();
 		}
 
-		void AndExpression()
+		AndExpressionNode *AndExpression()
 		{
 			ShiftExpression();
 		}
 
-		void OrExpression()
+		OrExpressionNode *OrExpression()
 		{
 			AndExpression();
 		}
 
-		void RelationalExpression()
+		RelationalExpressionNode *RelationalExpression()
 		{
 			OrExpression();
 		}
 
-		void EqualityExpression()
+		EqualityExpressionNode *EqualityExpression()
 		{
 			RelationalExpression();
 		}
 
-		void LogicalAndExpression()
+		LogicalAndExpressionNode *LogicalAndExpression()
 		{
 			EqualityExpression();
 		}
 
-		void LogicalOrExpression()
+		LogicalOrExpressionNode *LogicalOrExpression()
 		{
 			LogicalAndExpression();
 		}
 
-		void Expression()
+		ExpressionNode *Expression()
 		{
 			LogicalOrExpression();
 		}
 
-		void Assignment()
+		AssignmentNode *Assignment()
 		{
 		}
 
-		void Procedure()
+		ProcedureNode *Procedure()
 		{
 		}
 
-		void Class()
+		ClassNode *Class()
 		{
 		}
 
-		void Package()
+		PackageNode *Package()
 		{
 		}
 
-		void Import()
+		ImportNode *Import()
 		{
 		}
 
-		void Selection()
+		SelectionNode *Selection()
 		{
 		}
 
-		void Iteration()
+		IterationNode *Iteration()
 		{
 		}
 
-		void Jump()
+		JumpNode *Jump()
 		{
 		}
 	};
