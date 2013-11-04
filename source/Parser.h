@@ -226,7 +226,7 @@ namespace lyrics
 
 		ExpressionNode *Expression()
 		{
-			AssignmentExpression();
+			return AssignmentExpression();
 		}
 
 		ProcedureNode *Procedure()
