@@ -33,52 +33,60 @@ namespace lyrics
 
 		BlockNode *Block()
 		{
+			BlockNode *node = new BlockNode();
+
 			if ( mCurrentToken != mLastToken )
 			{
-				Statement();
+				node->last = node->list.insert_after( node->last, Statement() );
 			}
+
+			return node;
 		}
 
 		StatementNode *Statement()
 		{
+			StatementNode *node;
+
 			switch ( mCurrentToken->type )
 			{
 			case Token::Type::IF:
 			case Token::Type::CASE:
-				Selection();
+				node = Selection();
 				break;
 
 			case Token::Type::FOR:
 			case Token::Type::WHILE:
-				Iteration();
+				node = Iteration();
 				break;
 
 			case Token::Type::PROC:
-				Procedure();
+				node = Procedure();
 				break;
 
 			case Token::Type::BREAK:
 			case Token::Type::RETURN:
 			case Token::Type::REDO:
-				Jump();
+				node = Jump();
 				break;
 
 			case Token::Type::CLASS:
-				Class();
+				node = Class();
 				break;
 
 			case Token::Type::PACKAGE:
-				Package();
+				node = Package();
 				break;
 
 			case Token::Type::IMPORT:
-				Import();
+				node = Import();
 				break;
 			
 			default:
-				Expression();
+				node = Expression();
 				break;
 			}
+
+			return node;
 		}
 
 		PrimaryExpressionNode *PrimaryExpression()
