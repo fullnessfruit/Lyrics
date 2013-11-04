@@ -92,6 +92,7 @@ namespace lyrics
 		}
 
 		forward_list<StatementNode *> list;
+		forward_list<StatementNode *>::const_iterator last;
 	};
 
 	struct ExpressionNode : public StatementNode
@@ -129,11 +130,13 @@ namespace lyrics
 		}
 
 		forward_list<ExpressionNode *> list;
+		forward_list<ExpressionNode *>::const_iterator last;
 	};
 
 	struct HashNode : public PrimaryExpressionNode
 	{
 		forward_list<PairNode> list;
+		forward_list<PairNode>::const_iterator last;
 	};
 
 	struct PairNode : public Node
@@ -186,6 +189,7 @@ namespace lyrics
 		}
 
 		forward_list<ExpressionNode *> list;
+		forward_list<ExpressionNode *>::const_iterator last;
 	};
 
 	struct MemberNode : public PostfixNode
@@ -346,6 +350,7 @@ namespace lyrics
 	{
 		IdentifierNode identifier;
 		forward_list<ParameterNode> list;
+		forward_list<ParameterNode>::const_iterator last;
 		BlockNode block;
 	};
 
@@ -398,6 +403,7 @@ namespace lyrics
 		}
 
 		forward_list<ElseIfNode> list;
+		forward_list<ElseIfNode>::const_iterator last;
 		BlockNode *block;
 	};
 
@@ -420,6 +426,7 @@ namespace lyrics
 		}
 
 		forward_list<WhenNode> list;
+		forward_list<WhenNode>::const_iterator last;
 		BlockNode *block;
 	};
 
