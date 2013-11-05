@@ -89,7 +89,7 @@ namespace lyrics
 			return node;
 		}
 
-		PrimaryExpressionNode *PrimaryExpression()
+		ExpressionNode *PrimaryExpression()
 		{
 			switch ( mCurrentToken->type )
 			{
@@ -164,62 +164,62 @@ namespace lyrics
 			}
 		}
 
-		PostfixExpressionNode *PostfixExpression()
+		ExpressionNode *PostfixExpression()
 		{
 			PrimaryExpression();
 		}
 
-		UnaryExpressionNode *UnaryExpression()
+		ExpressionNode *UnaryExpression()
 		{
 			PostfixExpression();
 		}
 
-		MultiplicativeExpressionNode *MultiplicativeExpression()
+		ExpressionNode *MultiplicativeExpression()
 		{
 			UnaryExpression();
 		}
 
-		AdditiveExpressionNode *AdditiveExpression()
+		ExpressionNode *AdditiveExpression()
 		{
 			MultiplicativeExpression();
 		}
 
-		ShiftExpressionNode *ShiftExpression()
+		ExpressionNode *ShiftExpression()
 		{
 			AdditiveExpression();
 		}
 
-		AndExpressionNode *AndExpression()
+		ExpressionNode *AndExpression()
 		{
 			ShiftExpression();
 		}
 
-		OrExpressionNode *OrExpression()
+		ExpressionNode *OrExpression()
 		{
 			AndExpression();
 		}
 
-		RelationalExpressionNode *RelationalExpression()
+		ExpressionNode *RelationalExpression()
 		{
 			OrExpression();
 		}
 
-		EqualityExpressionNode *EqualityExpression()
+		ExpressionNode *EqualityExpression()
 		{
 			RelationalExpression();
 		}
 
-		LogicalAndExpressionNode *LogicalAndExpression()
+		ExpressionNode *LogicalAndExpression()
 		{
 			EqualityExpression();
 		}
 
-		LogicalOrExpressionNode *LogicalOrExpression()
+		ExpressionNode *LogicalOrExpression()
 		{
 			LogicalAndExpression();
 		}
 
-		AssignmentExpressionNode *AssignmentExpression()
+		ExpressionNode *AssignmentExpression()
 		{
 			LogicalOrExpression();
 		}
