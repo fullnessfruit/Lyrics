@@ -216,7 +216,21 @@ namespace lyrics
 
 		ExpressionNode *LogicalOrExpression()
 		{
-			LogicalAndExpression();
+			ExpressionNode *temp = LogicalAndExpression();
+
+			if ( mCurrentToken->type != Token::Type::OR )
+			{
+				return temp;
+			}
+			else
+			{
+				LogicalOrExpressionNode *node = new LogicalOrExpressionNode();
+
+				node->left = temp;
+				node->right = LogicalOrExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *AssignmentExpression()
