@@ -221,7 +221,31 @@ namespace lyrics
 
 		ExpressionNode *AssignmentExpression()
 		{
-			LogicalOrExpression();
+			ExpressionNode *temp = LogicalOrExpression();
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+			{
+				return temp;
+			}
+			else
+			{
+				if ( temp->GetType() == Node::Type::IDENTIFIER || temp->GetType() == Node::Type::POSTFIX_EXPRESSION )
+				{
+					AssignmentExpressionNode *node = new AssignmentExpressionNode();
+
+					node->lhs = temp;
+					node->rhs = AssignmentExpression();
+
+					return node;
+				}
+				else
+				{
+					// TODO: error: temp must be postfix expression.
+					delete temp;
+
+					return nullptr;
+				}
+			}
 		}
 
 		ExpressionNode *Expression()

@@ -469,12 +469,12 @@ namespace lyrics
 	{
 		~AssignmentExpressionNode()
 		{
-			delete left;
-			delete right;
+			delete lhs;
+			delete rhs;
 		}
 
-		PostfixExpressionNode *left;
-		ExpressionNode *right;
+		ExpressionNode *lhs;
+		ExpressionNode *rhs;
 
 		virtual Node::Type GetType() const
 		{
