@@ -18,6 +18,7 @@ namespace lyrics
 	const u16string Scanner::IMPORT = u"import";
 	const u16string Scanner::IN = u"in";
 	const u16string Scanner::NIL = u"nil";
+	const u16string Scanner::OUT = u"out";
 	const u16string Scanner::PACKAGE = u"package";
 	const u16string Scanner::PROC = u"proc";
 	const u16string Scanner::REDO = u"redo";

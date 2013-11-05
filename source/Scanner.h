@@ -106,6 +106,11 @@ namespace lyrics
 								delete tStr;
 								token.type = Token::Type::FOR;
 							}
+							else if ( *tStr == Scanner::OUT )
+							{
+								delete tStr;
+								token.type = Token::Type::OUT;
+							}
 							else if ( *tStr == Scanner::NIL )
 							{
 								delete tStr;
@@ -724,6 +729,7 @@ namespace lyrics
 		static const u16string IMPORT;
 		static const u16string IN;
 		static const u16string NIL;
+		static const u16string OUT;
 		static const u16string PACKAGE;
 		static const u16string PROC;
 		static const u16string REDO;
