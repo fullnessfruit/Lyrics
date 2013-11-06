@@ -262,8 +262,8 @@ namespace lyrics
 			}
 			
 			default:
-				// TODO:
-				break;
+				// TODO: wrong token in primary expression.
+				return nullptr;
 			}
 		}
 
