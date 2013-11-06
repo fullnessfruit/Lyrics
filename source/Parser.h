@@ -96,170 +96,170 @@ namespace lyrics
 				return new IdentifierNode( ( mCurrentToken++ )->value.identifier );
 
 			case Token::Type::INTEGER_LITERAL:
-			{
-				LiteralNode *node = new LiteralNode();
-
-				node->literal.type = Literal::Type::INTEGER;
-				node->literal.value.integer = mCurrentToken->value.integer;
-
-				mCurrentToken++;
-
-				return node;
-			}
-
-			case Token::Type::STRING_LITERAL:
-			{
-				LiteralNode *node = new LiteralNode();
-
-				node->literal.type = Literal::Type::STRING;
-				node->literal.value.string = mCurrentToken->value.string;
-
-				mCurrentToken++;
-
-				return node;
-			}
-
-			case Token::Type::BOOLEAN_LITERAL:
-			{
-				LiteralNode *node = new LiteralNode();
-
-				node->literal.type = Literal::Type::BOOLEAN;
-				node->literal.value.boolean = mCurrentToken->value.boolean;
-
-				mCurrentToken++;
-
-				return node;
-			}
-
-			case Token::Type::NIL_LITERAL:
-			{
-				LiteralNode *node = new LiteralNode();
-
-				node->literal.type = Literal::Type::NIL;
-
-				mCurrentToken++;
-
-				return node;
-			}
-
-			case Token::Type::REAL_LITERAL:
-			{
-				LiteralNode *node = new LiteralNode();
-
-				node->literal.type = Literal::Type::REAL;
-				node->literal.value.real = mCurrentToken->value.real;
-
-				mCurrentToken++;
-
-				return node;
-			}
-
-			case static_cast<Token::Type>( u'(' ):
-			{
-				mCurrentToken++;
-
-				ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( Expression() );
-
-				if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
 				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::INTEGER;
+					node->literal.value.integer = mCurrentToken->value.integer;
+
 					mCurrentToken++;
 
 					return node;
 				}
-				else
-				{
-					// TODO: Expected ).
-					delete node;
 
-					return nullptr;
+			case Token::Type::STRING_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::STRING;
+					node->literal.value.string = mCurrentToken->value.string;
+
+					mCurrentToken++;
+
+					return node;
 				}
-			}
+
+			case Token::Type::BOOLEAN_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::BOOLEAN;
+					node->literal.value.boolean = mCurrentToken->value.boolean;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
+			case Token::Type::NIL_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::NIL;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
+			case Token::Type::REAL_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::REAL;
+					node->literal.value.real = mCurrentToken->value.real;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
+			case static_cast<Token::Type>( u'(' ):
+				{
+					mCurrentToken++;
+
+					ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( Expression() );
+
+					if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+					{
+						mCurrentToken++;
+
+						return node;
+					}
+					else
+					{
+						// TODO: Expected ).
+						delete node;
+
+						return nullptr;
+					}
+				}
 
 			case static_cast<Token::Type>( u'[' ):
-			{
-				mCurrentToken++;
-
-				ArrayNode *node = new ArrayNode();
-
-				if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 				{
-					for (;;)
+					mCurrentToken++;
+
+					ArrayNode *node = new ArrayNode();
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 					{
-						node->last = node->list.insert_after( node->last, Expression() );
+						for (;;)
+						{
+							node->last = node->list.insert_after( node->last, Expression() );
 
-						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-						{
-							mCurrentToken++;
-						}
-						else if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
-						{
-							break;
-						}
-						else
-						{
-							// TODO: error: Expected , or ].
-							delete node;
+							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mCurrentToken++;
+							}
+							else if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+							{
+								break;
+							}
+							else
+							{
+								// TODO: error: Expected , or ].
+								delete node;
 
-							return nullptr;
+								return nullptr;
+							}
 						}
 					}
-				}
-				
-				mCurrentToken++;
+					
+					mCurrentToken++;
 
-				return node;
-			}
+					return node;
+				}
 
 			case static_cast<Token::Type>( u'{' ):
-			{
-				mCurrentToken++;
-
-				HashNode *node = new HashNode();
-
-				if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 				{
-					for (;;)
+					mCurrentToken++;
+
+					HashNode *node = new HashNode();
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 					{
-						ExpressionNode *left = Expression();
-						if ( mCurrentToken->type != static_cast<Token::Type>( u':' ) )
+						for (;;)
 						{
-							// TODO: Expected :.
-							delete node;
-							delete left;
+							ExpressionNode *left = Expression();
+							if ( mCurrentToken->type != static_cast<Token::Type>( u':' ) )
+							{
+								// TODO: Expected :.
+								delete node;
+								delete left;
 
-							return nullptr;
-						}
-						mCurrentToken++;
-						ExpressionNode *right = Expression();
-
-						PairNode *pair = new PairNode();
-						pair->left = left;
-						pair->right = right;
-
-						node->last = node->list.insert_after( node->last, pair );
-
-						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-						{
+								return nullptr;
+							}
 							mCurrentToken++;
-						}
-						else if ( mCurrentToken->type == static_cast<Token::Type>( u'}' ) )
-						{
-							break;
-						}
-						else
-						{
-							// TODO: error: Expected , or }.
-							delete node;
+							ExpressionNode *right = Expression();
 
-							return nullptr;
+							PairNode *pair = new PairNode();
+							pair->left = left;
+							pair->right = right;
+
+							node->last = node->list.insert_after( node->last, pair );
+
+							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mCurrentToken++;
+							}
+							else if ( mCurrentToken->type == static_cast<Token::Type>( u'}' ) )
+							{
+								break;
+							}
+							else
+							{
+								// TODO: error: Expected , or }.
+								delete node;
+
+								return nullptr;
+							}
 						}
 					}
-				}
-				
-				mCurrentToken++;
+					
+					mCurrentToken++;
 
-				return node;
-			}
+					return node;
+				}
 			
 			default:
 				// TODO: wrong token in primary expression.
