@@ -4,7 +4,6 @@
 #include "Token.h"
 #include "Node.h"
 #include "Literal.h"
-#include "ByteCode.h"
 #include "WarningCode.h"
 #include "ErrorCode.h"
 #include "Location.h"
@@ -115,14 +114,6 @@ namespace lyrics
 			case static_cast<Token::Type>( u'[' ):
 				if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 				{
-					forward_list<ByteCode> tObjectCode;
-					forward_list<ByteCode>::const_iterator tLastObjectCode;
-
-					// TODO: tLastObjectCode = tObjectCode.emplace_after( tLastObjectCode, ByteCode::Opcode::LOAD_WORD_IMMEDIATE, static_cast<short>( Register::TA0 ), Literal::Type::ARRAY );
-					// TODO: tLastObjectCode = tObjectCode.emplace_after( tLastObjectCode, ByteCode::Opcode::CONSTRUCT_ARRAY, static_cast<short>( Register::A0 ) );
-
-					// TODO: ExpressionList();
-
 					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 					{
 						// TODO:
@@ -130,22 +121,12 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: lastObjectCode = objectCode.emplace_after( lastObjectCode, ByteCode::Opcode::LOAD_WORD_IMMEDIATE, static_cast<short>( Register::TA0 ), Literal::Type::ARRAY );
-					// TODO: lastObjectCode = objectCode.emplace_after( lastObjectCode, ByteCode::Opcode::CONSTRUCT_ARRAY, static_cast<short>( Register::A0 ) );
 				}
 				break;
 
 			case static_cast<Token::Type>( u'{' ):
 				if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 				{
-					forward_list<ByteCode> tObjectCode;
-					forward_list<ByteCode>::const_iterator tLastObjectCode;
-
-					// TODO: tLastObjectCode = tObjectCode.emplace_after( tLastObjectCode, ByteCode::Opcode::LOAD_WORD_IMMEDIATE, static_cast<short>( Register::TA0 ), Literal::Type::HASH );
-					// TODO: tLastObjectCode = tObjectCode.emplace_after( tLastObjectCode, ByteCode::Opcode::CONSTRUCT_HASH, static_cast<short>( Register::A0 ) );
-
-					// TODO: AssignmentList();
-
 					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 					{
 						// TODO:
@@ -153,8 +134,6 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: lastObjectCode = objectCode.emplace_after( lastObjectCode, ByteCode::Opcode::LOAD_WORD_IMMEDIATE, static_cast<short>( Register::TA0 ), Literal::Type::HASH );
-					// TODO: lastObjectCode = objectCode.emplace_after( lastObjectCode, ByteCode::Opcode::CONSTRUCT_HASH, static_cast<short>( Register::A0 ) );
 				}
 				break;
 			
