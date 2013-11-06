@@ -166,7 +166,98 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
-			PrimaryExpression();
+			ExpressionNode *temp = PrimaryExpression();
+
+			if ( mCurrentToken->type == static_cast<Token::Type>( u'[' ) )
+			{
+				mCurrentToken++;
+
+				PostfixExpressionNode *node = new PostfixExpressionNode();
+
+				node->expression = temp;
+				node->postfix = new IndexNode();
+				static_cast<IndexNode *>( node->postfix )->expression = Expression();
+
+				if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+				{
+					mCurrentToken++;
+
+					return node;
+				}
+				else
+				{
+					// TODO: error: Expected ].
+					delete temp;
+					delete node;
+
+					return nullptr;
+				}
+			}
+			else if ( mCurrentToken->type == static_cast<Token::Type>( u'(' ) )
+			{
+				mCurrentToken++;
+
+				PostfixExpressionNode *node = new PostfixExpressionNode();
+
+				node->expression = temp;
+				node->postfix = new CallNode();
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+				{
+					for (;;)
+					{
+						static_cast<CallNode *>( node->postfix )->last = static_cast<CallNode *>( node->postfix )->list.insert_after( static_cast<CallNode *>( node->postfix )->last, Expression() );
+
+						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+						{
+							mCurrentToken++;
+						}
+						else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+						{
+							break;
+						}
+						else
+						{
+							// TODO: error: Expected , or ).
+							delete temp;
+							delete node;
+
+							return nullptr;
+						}
+					}
+				}
+
+				mCurrentToken++;
+
+				return node;
+			}
+			else if ( mCurrentToken->type == static_cast<Token::Type>( u'.' ) )
+			{
+				mCurrentToken++;
+
+				if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+				{
+					PostfixExpressionNode *node = new PostfixExpressionNode();
+
+					node->expression = temp;
+					node->postfix = new MemberNode();
+					static_cast<MemberNode *>( node->postfix )->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+					mCurrentToken++;
+
+					return node;
+				}
+				else
+				{
+					// TODO: error: Expected identifier.
+					delete temp;
+
+					return nullptr;
+				}
+			}
+			else
+			{
+				return temp;
+			}
 		}
 
 		ExpressionNode *UnaryExpression()

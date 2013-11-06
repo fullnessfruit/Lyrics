@@ -137,7 +137,16 @@ namespace lyrics
 
 	struct IdentifierNode : public PrimaryExpressionNode
 	{
-		u16string identifier;
+		explicit IdentifierNode( u16string *str ) : str( str )
+		{
+		}
+
+		~IdentifierNode()
+		{
+			delete str;
+		}
+
+		u16string *str;
 
 		virtual Node::Type GetType() const
 		{
