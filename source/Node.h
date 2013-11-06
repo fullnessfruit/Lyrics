@@ -213,6 +213,10 @@ namespace lyrics
 
 	struct ParenthesizedExpressionNode : public PrimaryExpressionNode
 	{
+		ParenthesizedExpressionNode( ExpressionNode *expression ) : expression( expression )
+		{
+		}
+
 		~ParenthesizedExpressionNode()
 		{
 			delete expression;

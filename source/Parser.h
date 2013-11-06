@@ -156,14 +156,24 @@ namespace lyrics
 
 			case static_cast<Token::Type>( u'(' ):
 				{
-					Expression();
+					mCurrentToken++;
 
-					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+					ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( Expression() );
+
+					if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
 					{
-						// TODO:
+						mCurrentToken++;
+
+						return node;
+					}
+					else
+					{
+						// TODO: Expected ).
+						delete node;
+
+						return nullptr;
 					}
 				}
-				break;
 
 			case static_cast<Token::Type>( u'[' ):
 				if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
