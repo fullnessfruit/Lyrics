@@ -177,6 +177,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				UnaryExpressionNode *node = new UnaryExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -196,6 +198,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -216,6 +220,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				AdditiveExpressionNode *node = new AdditiveExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -236,6 +242,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				ShiftExpressionNode *node = new ShiftExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -256,6 +264,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				AndExpressionNode *node = new AndExpressionNode();
 
 				node->left = temp;
@@ -275,6 +285,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				OrExpressionNode *node = new OrExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -295,6 +307,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				RelationalExpressionNode *node = new RelationalExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -315,6 +329,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				EqualityExpressionNode *node = new EqualityExpressionNode();
 
 				node->op = mCurrentToken->type;
@@ -335,6 +351,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				LogicalAndExpressionNode *node = new LogicalAndExpressionNode();
 
 				node->left = temp;
@@ -354,6 +372,8 @@ namespace lyrics
 			}
 			else
 			{
+				mCurrentToken++;
+
 				LogicalOrExpressionNode *node = new LogicalOrExpressionNode();
 
 				node->left = temp;
@@ -375,6 +395,8 @@ namespace lyrics
 			{
 				if ( temp->GetType() == Node::Type::IDENTIFIER || temp->GetType() == Node::Type::POSTFIX_EXPRESSION )
 				{
+					mCurrentToken++;
+
 					AssignmentExpressionNode *node = new AssignmentExpressionNode();
 
 					node->lhs = temp;
