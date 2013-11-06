@@ -212,10 +212,53 @@ namespace lyrics
 
 			case static_cast<Token::Type>( u'{' ):
 			{
+				mCurrentToken++;
+
+				HashNode *node = new HashNode();
+
 				if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 				{
-					// TODO:
+					for (;;)
+					{
+						ExpressionNode *left = Expression();
+						if ( mCurrentToken->type != static_cast<Token::Type>( u':' ) )
+						{
+							// TODO: Expected :.
+							delete node;
+							delete left;
+
+							return nullptr;
+						}
+						mCurrentToken++;
+						ExpressionNode *right = Expression();
+
+						PairNode *pair = new PairNode();
+						pair->left = left;
+						pair->right = right;
+
+						node->last = node->list.insert_after( node->last, pair );
+
+						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+						{
+							mCurrentToken++;
+						}
+						else if ( mCurrentToken->type == static_cast<Token::Type>( u'}' ) )
+						{
+							break;
+						}
+						else
+						{
+							// TODO: error: Expected , or }.
+							delete node;
+
+							return nullptr;
+						}
+					}
 				}
+				
+				mCurrentToken++;
+
+				return node;
 			}
 			
 			default:

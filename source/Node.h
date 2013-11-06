@@ -183,17 +183,6 @@ namespace lyrics
 		}
 	};
 
-	struct HashNode : public PrimaryExpressionNode
-	{
-		forward_list<PairNode> list;
-		forward_list<PairNode>::const_iterator last;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::HASH;
-		}
-	};
-
 	struct PairNode : public Node
 	{
 		~PairNode()
@@ -208,6 +197,25 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PAIR;
+		}
+	};
+
+	struct HashNode : public PrimaryExpressionNode
+	{
+		~HashNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+		}
+
+		forward_list<PairNode *> list;
+		forward_list<PairNode *>::const_iterator last;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::HASH;
 		}
 	};
 
