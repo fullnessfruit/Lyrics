@@ -176,17 +176,39 @@ namespace lyrics
 				}
 
 			case static_cast<Token::Type>( u'[' ):
-				if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 				{
+					mCurrentToken++;
+
+					ArrayNode *node = new ArrayNode();
+
 					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 					{
-						// TODO:
+						for (;;)
+						{
+							node->last = node->list.insert_after( node->last, Expression() );
+
+							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mCurrentToken++;
+							}
+							else if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+							{
+								break;
+							}
+							else
+							{
+								// TODO: error: Expected , or ).
+								delete node;
+
+								return nullptr;
+							}
+						}
 					}
+					
+					mCurrentToken++;
+
+					return node;
 				}
-				else
-				{
-				}
-				break;
 
 			case static_cast<Token::Type>( u'{' ):
 				if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
