@@ -197,7 +197,7 @@ namespace lyrics
 						}
 						else
 						{
-							// TODO: error: Expected , or ).
+							// TODO: error: Expected , or ].
 							delete node;
 
 							return nullptr;
