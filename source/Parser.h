@@ -93,12 +93,66 @@ namespace lyrics
 			switch ( mCurrentToken->type )
 			{
 			case Token::Type::IDENTIFIER:
+				return new IdentifierNode( ( mCurrentToken++ )->value.identifier );
+
 			case Token::Type::INTEGER_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::INTEGER;
+					node->literal.value.integer = mCurrentToken->value.integer;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
 			case Token::Type::STRING_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::STRING;
+					node->literal.value.string = mCurrentToken->value.string;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
 			case Token::Type::BOOLEAN_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::BOOLEAN;
+					node->literal.value.boolean = mCurrentToken->value.boolean;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
 			case Token::Type::NIL_LITERAL:
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::NIL;
+
+					mCurrentToken++;
+
+					return node;
+				}
+
 			case Token::Type::REAL_LITERAL:
-				break;
+				{
+					LiteralNode *node = new LiteralNode();
+
+					node->literal.type = Literal::Type::REAL;
+					node->literal.value.real = mCurrentToken->value.real;
+
+					mCurrentToken++;
+
+					return node;
+				}
 
 			case static_cast<Token::Type>( u'(' ):
 				{
