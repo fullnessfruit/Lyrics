@@ -23,7 +23,7 @@ namespace lyrics
 			NIL_LITERAL, BOOLEAN_LITERAL, INTEGER_LITERAL, REAL_LITERAL, STRING_LITERAL
 		} type;
 
-		union Value
+		union
 		{
 			bool boolean;
 			long long integer;
