@@ -171,47 +171,177 @@ namespace lyrics
 
 		ExpressionNode *UnaryExpression()
 		{
-			PostfixExpression();
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'+' ) && mCurrentToken->type != static_cast<Token::Type>( u'-' ) && mCurrentToken->type != static_cast<Token::Type>( u'~' ) && mCurrentToken->type != static_cast<Token::Type>( u'!' ) )
+			{
+				return PostfixExpression();
+			}
+			else
+			{
+				UnaryExpressionNode *node = new UnaryExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->expression = UnaryExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *MultiplicativeExpression()
 		{
-			UnaryExpression();
+			ExpressionNode *temp = UnaryExpression();
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'*' ) && mCurrentToken->type != static_cast<Token::Type>( u'/' ) && mCurrentToken->type != static_cast<Token::Type>( u'%' ) )
+			{
+				return temp;
+			}
+			else
+			{
+				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->left = temp;
+				node->right = MultiplicativeExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *AdditiveExpression()
 		{
-			MultiplicativeExpression();
+			ExpressionNode *temp = MultiplicativeExpression();
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'+' ) && mCurrentToken->type != static_cast<Token::Type>( u'-' ) )
+			{
+				return temp;
+			}
+			else
+			{
+				AdditiveExpressionNode *node = new AdditiveExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->left = temp;
+				node->right = AdditiveExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *ShiftExpression()
 		{
-			AdditiveExpression();
+			ExpressionNode *temp = AdditiveExpression();
+
+			if ( mCurrentToken->type != Token::Type::SHIFT_LEFT && mCurrentToken->type != Token::Type::SHIFT_RIGHT )
+			{
+				return temp;
+			}
+			else
+			{
+				ShiftExpressionNode *node = new ShiftExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->left = temp;
+				node->right = ShiftExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *AndExpression()
 		{
-			ShiftExpression();
+			ExpressionNode *temp = ShiftExpression();
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'&' ) )
+			{
+				return temp;
+			}
+			else
+			{
+				AndExpressionNode *node = new AndExpressionNode();
+
+				node->left = temp;
+				node->right = AndExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *OrExpression()
 		{
-			AndExpression();
+			ExpressionNode *temp = AndExpression();
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'|' ) && mCurrentToken->type != static_cast<Token::Type>( u'^' ) )
+			{
+				return temp;
+			}
+			else
+			{
+				OrExpressionNode *node = new OrExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->left = temp;
+				node->right = OrExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *RelationalExpression()
 		{
-			OrExpression();
+			ExpressionNode *temp = OrExpression();
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'<' ) && mCurrentToken->type != static_cast<Token::Type>( u'>' ) && mCurrentToken->type != Token::Type::LESS_THAN_OR_EQUAL && mCurrentToken->type != Token::Type::GREATER_THAN_OR_EQUAL )
+			{
+				return temp;
+			}
+			else
+			{
+				RelationalExpressionNode *node = new RelationalExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->left = temp;
+				node->right = RelationalExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *EqualityExpression()
 		{
-			RelationalExpression();
+			ExpressionNode *temp = RelationalExpression();
+
+			if ( mCurrentToken->type != Token::Type::EQUAL && mCurrentToken->type != Token::Type::NOT_EQUAL )
+			{
+				return temp;
+			}
+			else
+			{
+				EqualityExpressionNode *node = new EqualityExpressionNode();
+
+				node->op = mCurrentToken->type;
+				node->left = temp;
+				node->right = EqualityExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *LogicalAndExpression()
 		{
-			EqualityExpression();
+			ExpressionNode *temp = EqualityExpression();
+
+			if ( mCurrentToken->type != Token::Type::AND )
+			{
+				return temp;
+			}
+			else
+			{
+				LogicalAndExpressionNode *node = new LogicalAndExpressionNode();
+
+				node->left = temp;
+				node->right = LogicalAndExpression();
+
+				return node;
+			}
 		}
 
 		ExpressionNode *LogicalOrExpression()
