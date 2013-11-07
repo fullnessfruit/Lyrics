@@ -232,9 +232,7 @@ namespace lyrics
 							mCurrentToken++;
 							ExpressionNode *right = Expression();
 
-							PairNode *pair = new PairNode();
-							pair->left = left;
-							pair->right = right;
+							PairNode *pair = new PairNode( left, right );
 
 							node->last = node->list.insert_after( node->last, pair );
 
@@ -278,8 +276,7 @@ namespace lyrics
 				PostfixExpressionNode *node = new PostfixExpressionNode();
 
 				node->expression = temp;
-				node->postfix = new IndexNode();
-				static_cast<IndexNode *>( node->postfix )->expression = Expression();
+				node->postfix = new IndexNode( Expression() );
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
 				{
@@ -343,8 +340,7 @@ namespace lyrics
 					PostfixExpressionNode *node = new PostfixExpressionNode();
 
 					node->expression = temp;
-					node->postfix = new MemberNode();
-					static_cast<MemberNode *>( node->postfix )->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+					node->postfix = new MemberNode( new IdentifierNode( mCurrentToken->value.identifier ) );
 					mCurrentToken++;
 
 					return node;
