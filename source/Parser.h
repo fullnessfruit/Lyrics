@@ -824,7 +824,7 @@ namespace lyrics
 			mCurrentToken++;
 		}
 
-		ForEach *ForEach()
+		ForEachNode *ForEach()
 		{
 		}
 
