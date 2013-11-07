@@ -615,11 +615,10 @@ namespace lyrics
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				mCurrentToken++;
-
 				ProcedureNode *node = new ProcedureNode();
 
 				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+				mCurrentToken++;
 
 				if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
 				{
