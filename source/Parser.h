@@ -792,6 +792,20 @@ namespace lyrics
 
 		ImportNode *Import()
 		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				ImportNode *node = new ImportNode( new IdentifierNode( mCurrentToken->value.identifier ) );
+				mCurrentToken++;
+
+				return node;
+			}
+			else
+			{
+				// TODO: Expected Identifier.
+				return nullptr;
+			}
 		}
 
 		SelectionNode *Selection()
