@@ -44,48 +44,36 @@ namespace lyrics
 
 		StatementNode *Statement()
 		{
-			StatementNode *node;
-
 			switch ( mCurrentToken->type )
 			{
 			case Token::Type::IF:
 			case Token::Type::CASE:
-				node = Selection();
-				break;
+				return Selection();
 
 			case Token::Type::FOR:
 			case Token::Type::WHILE:
-				node = Iteration();
-				break;
+				return Iteration();
 
 			case Token::Type::PROC:
-				node = Procedure();
-				break;
+				return Procedure();
 
 			case Token::Type::BREAK:
 			case Token::Type::RETURN:
 			case Token::Type::REDO:
-				node = Jump();
-				break;
+				return Jump();
 
 			case Token::Type::CLASS:
-				node = Class();
-				break;
+				return Class();
 
 			case Token::Type::PACKAGE:
-				node = Package();
-				break;
+				return Package();
 
 			case Token::Type::IMPORT:
-				node = Import();
-				break;
+				return Import();
 			
 			default:
-				node = Expression();
-				break;
+				return Expression();
 			}
-
-			return node;
 		}
 
 		ExpressionNode *PrimaryExpression()
