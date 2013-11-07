@@ -34,7 +34,7 @@ namespace lyrics
 		{
 			BlockNode *node = new BlockNode();
 
-			if ( mCurrentToken != mLastToken )
+			if ( mCurrentToken->type != Token::Type::END && mCurrentToken != mLastToken )
 			{
 				node->last = node->list.insert_after( node->last, Statement() );
 			}
