@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <forward_list>
 
 #include "TextLoader.h"
 #include "Scanner.h"
@@ -13,7 +13,7 @@
 
 namespace lyrics
 {
-	using std::list;
+	using std::forward_list;
 
 	class Compiler
 	{
@@ -33,12 +33,13 @@ namespace lyrics
 			unsigned int offset = 0;
 			Location location( fileName );
 			Token tToken;
-			list<Token> token;
+			forward_list<Token> token;
+			forward_list<Token>::const_iterator lastToken = token.cend();
 
 			scanner.Scan( text, length, offset, location, tToken );
 			while ( tToken.type != Token::Type::END_OF_FILE )
 			{
-				token.push_back( tToken );
+				lastToken = token.insert_after( lastToken, tToken );
 				scanner.Scan( text, length, offset, location, tToken );
 			}
 			delete [] text;

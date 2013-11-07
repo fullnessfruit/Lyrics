@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <forward_list>
 
 #include "Token.h"
 #include "Node.h"
@@ -13,12 +13,12 @@
 
 namespace lyrics
 {
-	using std::list;
+	using std::forward_list;
 
 	class Parser
 	{
 	public:
-		void Parse( const list<Token> &token )
+		void Parse( const forward_list<Token> &token )
 		{
 			mCurrentToken = token.cbegin();
 			mLastToken = token.cend();
@@ -27,8 +27,8 @@ namespace lyrics
 		}
 	
 	private:
-		list<Token>::const_iterator mCurrentToken;
-		list<Token>::const_iterator mLastToken;
+		forward_list<Token>::const_iterator mCurrentToken;
+		forward_list<Token>::const_iterator mLastToken;
 
 		BlockNode *Block()
 		{
