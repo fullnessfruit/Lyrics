@@ -545,7 +545,7 @@ namespace lyrics
 
 	struct AssignmentExpressionNode : public ExpressionNode
 	{
-		AssignmentExpressionNode() : left( nullptr ), right( nullptr )
+		AssignmentExpressionNode() : lhs( nullptr ), rhs( nullptr )
 		{
 		}
 
