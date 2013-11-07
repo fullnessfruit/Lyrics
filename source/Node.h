@@ -777,13 +777,6 @@ namespace lyrics
 		}
 	};
 
-	struct IterationNode : public StatementNode
-	{
-		virtual ~IterationNode()
-		{
-		}
-	};
-
 	struct CaseNode : public SelectionNode
 	{
 		CaseNode() : block( nullptr )
@@ -807,6 +800,13 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::CASE;
+		}
+	};
+
+	struct IterationNode : public StatementNode
+	{
+		virtual ~IterationNode()
+		{
 		}
 	};
 
