@@ -24,7 +24,7 @@ namespace lyrics
 						INDEX, CALL, MEMBER,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				PROCEDURE,
-					PARAMETER,
+					PARAMETER, OUT_PARAMETER,
 				CLASS,
 				PACKAGE,
 				IMPORT,
@@ -536,6 +536,21 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PARAMETER;
+		}
+	};
+
+	struct OutParameterNode : public Node
+	{
+		~OutParameterNode()
+		{
+			delete identifier;
+		}
+
+		IdentifierNode *identifier;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::OUT_PARAMETER;
 		}
 	};
 
