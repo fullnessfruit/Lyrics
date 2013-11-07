@@ -770,6 +770,24 @@ namespace lyrics
 
 		PackageNode *Package()
 		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				PackageNode *node = new PackageNode();
+
+				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+				mCurrentToken++;
+
+				node->block = Block();
+
+				return node;
+			}
+			else
+			{
+				// TODO: Expected Identifier.
+				return nullptr;
+			}
 		}
 
 		ImportNode *Import()
