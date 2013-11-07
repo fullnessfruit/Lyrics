@@ -504,38 +504,6 @@ namespace lyrics
 		}
 	};
 
-	struct ProcedureNode : public StatementNode
-	{
-		~ProcedureNode()
-		{
-			delete identifier;
-
-			for ( auto i : parameter )
-			{
-				delete i;
-			}
-
-			for ( auto i : outParameter )
-			{
-				delete i;
-			}
-
-			delete block;
-		}
-
-		IdentifierNode *identifier;
-		forward_list<ParameterNode *> parameter;
-		forward_list<ParameterNode *>::const_iterator lastParameter;
-		forward_list<OutParameterNode *> outParameter;
-		forward_list<OutParameterNode *>::const_iterator lastOutParameter;
-		BlockNode *block;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PROCEDURE;
-		}
-	};
-
 	struct ParameterNode : public Node
 	{
 		~ParameterNode()
@@ -565,6 +533,38 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::OUT_PARAMETER;
+		}
+	};
+
+	struct ProcedureNode : public StatementNode
+	{
+		~ProcedureNode()
+		{
+			delete identifier;
+
+			for ( auto i : parameter )
+			{
+				delete i;
+			}
+
+			for ( auto i : outParameter )
+			{
+				delete i;
+			}
+
+			delete block;
+		}
+
+		IdentifierNode *identifier;
+		forward_list<ParameterNode *> parameter;
+		forward_list<ParameterNode *>::const_iterator lastParameter;
+		forward_list<OutParameterNode *> outParameter;
+		forward_list<OutParameterNode *>::const_iterator lastOutParameter;
+		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PROCEDURE;
 		}
 	};
 
@@ -625,6 +625,23 @@ namespace lyrics
 		}
 	};
 
+	struct ElseIfNode : public Node
+	{
+		~ElseIfNode()
+		{
+			delete expression;
+			delete block;
+		}
+
+		ExpressionNode *expression;
+		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ELSEIF;
+		}
+	};
+
 	struct IfNode : public SelectionNode
 	{
 		~IfNode()
@@ -644,45 +661,6 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::IF;
-		}
-	};
-
-	struct ElseIfNode : public Node
-	{
-		~ElseIfNode()
-		{
-			delete expression;
-			delete block;
-		}
-
-		ExpressionNode *expression;
-		BlockNode *block;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ELSEIF;
-		}
-	};
-
-	struct CaseNode : public SelectionNode
-	{
-		~CaseNode()
-		{
-			for ( auto i : list )
-			{
-				delete i;
-			}
-
-			delete block;
-		}
-
-		forward_list<WhenNode *> list;
-		forward_list<WhenNode *>::const_iterator last;
-		BlockNode *block;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::CASE;
 		}
 	};
 
@@ -707,6 +685,28 @@ namespace lyrics
 	{
 		virtual ~IterationNode()
 		{
+		}
+	};
+
+	struct CaseNode : public SelectionNode
+	{
+		~CaseNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+
+			delete block;
+		}
+
+		forward_list<WhenNode *> list;
+		forward_list<WhenNode *>::const_iterator last;
+		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::CASE;
 		}
 	};
 
