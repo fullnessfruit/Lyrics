@@ -78,6 +78,7 @@ namespace lyrics
 		struct AssignmentNode;
 		struct ProcedureNode;
 			struct ParameterNode;
+			struct OutParameterNode;
 		struct ClassNode;
 		struct PackageNode;
 		struct ImportNode;
