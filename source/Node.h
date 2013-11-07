@@ -566,6 +566,10 @@ namespace lyrics
 
 	struct ParameterNode : public Node
 	{
+		ParameterNode( IdentifierNode *identifier ) : identifier( identifier ), expression( nullptr )
+		{
+		}
+
 		ParameterNode( IdentifierNode *identifier, ExpressionNode *expression ) : identifier( identifier ), expression( expression )
 		{
 		}

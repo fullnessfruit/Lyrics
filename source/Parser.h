@@ -611,6 +611,119 @@ namespace lyrics
 
 		ProcedureNode *Procedure()
 		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				mCurrentToken++;
+
+				ProcedureNode *node = new ProcedureNode();
+
+				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
+				{
+					mCurrentToken++;
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
+					{
+						for (;;)
+						{
+							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
+							{
+								// TODO: Expected identifier.
+								delete node;
+
+								return nullptr;
+							}
+							IdentifierNode *identifier = new IdentifierNode( mCurrentToken->value.identifier );
+							mCurrentToken++;
+
+							ParameterNode *parameter;
+							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+							{
+								parameter = new ParameterNode( identifier );
+							}
+							else
+							{
+								mCurrentToken++;
+
+								parameter = new ParameterNode( identifier, Expression() );
+							}
+
+							node->lastParameter = node->parameter.insert_after( node->lastParameter, parameter );
+
+							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mCurrentToken++;
+							}
+							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
+							{
+								break;
+							}
+							else
+							{
+								// TODO: error: Expected , or ) or out.
+								delete node;
+
+								return nullptr;
+							}
+						}
+					}
+					
+					mCurrentToken++;
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+					{
+						for (;;)
+						{
+							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
+							{
+								// TODO: Expected identifier.
+								delete node;
+
+								return nullptr;
+							}
+							node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( new IdentifierNode( mCurrentToken->value.identifier ) ) );
+							mCurrentToken++;
+
+							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mCurrentToken++;
+							}
+							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+							{
+								break;
+							}
+							else
+							{
+								// TODO: error: Expected , or ).
+								delete node;
+
+								return nullptr;
+							}
+						}
+					}
+					
+					mCurrentToken++;
+
+					node->block = Block();
+
+					return node;
+				}
+				else
+				{
+					// TODO: Expected (.
+					delete node;
+
+					return nullptr;
+				}
+			}
+			else
+			{
+				// TODO: Expected Identifier.
+				return nullptr;
+			}
 		}
 
 		ClassNode *Class()
