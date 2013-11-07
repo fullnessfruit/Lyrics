@@ -186,6 +186,10 @@ namespace lyrics
 
 	struct PairNode : public Node
 	{
+		PairNode( ExpressionNode *left, ExpressionNode *right ) : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~PairNode()
 		{
 			delete left;
@@ -222,7 +226,7 @@ namespace lyrics
 
 	struct ParenthesizedExpressionNode : public PrimaryExpressionNode
 	{
-		ParenthesizedExpressionNode( ExpressionNode *expression ) : expression( expression )
+		explicit ParenthesizedExpressionNode( ExpressionNode *expression ) : expression( expression )
 		{
 		}
 
@@ -248,6 +252,10 @@ namespace lyrics
 
 	struct IndexNode : public PostfixNode
 	{
+		explicit IndexNode( ExpressionNode *expression ) : expression( expression )
+		{
+		}
+
 		~IndexNode()
 		{
 			delete expression;
@@ -282,6 +290,10 @@ namespace lyrics
 
 	struct MemberNode : public PostfixNode
 	{
+		explicit MemberNode( IdentifierNode *identifier ) : identifier( identifier )
+		{
+		}
+
 		~MemberNode()
 		{
 			delete identifier;
@@ -297,6 +309,10 @@ namespace lyrics
 
 	struct PostfixExpressionNode : public ExpressionNode
 	{
+		PostfixExpressionNode() : expression( nullptr ), postfix( nullptr )
+		{
+		}
+
 		~PostfixExpressionNode()
 		{
 			delete expression;
@@ -314,6 +330,10 @@ namespace lyrics
 
 	struct UnaryExpressionNode : public ExpressionNode
 	{
+		explicit UnaryExpressionNode() : expression( nullptr )
+		{
+		}
+
 		~UnaryExpressionNode()
 		{
 			delete expression;
@@ -330,6 +350,10 @@ namespace lyrics
 
 	struct MultiplicativeExpressionNode : public ExpressionNode
 	{
+		MultiplicativeExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~MultiplicativeExpressionNode()
 		{
 			delete left;
@@ -348,6 +372,10 @@ namespace lyrics
 
 	struct AdditiveExpressionNode : public ExpressionNode
 	{
+		AdditiveExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~AdditiveExpressionNode()
 		{
 			delete left;
@@ -366,6 +394,10 @@ namespace lyrics
 
 	struct ShiftExpressionNode : public ExpressionNode
 	{
+		ShiftExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~ShiftExpressionNode()
 		{
 			delete left;
@@ -384,6 +416,10 @@ namespace lyrics
 
 	struct AndExpressionNode : public ExpressionNode
 	{
+		AndExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~AndExpressionNode()
 		{
 			delete left;
@@ -401,6 +437,10 @@ namespace lyrics
 
 	struct OrExpressionNode : public ExpressionNode
 	{
+		OrExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~OrExpressionNode()
 		{
 			delete left;
@@ -419,6 +459,10 @@ namespace lyrics
 
 	struct RelationalExpressionNode : public ExpressionNode
 	{
+		RelationalExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~RelationalExpressionNode()
 		{
 			delete left;
@@ -437,6 +481,10 @@ namespace lyrics
 
 	struct EqualityExpressionNode : public ExpressionNode
 	{
+		EqualityExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~EqualityExpressionNode()
 		{
 			delete left;
@@ -455,6 +503,10 @@ namespace lyrics
 
 	struct LogicalAndExpressionNode : public ExpressionNode
 	{
+		LogicalAndExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~LogicalAndExpressionNode()
 		{
 			delete left;
@@ -472,6 +524,10 @@ namespace lyrics
 
 	struct LogicalOrExpressionNode : public ExpressionNode
 	{
+		LogicalOrExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~LogicalOrExpressionNode()
 		{
 			delete left;
@@ -489,6 +545,10 @@ namespace lyrics
 
 	struct AssignmentExpressionNode : public ExpressionNode
 	{
+		AssignmentExpressionNode() : left( nullptr ), right( nullptr )
+		{
+		}
+
 		~AssignmentExpressionNode()
 		{
 			delete lhs;
@@ -546,6 +606,10 @@ namespace lyrics
 
 	struct ProcedureNode : public StatementNode
 	{
+		ProcedureNode() : identifier( nullptr ), block( nullptr )
+		{
+		}
+
 		~ProcedureNode()
 		{
 			delete identifier;
@@ -578,6 +642,10 @@ namespace lyrics
 
 	struct ClassNode : public StatementNode
 	{
+		ClassNode() : identifier( nullptr ), base( nullptr ), block( nullptr )
+		{
+		}
+
 		~ClassNode()
 		{
 			delete identifier;
@@ -597,6 +665,10 @@ namespace lyrics
 
 	struct PackageNode : public StatementNode
 	{
+		PackageNode() : identifier( nullptr ), block( nullptr )
+		{
+		}
+
 		~PackageNode()
 		{
 			delete identifier;
@@ -613,6 +685,10 @@ namespace lyrics
 
 	struct ImportNode : public StatementNode
 	{
+		explicit ImportNode( IdentifierNode *identifier ) : identifier( identifier )
+		{
+		}
+
 		~ImportNode()
 		{
 			delete identifier;
@@ -635,6 +711,10 @@ namespace lyrics
 
 	struct ElseIfNode : public Node
 	{
+		ElseIfNode() : expression( nullptr ), block( nullptr )
+		{
+		}
+
 		~ElseIfNode()
 		{
 			delete expression;
@@ -652,6 +732,10 @@ namespace lyrics
 
 	struct IfNode : public SelectionNode
 	{
+		IfNode() : block( nullptr )
+		{
+		}
+
 		~IfNode()
 		{
 			for ( auto i : list )
@@ -674,6 +758,10 @@ namespace lyrics
 
 	struct WhenNode : public Node
 	{
+		WhenNode() : expression( nullptr ), block( nullptr )
+		{
+		}
+
 		~WhenNode()
 		{
 			delete expression;
@@ -698,6 +786,10 @@ namespace lyrics
 
 	struct CaseNode : public SelectionNode
 	{
+		CaseNode() : block( nullptr )
+		{
+		}
+
 		~CaseNode()
 		{
 			for ( auto i : list )
@@ -720,6 +812,10 @@ namespace lyrics
 
 	struct WhileNode : public IterationNode
 	{
+		WhileNode() : expression( nullptr ), block( nullptr )
+		{
+		}
+
 		~WhileNode()
 		{
 			delete expression;
@@ -737,6 +833,10 @@ namespace lyrics
 
 	struct ForNode : public IterationNode
 	{
+		ForNode() : expression1( nullptr ), expression2( nullptr ), expression3( nullptr ), block( nullptr )
+		{
+		}
+
 		~ForNode()
 		{
 			delete expression1;
@@ -758,6 +858,10 @@ namespace lyrics
 
 	struct ForEachNode : public IterationNode
 	{
+		ForEachNode() : expression1( nullptr ), expression2( nullptr ), block( nullptr )
+		{
+		}
+
 		~ForEachNode()
 		{
 			delete expression1;
