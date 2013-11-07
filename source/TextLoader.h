@@ -27,7 +27,7 @@ namespace lyrics
 				return false;
 			}
 
-			text = TextLoader::ConvertToUTF_16( ( unsigned char * )data, size, length );
+			text = TextLoader::ConvertToUTF16( ( unsigned char * )data, size, length );
 			delete [] data;
 			if ( text == false )
 			{
@@ -39,7 +39,7 @@ namespace lyrics
 		}
 	
 	private:
-		static char16_t *ConvertToUTF_16( const unsigned char * const data, const unsigned int size, unsigned int &length )
+		static char16_t *ConvertToUTF16( const unsigned char * const data, const unsigned int size, unsigned int &length )
 		{
 			using std::size_t;
 			using std::memcpy;
@@ -54,11 +54,11 @@ namespace lyrics
 			case 0xEF:
 				if ( data[1] == 0xBB && data[2] == 0xBF )
 				{
-					return TextLoader::UTF_8ToUTF_16( data + 3, size - 3, length );
+					return TextLoader::UTF8ToUTF16( data + 3, size - 3, length );
 				}
 				else
 				{
-					return TextLoader::UTF_8ToUTF_16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -69,7 +69,7 @@ namespace lyrics
 				}
 				else
 				{
-					return TextLoader::UTF_8ToUTF_16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -91,12 +91,12 @@ namespace lyrics
 					}
 					else
 					{
-						return TextLoader::UTF_32ToUTF_16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
+						return TextLoader::UTF32ToUTF16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
 					}
 				}
 				else
 				{
-					return TextLoader::UTF_8ToUTF_16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -107,18 +107,18 @@ namespace lyrics
 				}
 				else
 				{
-					return TextLoader::UTF_8ToUTF_16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 			
 			default:
-				return TextLoader::UTF_8ToUTF_16( data, size, length );
+				return TextLoader::UTF8ToUTF16( data, size, length );
 			}
 
 			return nullptr;
 		}
 
-		static char16_t *UTF_8ToUTF_16( const unsigned char * const str, const unsigned int length, unsigned int &convertedStrLength )
+		static char16_t *UTF8ToUTF16( const unsigned char * const str, const unsigned int length, unsigned int &convertedStrLength )
 		{
 			if ( str == nullptr )
 			{
@@ -181,7 +181,7 @@ namespace lyrics
 			return tStr;
 		}
 
-		static char16_t *UTF_32ToUTF_16( const char32_t * const str, const unsigned int length, unsigned int &convertedStrLength )
+		static char16_t *UTF32ToUTF16( const char32_t * const str, const unsigned int length, unsigned int &convertedStrLength )
 		{
 			if ( str == nullptr )
 			{
