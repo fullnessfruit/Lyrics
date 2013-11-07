@@ -47,29 +47,37 @@ namespace lyrics
 			switch ( mCurrentToken->type )
 			{
 			case Token::Type::IF:
-			case Token::Type::CASE:
-				return Selection();
+				return If();
 
 			case Token::Type::FOR:
-			case Token::Type::WHILE:
-				return Iteration();
+				return For();
 
 			case Token::Type::PROC:
 				return Procedure();
 
-			case Token::Type::BREAK:
 			case Token::Type::RETURN:
-			case Token::Type::REDO:
-				return Jump();
+				return Return();
+
+			case Token::Type::BREAK:
+				return Break();
 
 			case Token::Type::CLASS:
 				return Class();
 
-			case Token::Type::PACKAGE:
-				return Package();
+			case Token::Type::WHILE:
+				return While();
 
 			case Token::Type::IMPORT:
 				return Import();
+
+			case Token::Type::PACKAGE:
+				return Package();
+
+			case Token::Type::CASE:
+				return Case();
+
+			case Token::Type::REDO:
+				return Redo();
 			
 			default:
 				return Expression();
@@ -796,16 +804,43 @@ namespace lyrics
 			}
 		}
 
-		SelectionNode *Selection()
+		IfNode* If()
+		{
+			mCurrentToken++;
+		}
+
+		CaseNode* Case()
+		{
+			mCurrentToken++;
+		}
+
+		WhileNode* While()
+		{
+			mCurrentToken++;
+		}
+
+		IterationNode* For()
+		{
+			mCurrentToken++;
+		}
+
+		ForEach *ForEach()
 		{
 		}
 
-		IterationNode *Iteration()
+		RedoNode *Redo()
 		{
+			mCurrentToken++;
 		}
 
-		JumpNode *Jump()
+		BreakNode *Break()
 		{
+			mCurrentToken++;
+		}
+
+		ReturnNode *Return()
+		{
+			mCurrentToken++;
 		}
 
 		static void Warning( const WarningCode warningCode, const Location location )
