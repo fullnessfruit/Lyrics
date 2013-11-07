@@ -186,7 +186,7 @@ namespace lyrics
 
 	struct PairNode : public Node
 	{
-		PairNode( ExpressionNode *left, ExpressionNode *right ) : left( nullptr ), right( nullptr )
+		PairNode( ExpressionNode *left, ExpressionNode *right ) : left( left ), right( right )
 		{
 		}
 
