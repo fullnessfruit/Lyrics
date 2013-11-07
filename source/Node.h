@@ -508,14 +508,25 @@ namespace lyrics
 		~ProcedureNode()
 		{
 			delete identifier;
+
+			for ( auto i : parameter )
+			{
+				delete i;
+			}
+
+			for ( auto i : outParameter )
+			{
+				delete i;
+			}
+
 			delete block;
 		}
 
 		IdentifierNode *identifier;
-		forward_list<ParameterNode> parameter;
-		forward_list<ParameterNode>::const_iterator lastParameter;
-		forward_list<OutParameterNode> outParameter;
-		forward_list<OutParameterNode>::const_iterator lastOutParameter;
+		forward_list<ParameterNode *> parameter;
+		forward_list<ParameterNode *>::const_iterator lastParameter;
+		forward_list<OutParameterNode *> outParameter;
+		forward_list<OutParameterNode *>::const_iterator lastOutParameter;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -617,11 +628,16 @@ namespace lyrics
 	{
 		~IfNode()
 		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+
 			delete block;
 		}
 
-		forward_list<ElseIfNode> list;
-		forward_list<ElseIfNode>::const_iterator last;
+		forward_list<ElseIfNode *> list;
+		forward_list<ElseIfNode *>::const_iterator last;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -651,11 +667,16 @@ namespace lyrics
 	{
 		~CaseNode()
 		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+
 			delete block;
 		}
 
-		forward_list<WhenNode> list;
-		forward_list<WhenNode>::const_iterator last;
+		forward_list<WhenNode *> list;
+		forward_list<WhenNode *>::const_iterator last;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
