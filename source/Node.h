@@ -506,6 +506,10 @@ namespace lyrics
 
 	struct ParameterNode : public Node
 	{
+		ParameterNode( IdentifierNode *identifier, ExpressionNode *expression ) : identifier( identifier ), expression( expression )
+		{
+		}
+
 		~ParameterNode()
 		{
 			delete identifier;
@@ -523,6 +527,10 @@ namespace lyrics
 
 	struct OutParameterNode : public Node
 	{
+		explicit OutParameterNode( IdentifierNode *identifier ) : identifier( identifier )
+		{
+		}
+
 		~OutParameterNode()
 		{
 			delete identifier;
