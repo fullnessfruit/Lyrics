@@ -730,6 +730,42 @@ namespace lyrics
 
 		ClassNode *Class()
 		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				ClassNode *node = new ClassNode();
+
+				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+				mCurrentToken++;
+
+				if ( mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+				{
+					mCurrentToken++;
+
+					if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+					{
+						node->base = new IdentifierNode( mCurrentToken->value.identifier );
+						mCurrentToken++;
+					}
+					else
+					{
+						// TODO: Expected Identifier.
+						delete node;
+
+						return nullptr;
+					}
+				}
+
+				node->block = Block();
+
+				return node;
+			}
+			else
+			{
+				// TODO: Expected Identifier.
+				return nullptr;
+			}
 		}
 
 		PackageNode *Package()
