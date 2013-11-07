@@ -512,8 +512,10 @@ namespace lyrics
 		}
 
 		IdentifierNode *identifier;
-		forward_list<ParameterNode> list;
-		forward_list<ParameterNode>::const_iterator last;
+		forward_list<ParameterNode> parameter;
+		forward_list<ParameterNode>::const_iterator lastParameter;
+		forward_list<OutParameterNode> outParameter;
+		forward_list<OutParameterNode>::const_iterator lastOutParameter;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
