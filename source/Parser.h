@@ -669,41 +669,44 @@ namespace lyrics
 							}
 						}
 					}
-					
-					mCurrentToken++;
 
-					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+					if ( mCurrentToken->type == Token::Type::OUT )
 					{
-						for (;;)
+						mCurrentToken++;
+
+						if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
 						{
-							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
+							for (;;)
 							{
-								// TODO: Expected identifier.
-								delete node;
+								if ( mCurrentToken->type != Token::Type::IDENTIFIER )
+								{
+									// TODO: Expected identifier.
+									delete node;
 
-								return nullptr;
-							}
-							node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( new IdentifierNode( mCurrentToken->value.identifier ) ) );
-							mCurrentToken++;
-
-							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-							{
+									return nullptr;
+								}
+								node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( new IdentifierNode( mCurrentToken->value.identifier ) ) );
 								mCurrentToken++;
-							}
-							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
-							{
-								break;
-							}
-							else
-							{
-								// TODO: error: Expected , or ).
-								delete node;
 
-								return nullptr;
+								if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+								{
+									mCurrentToken++;
+								}
+								else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+								{
+									break;
+								}
+								else
+								{
+									// TODO: error: Expected , or ).
+									delete node;
+
+									return nullptr;
+								}
 							}
 						}
 					}
-					
+
 					mCurrentToken++;
 
 					node->block = Block();
