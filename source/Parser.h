@@ -813,6 +813,98 @@ namespace lyrics
 		IfNode* If()
 		{
 			mCurrentToken++;
+
+			IfNode *node = new IfNode();
+			ElseIfNode *tNode = new ElseIfNode();
+
+			tNode	->expression = Expression();
+			if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+			{
+				mCurrentToken++;
+			}
+			tNode	->block = Block();
+			node->last = node->list.cend();
+			node->last = node->list.insert_after( node->last, tNode );
+
+			if ( mCurrentToken->type == Token::Type::END )
+			{
+				mCurrentToken++;
+
+				return node;
+			}
+			else if ( mCurrentToken->type == Token::Type::ELSE )
+			{
+				mCurrentToken++;
+
+				node->block = Block();
+
+				if ( mCurrentToken->type == Token::Type::END )
+				{
+					mCurrentToken++;
+
+					return node;
+				}
+				else
+				{
+					// TODO: Expected end or else or elseif
+					delete node;
+
+					return nullptr;
+				}
+			}
+			else if ( mCurrentToken->type == Token::Type::ELSEIF )
+			{
+				for (;;)
+				{
+					mCurrentToken++;
+
+					tNode = new ElseIfNode();
+					tNode->expression = Expression();
+					tNode->block = Block();
+					node->last = node->list.insert_after( node->last, tNode );
+
+					if ( mCurrentToken->type == Token::Type::END )
+					{
+						mCurrentToken++;
+
+						return node;
+					}
+					else if ( mCurrentToken->type == Token::Type::ELSE )
+					{
+						mCurrentToken++;
+
+						node->block = Block();
+
+						if ( mCurrentToken->type == Token::Type::END )
+						{
+							mCurrentToken++;
+
+							return node;
+						}
+						else
+						{
+							// TODO: Expected end or else or elseif
+							delete node;
+
+							return nullptr;
+						}
+					}
+					else if ( mCurrentToken->type != Token::Type::ELSEIF )
+					{
+						// TODO: Expected end or else or elseif
+						delete node;
+
+						return nullptr;
+					}
+				}
+			}
+			else
+			{
+				// TODO: Expected end or else or elseif
+				delete node;
+
+				return nullptr;
+			}
 		}
 
 		CaseNode* Case()
