@@ -883,7 +883,7 @@ namespace lyrics
 						}
 						else
 						{
-							// TODO: Expected end or else or elseif
+							// TODO: Expected end.
 							delete node;
 
 							return nullptr;
@@ -891,7 +891,7 @@ namespace lyrics
 					}
 					else if ( mCurrentToken->type != Token::Type::ELSEIF )
 					{
-						// TODO: Expected end or else or elseif
+						// TODO: Expected end or else or elseif.
 						delete node;
 
 						return nullptr;
@@ -900,7 +900,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected end or else or elseif
+				// TODO: Expected end or else or elseif.
 				delete node;
 
 				return nullptr;
