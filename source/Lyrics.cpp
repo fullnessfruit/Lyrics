@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "Compiler.h"
 #include "ErrorCode.h"
