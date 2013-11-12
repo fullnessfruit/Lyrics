@@ -797,6 +797,7 @@ namespace lyrics
 			delete block;
 		}
 
+		ExpressionNode *expression;
 		forward_list<WhenNode *> list;
 		forward_list<WhenNode *>::const_iterator last;
 		BlockNode *block;
