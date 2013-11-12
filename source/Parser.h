@@ -817,12 +817,12 @@ namespace lyrics
 			IfNode *node = new IfNode();
 			ElseIfNode *tNode = new ElseIfNode();
 
-			tNode	->expression = Expression();
+			tNode->expression = Expression();
 			if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 			{
 				mCurrentToken++;
 			}
-			tNode	->block = Block();
+			tNode->block = Block();
 			node->last = node->list.cend();
 			node->last = node->list.insert_after( node->last, tNode );
 
