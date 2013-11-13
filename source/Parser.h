@@ -1140,6 +1140,8 @@ namespace lyrics
 		BreakNode *Break()
 		{
 			mCurrentToken++;
+
+			return BreakNode();
 		}
 
 		ReturnNode *Return()
