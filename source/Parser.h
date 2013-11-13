@@ -992,14 +992,109 @@ namespace lyrics
 		WhileNode* While()
 		{
 			mCurrentToken++;
+
+			WhileNode *node = new WhileNode();
+
+			node->expression = Expression();
+
+			if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+			{
+				mCurrentToken++;
+			}
+
+			node->block = Block();
+
+			if ( mCurrentToken->type == Token::Type::END )
+			{
+				mCurrentToken++;
+
+				return node;
+			}
+			else
+			{
+				// TODO: Expected end.
+				delete node;
+
+				return nullptr;
+			}
 		}
 
 		IterationNode* For()
 		{
 			mCurrentToken++;
+
+			ExpressionNode *tExpression = Expression();
+
+			if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+			{
+				mCurrentToken++;
+
+				ForNode *node = new ForNode();
+
+				node->expression1 = tExpression;
+				node->expression2 = Expression();
+
+				if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+				{
+					mCurrentToken++;
+
+					node->expression3 = Expression();
+
+					if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+					{
+						mCurrentToken++;
+					}
+
+					node->block = Block();
+
+					if ( mCurrentToken->type == Token::Type::END )
+					{
+						mCurrentToken++;
+
+						return node;
+					}
+					else
+					{
+						// TODO: Expected end.
+						delete node;
+
+						return nullptr;
+					}
+				}
+				else
+				{
+					// TODO: Expected , or in.
+					delete node;
+
+					return nullptr;
+				}
+			}
+			else if ( mCurrentToken->type == Token::Type::IN )
+			{
+				mCurrentToken++;
+
+				if ( tExpression->GetType() == Node::Type::IDENTIFIER || tExpression->GetType() == Node::Type::POSTFIX_EXPRESSION )
+				{
+					return ForEach( tExpression );
+				}
+				else
+				{
+					// TODO: Expected lhs.
+					delete tExpression;
+
+					return nullptr;
+				}
+			}
+			else
+			{
+				// TODO: Expected , or in.
+				delete tExpression;
+
+				return nullptr;
+			}
 		}
 
-		ForEachNode *ForEach()
+		ForEachNode *ForEach( ExpressionNode *expression )
 		{
 		}
 
