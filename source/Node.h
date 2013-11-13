@@ -48,7 +48,7 @@ namespace lyrics
 
 		virtual Node::Type GetType() const = 0;
 
-		virtual const Location &GetLocation()
+		virtual const Location &GetLocation() const
 		{
 			return location;
 		}
