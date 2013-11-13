@@ -1147,6 +1147,8 @@ namespace lyrics
 		ReturnNode *Return()
 		{
 			mCurrentToken++;
+
+			return new ReturnNode();
 		}
 
 		static void Warning( const WarningCode warningCode, const Location location )
