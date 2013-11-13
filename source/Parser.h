@@ -1133,6 +1133,8 @@ namespace lyrics
 		RedoNode *Redo()
 		{
 			mCurrentToken++;
+
+			return RedoNode();
 		}
 
 		BreakNode *Break()
