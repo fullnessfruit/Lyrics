@@ -874,8 +874,8 @@ namespace lyrics
 			delete block;
 		}
 
-		PostfixExpressionNode *expression1;
-		PostfixExpressionNode *expression2;
+		ExpressionNode *expression1;
+		ExpressionNode *expression2;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const

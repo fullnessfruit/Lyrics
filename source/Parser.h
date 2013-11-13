@@ -1095,6 +1095,39 @@ namespace lyrics
 
 		ForEachNode *ForEach( ExpressionNode *expression )
 		{
+			ForEachNode *node = new ForEachNode();
+
+			node->expression1 = expression;
+
+			node->expression2 = Expression();
+			if ( node->expression2->GetType() != Node::Type::IDENTIFIER && node->expression2->GetType() != Node::Type::POSTFIX_EXPRESSION )
+			{
+				// TODO: Expected lhs.
+				delete node;
+
+				return nullptr;
+			}
+
+			if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+			{
+				mCurrentToken++;
+			}
+
+			node->block = Block();
+
+			if ( mCurrentToken->type == Token::Type::END )
+			{
+				mCurrentToken++;
+
+				return node;
+			}
+			else
+			{
+				// TODO: Expected end.
+				delete node;
+
+				return nullptr;
+			}
 		}
 
 		RedoNode *Redo()
