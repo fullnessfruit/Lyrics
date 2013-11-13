@@ -910,6 +910,83 @@ namespace lyrics
 		CaseNode* Case()
 		{
 			mCurrentToken++;
+
+			CaseNode *node = new CaseNode();
+
+			tNode->expression = Expression();
+
+			if ( mCurrentToken->type == Token::Type::WNEN )
+			{
+				mCurrentToken++;
+
+				WhenNode *tNode = new WhenNode();
+				tNode->expression = Expression();
+				if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+				{
+					mCurrentToken++;
+				}
+				tNode->block = Block();
+				node->last = node->list.cend();
+				node->last = node->list.insert_after( node->last, tNode );
+
+				for (;;)
+				{
+					if ( mCurrentToken->type == Token::Type::WNEN )
+					{
+						mCurrentToken++;
+
+						tNode = new WhenNode();
+						tNode->expression = Expression();
+						if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+						{
+							mCurrentToken++;
+						}
+						tNode->block = Block();
+						node->last = node->list.insert_after( node->last, tNode );
+					}
+					else if ( mCurrentToken->type == Token::Type::ELSE )
+					{
+						mCurrentToken++;
+
+						node->block = Block();
+
+						if ( mCurrentToken->type == Token::Type::END )
+						{
+							mCurrentToken++;
+
+							return node;
+						}
+						else
+						{
+							// TODO: Expected end.
+							delete node;
+
+							return nullptr;
+						}
+					}
+					else if ( mCurrentToken->type == Token::Type::END )
+					{
+						mCurrentToken++;
+
+						return node;
+					}
+					else
+					{
+						// TODO: Expected when or else or end.
+						delete node;
+
+						return nullptr;
+					}
+				}
+			}
+			else
+			{
+				// TODO: Expected when.
+				delete node;
+				delete tNode;
+
+				return nullptr;
+			}
 		}
 
 		WhileNode* While()
