@@ -913,9 +913,9 @@ namespace lyrics
 
 			CaseNode *node = new CaseNode();
 
-			tNode->expression = Expression();
+			node->expression = Expression();
 
-			if ( mCurrentToken->type == Token::Type::WNEN )
+			if ( mCurrentToken->type == Token::Type::WHEN )
 			{
 				mCurrentToken++;
 
@@ -931,7 +931,7 @@ namespace lyrics
 
 				for (;;)
 				{
-					if ( mCurrentToken->type == Token::Type::WNEN )
+					if ( mCurrentToken->type == Token::Type::WHEN )
 					{
 						mCurrentToken++;
 
@@ -983,7 +983,6 @@ namespace lyrics
 			{
 				// TODO: Expected when.
 				delete node;
-				delete tNode;
 
 				return nullptr;
 			}
