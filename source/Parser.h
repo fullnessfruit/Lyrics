@@ -1134,14 +1134,14 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			return RedoNode();
+			return new RedoNode();
 		}
 
 		BreakNode *Break()
 		{
 			mCurrentToken++;
 
-			return BreakNode();
+			return new BreakNode();
 		}
 
 		ReturnNode *Return()
