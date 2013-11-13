@@ -18,12 +18,12 @@ namespace lyrics
 	class Parser
 	{
 	public:
-		void Parse( const forward_list<Token> &token )
+		BlockNode *Parse( const forward_list<Token> &token )
 		{
 			mCurrentToken = token.cbegin();
 			mLastToken = token.cend();
 
-			BlockNode *block = Block();
+			return Block();
 		}
 	
 	private:
