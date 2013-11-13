@@ -42,7 +42,7 @@ namespace lyrics
 		friend ostream &operator<<( ostream &out, const Location &location );
 
 	private:
-		const char * mFileName;
+		const char * const mFileName;
 		unsigned int mLine;
 		unsigned int mColumn;
 	};
