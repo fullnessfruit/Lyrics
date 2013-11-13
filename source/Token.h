@@ -13,26 +13,50 @@ namespace lyrics
 	{
 		enum struct Type
 		{
-			END_OF_FILE,
-
 			CHAR40 = 40, CHAR91 = 91, CHAR123 = 123,
 
 			BREAK = 256, CASE, CLASS, DO, END, ELSE, ELSEIF, FOR, IF, IMPORT, IN, OUT, PACKAGE, PROC, REDO, RETURN, THEN, WHEN, WHILE,
 			SHIFT_LEFT, SHIFT_RIGHT, LESS_THAN_OR_EQUAL, GREATER_THAN_OR_EQUAL, EQUAL, NOT_EQUAL, AND, OR,
 			IDENTIFIER,
 			NIL_LITERAL, BOOLEAN_LITERAL, INTEGER_LITERAL, REAL_LITERAL, STRING_LITERAL
-		} type;
+		};
 
-		union
+		union Value
 		{
 			bool boolean;
 			long long integer;
 			double real;
 			u16string *string;
 			u16string *identifier;
-		} value;
+		};
 
-		Location location;
+		Token( const Type type, const bool boolean, const Location &location ) : type( type ), location( location )
+		{
+			value.boolean = boolean;
+		}
+
+		Token( const Type type, const long long integer, const Location &location ) : type( type ), location( location )
+		{
+			value.integer = integer;
+		}
+
+		Token( const Type type, const double real, const Location &location ) : type( type ), location( location )
+		{
+			value.real = real;
+		}
+
+		Token( const Type type, u16string * const string, const Location &location ) : type( type ), location( location )
+		{
+			value.string = string;
+		}
+
+		Token( const Type type, const Location &location ) : type( type ), location( location )
+		{
+		}
+
+		const Type type;
+		Value value;
+		const Location location;
 	};
 };
 

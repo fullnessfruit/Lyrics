@@ -1,12 +1,13 @@
 #include <iostream>
 #include <forward_list>
 
+#include "Tokenizer.h"
 #include "Token.h"
 #include "Node.h"
 #include "Literal.h"
+#include "Location.h"
 #include "WarningCode.h"
 #include "ErrorCode.h"
-#include "Location.h"
 
 #ifndef PARSER
 #define PARSER
@@ -18,8 +19,13 @@ namespace lyrics
 	class Parser
 	{
 	public:
-		BlockNode *Parse( const forward_list<Token> &token )
+		BlockNode *Parse( const char * const fileName )
 		{
+			Tokenizer tokenizer( fileName );
+			forward_list<Token> token;
+
+			tokenizer.Tokenize( token );
+
 			mCurrentToken = token.cbegin();
 			mLastToken = token.cend();
 
@@ -32,7 +38,7 @@ namespace lyrics
 
 		BlockNode *Block()
 		{
-			BlockNode *node = new BlockNode();
+			BlockNode *node = new BlockNode( mCurrentToken->location );
 
 			node->last = node->list.cend();
 			if ( mCurrentToken->type != Token::Type::END && mCurrentToken->type != Token::Type::ELSE && mCurrentToken->type != Token::Type::ELSEIF && mCurrentToken->type != Token::Type::WHEN && mCurrentToken != mLastToken )
@@ -90,11 +96,11 @@ namespace lyrics
 			switch ( mCurrentToken->type )
 			{
 			case Token::Type::IDENTIFIER:
-				return new IdentifierNode( ( mCurrentToken++ )->value.identifier );
+				return new IdentifierNode( mCurrentToken->location, ( mCurrentToken++ )->value.identifier );
 
 			case Token::Type::INTEGER_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode();
+					LiteralNode *node = new LiteralNode( mCurrentToken->location );
 
 					node->literal.type = Literal::Type::INTEGER;
 					node->literal.value.integer = mCurrentToken->value.integer;
@@ -106,7 +112,7 @@ namespace lyrics
 
 			case Token::Type::STRING_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode();
+					LiteralNode *node = new LiteralNode( mCurrentToken->location );
 
 					node->literal.type = Literal::Type::STRING;
 					node->literal.value.string = mCurrentToken->value.string;
@@ -118,7 +124,7 @@ namespace lyrics
 
 			case Token::Type::BOOLEAN_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode();
+					LiteralNode *node = new LiteralNode( mCurrentToken->location );
 
 					node->literal.type = Literal::Type::BOOLEAN;
 					node->literal.value.boolean = mCurrentToken->value.boolean;
@@ -130,7 +136,7 @@ namespace lyrics
 
 			case Token::Type::NIL_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode();
+					LiteralNode *node = new LiteralNode( mCurrentToken->location );
 
 					node->literal.type = Literal::Type::NIL;
 
@@ -141,7 +147,7 @@ namespace lyrics
 
 			case Token::Type::REAL_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode();
+					LiteralNode *node = new LiteralNode( mCurrentToken->location );
 
 					node->literal.type = Literal::Type::REAL;
 					node->literal.value.real = mCurrentToken->value.real;
@@ -155,7 +161,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( Expression() );
+					ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mCurrentToken->location, Expression() );
 
 					if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
 					{
@@ -176,7 +182,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					ArrayNode *node = new ArrayNode();
+					ArrayNode *node = new ArrayNode( mCurrentToken->location );
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 					{
@@ -212,7 +218,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					HashNode *node = new HashNode();
+					HashNode *node = new HashNode( mCurrentToken->location );
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 					{
@@ -231,7 +237,7 @@ namespace lyrics
 							mCurrentToken++;
 							ExpressionNode *right = Expression();
 
-							PairNode *pair = new PairNode( left, right );
+							PairNode *pair = new PairNode( mCurrentToken->location, left, right );
 
 							node->last = node->list.insert_after( node->last, pair );
 
@@ -272,10 +278,10 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				PostfixExpressionNode *node = new PostfixExpressionNode();
+				PostfixExpressionNode *node = new PostfixExpressionNode( mCurrentToken->location );
 
 				node->expression = temp;
-				node->postfix = new IndexNode( Expression() );
+				node->postfix = new IndexNode( mCurrentToken->location, Expression() );
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
 				{
@@ -296,10 +302,10 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				PostfixExpressionNode *node = new PostfixExpressionNode();
+				PostfixExpressionNode *node = new PostfixExpressionNode( mCurrentToken->location );
 
 				node->expression = temp;
-				node->postfix = new CallNode();
+				node->postfix = new CallNode( mCurrentToken->location );
 
 				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
 				{
@@ -337,10 +343,10 @@ namespace lyrics
 
 				if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 				{
-					PostfixExpressionNode *node = new PostfixExpressionNode();
+					PostfixExpressionNode *node = new PostfixExpressionNode( mCurrentToken->location );
 
 					node->expression = temp;
-					node->postfix = new MemberNode( new IdentifierNode( mCurrentToken->value.identifier ) );
+					node->postfix = new MemberNode( mCurrentToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
 					mCurrentToken++;
 
 					return node;
@@ -369,7 +375,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				UnaryExpressionNode *node = new UnaryExpressionNode();
+				UnaryExpressionNode *node = new UnaryExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->expression = UnaryExpression();
@@ -390,7 +396,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode();
+				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->left = temp;
@@ -412,7 +418,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				AdditiveExpressionNode *node = new AdditiveExpressionNode();
+				AdditiveExpressionNode *node = new AdditiveExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->left = temp;
@@ -434,7 +440,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				ShiftExpressionNode *node = new ShiftExpressionNode();
+				ShiftExpressionNode *node = new ShiftExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->left = temp;
@@ -456,7 +462,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				AndExpressionNode *node = new AndExpressionNode();
+				AndExpressionNode *node = new AndExpressionNode( mCurrentToken->location );
 
 				node->left = temp;
 				node->right = AndExpression();
@@ -477,7 +483,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				OrExpressionNode *node = new OrExpressionNode();
+				OrExpressionNode *node = new OrExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->left = temp;
@@ -499,7 +505,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				RelationalExpressionNode *node = new RelationalExpressionNode();
+				RelationalExpressionNode *node = new RelationalExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->left = temp;
@@ -521,7 +527,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				EqualityExpressionNode *node = new EqualityExpressionNode();
+				EqualityExpressionNode *node = new EqualityExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
 				node->left = temp;
@@ -543,7 +549,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				LogicalAndExpressionNode *node = new LogicalAndExpressionNode();
+				LogicalAndExpressionNode *node = new LogicalAndExpressionNode( mCurrentToken->location );
 
 				node->left = temp;
 				node->right = LogicalAndExpression();
@@ -564,7 +570,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				LogicalOrExpressionNode *node = new LogicalOrExpressionNode();
+				LogicalOrExpressionNode *node = new LogicalOrExpressionNode( mCurrentToken->location );
 
 				node->left = temp;
 				node->right = LogicalOrExpression();
@@ -587,7 +593,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					AssignmentExpressionNode *node = new AssignmentExpressionNode();
+					AssignmentExpressionNode *node = new AssignmentExpressionNode( mCurrentToken->location );
 
 					node->lhs = temp;
 					node->rhs = AssignmentExpression();
@@ -615,9 +621,9 @@ namespace lyrics
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				ProcedureNode *node = new ProcedureNode();
+				ProcedureNode *node = new ProcedureNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
 				if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
@@ -636,19 +642,19 @@ namespace lyrics
 
 								return nullptr;
 							}
-							IdentifierNode *identifier = new IdentifierNode( mCurrentToken->value.identifier );
+							IdentifierNode *identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 							mCurrentToken++;
 
 							ParameterNode *parameter;
 							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
 							{
-								parameter = new ParameterNode( identifier );
+								parameter = new ParameterNode( mCurrentToken->location, identifier );
 							}
 							else
 							{
 								mCurrentToken++;
 
-								parameter = new ParameterNode( identifier, Expression() );
+								parameter = new ParameterNode( mCurrentToken->location, identifier, Expression() );
 							}
 
 							node->lastParameter = node->parameter.insert_after( node->lastParameter, parameter );
@@ -687,7 +693,7 @@ namespace lyrics
 
 									return nullptr;
 								}
-								node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( new IdentifierNode( mCurrentToken->value.identifier ) ) );
+								node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( mCurrentToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) ) );
 								mCurrentToken++;
 
 								if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
@@ -736,9 +742,9 @@ namespace lyrics
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				ClassNode *node = new ClassNode();
+				ClassNode *node = new ClassNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u':' ) )
@@ -747,7 +753,7 @@ namespace lyrics
 
 					if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 					{
-						node->base = new IdentifierNode( mCurrentToken->value.identifier );
+						node->base = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 						mCurrentToken++;
 					}
 					else
@@ -776,9 +782,9 @@ namespace lyrics
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				PackageNode *node = new PackageNode();
+				PackageNode *node = new PackageNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->value.identifier );
+				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
 				node->block = Block();
@@ -798,7 +804,7 @@ namespace lyrics
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				ImportNode *node = new ImportNode( new IdentifierNode( mCurrentToken->value.identifier ) );
+				ImportNode *node = new ImportNode( mCurrentToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
 				mCurrentToken++;
 
 				return node;
@@ -814,8 +820,8 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			IfNode *node = new IfNode();
-			ElseIfNode *tNode = new ElseIfNode();
+			IfNode *node = new IfNode( mCurrentToken->location );
+			ElseIfNode *tNode = new ElseIfNode( mCurrentToken->location );
 
 			tNode->expression = Expression();
 			if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
@@ -858,7 +864,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					tNode = new ElseIfNode();
+					tNode = new ElseIfNode( mCurrentToken->location );
 					tNode->expression = Expression();
 					tNode->block = Block();
 					node->last = node->list.insert_after( node->last, tNode );
@@ -911,7 +917,7 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			CaseNode *node = new CaseNode();
+			CaseNode *node = new CaseNode( mCurrentToken->location );
 
 			node->expression = Expression();
 
@@ -919,7 +925,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				WhenNode *tNode = new WhenNode();
+				WhenNode *tNode = new WhenNode( mCurrentToken->location );
 				tNode->expression = Expression();
 				if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 				{
@@ -935,7 +941,7 @@ namespace lyrics
 					{
 						mCurrentToken++;
 
-						tNode = new WhenNode();
+						tNode = new WhenNode( mCurrentToken->location );
 						tNode->expression = Expression();
 						if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 						{
@@ -992,7 +998,7 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			WhileNode *node = new WhileNode();
+			WhileNode *node = new WhileNode( mCurrentToken->location );
 
 			node->expression = Expression();
 
@@ -1028,7 +1034,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				ForNode *node = new ForNode();
+				ForNode *node = new ForNode( mCurrentToken->location );
 
 				node->expression1 = tExpression;
 				node->expression2 = Expression();
@@ -1095,7 +1101,7 @@ namespace lyrics
 
 		ForEachNode *ForEach( ExpressionNode *expression )
 		{
-			ForEachNode *node = new ForEachNode();
+			ForEachNode *node = new ForEachNode( mCurrentToken->location );
 
 			node->expression1 = expression;
 
@@ -1134,21 +1140,21 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			return new RedoNode();
+			return new RedoNode( mCurrentToken->location );
 		}
 
 		BreakNode *Break()
 		{
 			mCurrentToken++;
 
-			return new BreakNode();
+			return new BreakNode( mCurrentToken->location );
 		}
 
 		ReturnNode *Return()
 		{
 			mCurrentToken++;
 
-			return new ReturnNode();
+			return new ReturnNode( mCurrentToken->location );
 		}
 
 		static void Warning( const WarningCode warningCode, const Location location )

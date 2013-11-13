@@ -6,28 +6,28 @@
 
 namespace lyrics
 {
-	const u16string Scanner::BREAK = u"break";
-	const u16string Scanner::CASE = u"case";
-	const u16string Scanner::CLASS = u"class";
-	const u16string Scanner::DO = u"do";
-	const u16string Scanner::END = u"end";
-	const u16string Scanner::ELSE = u"else";
-	const u16string Scanner::ELSEIF = u"elseif";
-	const u16string Scanner::FALSE = u"false";
-	const u16string Scanner::FOR = u"for";
-	const u16string Scanner::IF = u"if";
-	const u16string Scanner::IMPORT = u"import";
-	const u16string Scanner::IN = u"in";
-	const u16string Scanner::NIL = u"nil";
-	const u16string Scanner::OUT = u"out";
-	const u16string Scanner::PACKAGE = u"package";
-	const u16string Scanner::PROC = u"proc";
-	const u16string Scanner::REDO = u"redo";
-	const u16string Scanner::RETURN = u"return";
-	const u16string Scanner::THEN = u"then";
-	const u16string Scanner::TRUE = u"true";
-	const u16string Scanner::WHEN = u"when";
-	const u16string Scanner::WHILE = u"while";
+	const u16string Tokenizer::BREAK = u"break";
+	const u16string Tokenizer::CASE = u"case";
+	const u16string Tokenizer::CLASS = u"class";
+	const u16string Tokenizer::DO = u"do";
+	const u16string Tokenizer::END = u"end";
+	const u16string Tokenizer::ELSE = u"else";
+	const u16string Tokenizer::ELSEIF = u"elseif";
+	const u16string Tokenizer::FALSE = u"false";
+	const u16string Tokenizer::FOR = u"for";
+	const u16string Tokenizer::IF = u"if";
+	const u16string Tokenizer::IMPORT = u"import";
+	const u16string Tokenizer::IN = u"in";
+	const u16string Tokenizer::NIL = u"nil";
+	const u16string Tokenizer::OUT = u"out";
+	const u16string Tokenizer::PACKAGE = u"package";
+	const u16string Tokenizer::PROC = u"proc";
+	const u16string Tokenizer::REDO = u"redo";
+	const u16string Tokenizer::RETURN = u"return";
+	const u16string Tokenizer::THEN = u"then";
+	const u16string Tokenizer::TRUE = u"true";
+	const u16string Tokenizer::WHEN = u"when";
+	const u16string Tokenizer::WHILE = u"while";
 };
 
 namespace

@@ -36,15 +36,19 @@ namespace lyrics
 					REDO, BREAK, RETURN
 		};
 
+		explicit Node( const Location &location ) : location( location )
+		{
+		}
+
 		virtual ~Node()
 		{
 		}
 
-		Location location;
+		const Location location;
 
 		virtual Node::Type GetType() const = 0;
 
-		virtual Location GetLocation()
+		virtual const Location &GetLocation()
 		{
 			return location;
 		}
@@ -98,6 +102,10 @@ namespace lyrics
 
 	struct StatementNode : public Node
 	{
+		explicit StatementNode( const Location &location ) : Node( location )
+		{
+		}
+
 		virtual ~StatementNode()
 		{
 		}
@@ -105,6 +113,10 @@ namespace lyrics
 
 	struct BlockNode : public Node
 	{
+		explicit BlockNode( const Location &location ) : Node( location )
+		{
+		}
+
 		~BlockNode()
 		{
 			for ( auto i : list )
@@ -124,6 +136,10 @@ namespace lyrics
 
 	struct ExpressionNode : public StatementNode
 	{
+		explicit ExpressionNode( const Location &location ) : StatementNode( location )
+		{
+		}
+
 		virtual ~ExpressionNode()
 		{
 		}
@@ -131,6 +147,10 @@ namespace lyrics
 
 	struct PrimaryExpressionNode : public ExpressionNode
 	{
+		explicit PrimaryExpressionNode( const Location &location ) : ExpressionNode( location )
+		{
+		}
+
 		virtual ~PrimaryExpressionNode()
 		{
 		}
@@ -138,7 +158,7 @@ namespace lyrics
 
 	struct IdentifierNode : public PrimaryExpressionNode
 	{
-		explicit IdentifierNode( u16string *str ) : str( str )
+		IdentifierNode( const Location &location, const u16string * const str ) : PrimaryExpressionNode( location ), str( str )
 		{
 		}
 
@@ -147,7 +167,7 @@ namespace lyrics
 			delete str;
 		}
 
-		u16string *str;
+		const u16string * const str;
 
 		virtual Node::Type GetType() const
 		{
@@ -157,6 +177,10 @@ namespace lyrics
 
 	struct LiteralNode : public PrimaryExpressionNode
 	{
+		explicit LiteralNode( const Location &location ) : PrimaryExpressionNode( location )
+		{
+		}
+
 		Literal literal;
 
 		virtual Node::Type GetType() const
@@ -167,6 +191,10 @@ namespace lyrics
 
 	struct ArrayNode : public PrimaryExpressionNode
 	{
+		explicit ArrayNode( const Location &location ) : PrimaryExpressionNode( location )
+		{
+		}
+
 		~ArrayNode()
 		{
 			for ( auto i : list )
@@ -186,7 +214,7 @@ namespace lyrics
 
 	struct PairNode : public Node
 	{
-		PairNode( ExpressionNode *left, ExpressionNode *right ) : left( left ), right( right )
+		PairNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : Node( location ), left( left ), right( right )
 		{
 		}
 
@@ -196,8 +224,8 @@ namespace lyrics
 			delete right;
 		}
 
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -207,6 +235,10 @@ namespace lyrics
 
 	struct HashNode : public PrimaryExpressionNode
 	{
+		explicit HashNode( const Location &location ) : PrimaryExpressionNode( location )
+		{
+		}
+
 		~HashNode()
 		{
 			for ( auto i : list )
@@ -226,7 +258,7 @@ namespace lyrics
 
 	struct ParenthesizedExpressionNode : public PrimaryExpressionNode
 	{
-		explicit ParenthesizedExpressionNode( ExpressionNode *expression ) : expression( expression )
+		ParenthesizedExpressionNode( const Location &location, const ExpressionNode * const expression ) : PrimaryExpressionNode( location ), expression( expression )
 		{
 		}
 
@@ -235,7 +267,7 @@ namespace lyrics
 			delete expression;
 		}
 
-		ExpressionNode *expression;
+		const ExpressionNode * const expression;
 
 		virtual Node::Type GetType() const
 		{
@@ -245,6 +277,10 @@ namespace lyrics
 
 	struct PostfixNode : public Node
 	{
+		explicit PostfixNode( const Location &location ) : Node( location )
+		{
+		}
+
 		virtual ~PostfixNode()
 		{
 		}
@@ -252,7 +288,7 @@ namespace lyrics
 
 	struct IndexNode : public PostfixNode
 	{
-		explicit IndexNode( ExpressionNode *expression ) : expression( expression )
+		IndexNode( const Location &location, const ExpressionNode * const expression ) : PostfixNode( location ), expression( expression )
 		{
 		}
 
@@ -261,7 +297,7 @@ namespace lyrics
 			delete expression;
 		}
 
-		ExpressionNode *expression;
+		const ExpressionNode * const expression;
 
 		virtual Node::Type GetType() const
 		{
@@ -271,6 +307,10 @@ namespace lyrics
 
 	struct CallNode : public PostfixNode
 	{
+		explicit CallNode( const Location &location ) : PostfixNode( location )
+		{
+		}
+
 		~CallNode()
 		{
 			for ( auto i : list )
@@ -290,7 +330,7 @@ namespace lyrics
 
 	struct MemberNode : public PostfixNode
 	{
-		explicit MemberNode( IdentifierNode *identifier ) : identifier( identifier )
+		MemberNode( const Location &location, const IdentifierNode * const identifier ) : PostfixNode( location ), identifier( identifier )
 		{
 		}
 
@@ -299,7 +339,7 @@ namespace lyrics
 			delete identifier;
 		}
 
-		IdentifierNode *identifier;
+		const IdentifierNode * const identifier;
 
 		virtual Node::Type GetType() const
 		{
@@ -309,7 +349,7 @@ namespace lyrics
 
 	struct PostfixExpressionNode : public ExpressionNode
 	{
-		PostfixExpressionNode() : expression( nullptr ), postfix( nullptr )
+		explicit PostfixExpressionNode( const Location &location ) : ExpressionNode( location ), expression( nullptr ), postfix( nullptr )
 		{
 		}
 
@@ -330,7 +370,7 @@ namespace lyrics
 
 	struct UnaryExpressionNode : public ExpressionNode
 	{
-		explicit UnaryExpressionNode() : expression( nullptr )
+		explicit UnaryExpressionNode( const Location &location ) : ExpressionNode( location ), expression( nullptr )
 		{
 		}
 
@@ -350,7 +390,7 @@ namespace lyrics
 
 	struct MultiplicativeExpressionNode : public ExpressionNode
 	{
-		MultiplicativeExpressionNode() : left( nullptr ), right( nullptr )
+		explicit MultiplicativeExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -372,7 +412,7 @@ namespace lyrics
 
 	struct AdditiveExpressionNode : public ExpressionNode
 	{
-		AdditiveExpressionNode() : left( nullptr ), right( nullptr )
+		explicit AdditiveExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -394,7 +434,7 @@ namespace lyrics
 
 	struct ShiftExpressionNode : public ExpressionNode
 	{
-		ShiftExpressionNode() : left( nullptr ), right( nullptr )
+		explicit ShiftExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -416,7 +456,7 @@ namespace lyrics
 
 	struct AndExpressionNode : public ExpressionNode
 	{
-		AndExpressionNode() : left( nullptr ), right( nullptr )
+		explicit AndExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -437,7 +477,7 @@ namespace lyrics
 
 	struct OrExpressionNode : public ExpressionNode
 	{
-		OrExpressionNode() : left( nullptr ), right( nullptr )
+		explicit OrExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -459,7 +499,7 @@ namespace lyrics
 
 	struct RelationalExpressionNode : public ExpressionNode
 	{
-		RelationalExpressionNode() : left( nullptr ), right( nullptr )
+		explicit RelationalExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -481,7 +521,7 @@ namespace lyrics
 
 	struct EqualityExpressionNode : public ExpressionNode
 	{
-		EqualityExpressionNode() : left( nullptr ), right( nullptr )
+		explicit EqualityExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -503,7 +543,7 @@ namespace lyrics
 
 	struct LogicalAndExpressionNode : public ExpressionNode
 	{
-		LogicalAndExpressionNode() : left( nullptr ), right( nullptr )
+		explicit LogicalAndExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -524,7 +564,7 @@ namespace lyrics
 
 	struct LogicalOrExpressionNode : public ExpressionNode
 	{
-		LogicalOrExpressionNode() : left( nullptr ), right( nullptr )
+		explicit LogicalOrExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
 		}
 
@@ -545,7 +585,7 @@ namespace lyrics
 
 	struct AssignmentExpressionNode : public ExpressionNode
 	{
-		AssignmentExpressionNode() : lhs( nullptr ), rhs( nullptr )
+		explicit AssignmentExpressionNode( const Location &location ) : ExpressionNode( location ), lhs( nullptr ), rhs( nullptr )
 		{
 		}
 
@@ -566,11 +606,11 @@ namespace lyrics
 
 	struct ParameterNode : public Node
 	{
-		ParameterNode( IdentifierNode *identifier ) : identifier( identifier ), expression( nullptr )
+		ParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier ), expression( nullptr )
 		{
 		}
 
-		ParameterNode( IdentifierNode *identifier, ExpressionNode *expression ) : identifier( identifier ), expression( expression )
+		ParameterNode( const Location &location, IdentifierNode * const identifier, ExpressionNode * const expression ) : Node( location ), identifier( identifier ), expression( expression )
 		{
 		}
 
@@ -580,8 +620,8 @@ namespace lyrics
 			delete expression;
 		}
 
-		IdentifierNode *identifier;
-		ExpressionNode *expression;
+		const IdentifierNode * const identifier;
+		const ExpressionNode * const expression;
 
 		virtual Node::Type GetType() const
 		{
@@ -591,7 +631,7 @@ namespace lyrics
 
 	struct OutParameterNode : public Node
 	{
-		explicit OutParameterNode( IdentifierNode *identifier ) : identifier( identifier )
+		OutParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier )
 		{
 		}
 
@@ -600,7 +640,7 @@ namespace lyrics
 			delete identifier;
 		}
 
-		IdentifierNode *identifier;
+		const IdentifierNode * const identifier;
 
 		virtual Node::Type GetType() const
 		{
@@ -610,7 +650,7 @@ namespace lyrics
 
 	struct ProcedureNode : public StatementNode
 	{
-		ProcedureNode() : identifier( nullptr ), block( nullptr )
+		explicit ProcedureNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), block( nullptr )
 		{
 		}
 
@@ -646,7 +686,7 @@ namespace lyrics
 
 	struct ClassNode : public StatementNode
 	{
-		ClassNode() : identifier( nullptr ), base( nullptr ), block( nullptr )
+		explicit ClassNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), base( nullptr ), block( nullptr )
 		{
 		}
 
@@ -669,7 +709,7 @@ namespace lyrics
 
 	struct PackageNode : public StatementNode
 	{
-		PackageNode() : identifier( nullptr ), block( nullptr )
+		explicit PackageNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), block( nullptr )
 		{
 		}
 
@@ -689,7 +729,7 @@ namespace lyrics
 
 	struct ImportNode : public StatementNode
 	{
-		explicit ImportNode( IdentifierNode *identifier ) : identifier( identifier )
+		ImportNode( const Location &location, const IdentifierNode * const identifier ) : StatementNode( location ), identifier( identifier )
 		{
 		}
 
@@ -698,7 +738,7 @@ namespace lyrics
 			delete identifier;
 		}
 
-		IdentifierNode *identifier;
+		const IdentifierNode * const identifier;
 
 		virtual Node::Type GetType() const
 		{
@@ -708,6 +748,10 @@ namespace lyrics
 
 	struct SelectionNode : public StatementNode
 	{
+		explicit SelectionNode( const Location &location ) : StatementNode( location )
+		{
+		}
+
 		virtual ~SelectionNode()
 		{
 		}
@@ -715,7 +759,7 @@ namespace lyrics
 
 	struct ElseIfNode : public Node
 	{
-		ElseIfNode() : expression( nullptr ), block( nullptr )
+		explicit ElseIfNode( const Location &location ) : Node( location ), expression( nullptr ), block( nullptr )
 		{
 		}
 
@@ -736,7 +780,7 @@ namespace lyrics
 
 	struct IfNode : public SelectionNode
 	{
-		IfNode() : block( nullptr )
+		explicit IfNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
 		}
 
@@ -762,7 +806,7 @@ namespace lyrics
 
 	struct WhenNode : public Node
 	{
-		WhenNode() : expression( nullptr ), block( nullptr )
+		explicit WhenNode( const Location &location ) : Node( location ), expression( nullptr ), block( nullptr )
 		{
 		}
 
@@ -783,7 +827,7 @@ namespace lyrics
 
 	struct CaseNode : public SelectionNode
 	{
-		CaseNode() : block( nullptr )
+		explicit CaseNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
 		}
 
@@ -810,6 +854,10 @@ namespace lyrics
 
 	struct IterationNode : public StatementNode
 	{
+		explicit IterationNode( const Location &location ) : StatementNode( location )
+		{
+		}
+
 		virtual ~IterationNode()
 		{
 		}
@@ -817,7 +865,7 @@ namespace lyrics
 
 	struct WhileNode : public IterationNode
 	{
-		WhileNode() : expression( nullptr ), block( nullptr )
+		explicit WhileNode( const Location &location ) : IterationNode( location ), expression( nullptr ), block( nullptr )
 		{
 		}
 
@@ -838,7 +886,7 @@ namespace lyrics
 
 	struct ForNode : public IterationNode
 	{
-		ForNode() : expression1( nullptr ), expression2( nullptr ), expression3( nullptr ), block( nullptr )
+		explicit ForNode( const Location &location ) : IterationNode( location ), expression1( nullptr ), expression2( nullptr ), expression3( nullptr ), block( nullptr )
 		{
 		}
 
@@ -863,7 +911,7 @@ namespace lyrics
 
 	struct ForEachNode : public IterationNode
 	{
-		ForEachNode() : expression1( nullptr ), expression2( nullptr ), block( nullptr )
+		explicit ForEachNode( const Location &location ) : IterationNode( location ), expression1( nullptr ), expression2( nullptr ), block( nullptr )
 		{
 		}
 
@@ -886,6 +934,10 @@ namespace lyrics
 
 	struct JumpNode : public StatementNode
 	{
+		explicit JumpNode( const Location &location ) : StatementNode( location )
+		{
+		}
+
 		virtual ~JumpNode()
 		{
 		}
@@ -893,6 +945,10 @@ namespace lyrics
 
 	struct RedoNode : public JumpNode
 	{
+		explicit RedoNode( const Location &location ) : JumpNode( location )
+		{
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::REDO;
@@ -901,6 +957,10 @@ namespace lyrics
 
 	struct BreakNode : public JumpNode
 	{
+		explicit BreakNode( const Location &location ) : JumpNode( location )
+		{
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::BREAK;
@@ -909,7 +969,7 @@ namespace lyrics
 
 	struct ReturnNode : public JumpNode
 	{
-		ReturnNode() : expression( nullptr )
+		ReturnNode( const Location &location ) : JumpNode( location ), expression( nullptr )
 		{
 		}
 

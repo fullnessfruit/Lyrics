@@ -1,52 +1,20 @@
 #include <iostream>
-#include <forward_list>
 
-#include "TextLoader.h"
-#include "Scanner.h"
 #include "Parser.h"
-#include "ByteCode.h"
 #include "ErrorCode.h"
-#include "Location.h"
 
 #ifndef COMPILER
 #define COMPILER
 
 namespace lyrics
 {
-	using std::forward_list;
-
 	class Compiler
 	{
 	public:
 		bool Compile( const char * const fileName )
 		{
-			char16_t *text;
-			unsigned int length;
-
-			if ( !TextLoader::LoadText( fileName, text, length ) )
-			{
-				// TODO:
-				return false;
-			}
-
-			Scanner scanner;
-			unsigned int offset = 0;
-			Location location( fileName );
-			Token tToken;
-			forward_list<Token> token;
-			forward_list<Token>::const_iterator lastToken = token.cend();
-
-			scanner.Scan( text, length, offset, location, tToken );
-			while ( tToken.type != Token::Type::END_OF_FILE )
-			{
-				lastToken = token.insert_after( lastToken, tToken );
-				scanner.Scan( text, length, offset, location, tToken );
-			}
-			delete [] text;
-
 			Parser parser;
-			parser.Parse( token );
-			token.clear();
+			parser.Parse( fileName );
 
 			return true;
 		}

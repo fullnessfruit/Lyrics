@@ -15,7 +15,7 @@ namespace lyrics
 	{
 		enum struct Type : unsigned int { NIL, BOOLEAN, INTEGER, REAL, STRING, PROC, ARRAY, HASH, IMAGE, TEXT, SOUND, VIDEO, OBJECT } type;
 
-		union
+		union Value
 		{
 			bool boolean;
 			long long integer;
