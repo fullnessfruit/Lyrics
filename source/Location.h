@@ -18,7 +18,7 @@ namespace lyrics
 		{
 		}
 
-		const char *GetFileName()
+		const char *GetFileName() const
 		{
 			return mFileName;
 		}
