@@ -852,7 +852,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: Expected end or else or elseif
+					// TODO: Expected end.
 					delete node;
 
 					return nullptr;
