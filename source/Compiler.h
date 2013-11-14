@@ -24,13 +24,14 @@ namespace lyrics
 		{
 			using std::cout;
 			using std::cerr;
+			using std::endl;
 
 			constexpr char ERROR[] = "Error";
 
 			switch ( errorCode )
 			{
 			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
+				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
 				break;
 			}
 		}

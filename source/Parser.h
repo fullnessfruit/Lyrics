@@ -1159,17 +1159,18 @@ namespace lyrics
 		{
 			using std::cout;
 			using std::cerr;
+			using std::endl;
 
 			constexpr char WARNING[] = "Warning";
 
 			switch ( warningCode )
 			{
 			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
-				cout << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence.";
+				cout << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence." << endl;
 				break;
 
 			default:
-				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode );
+				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << endl;
 				break;
 			}
 		}
@@ -1178,17 +1179,18 @@ namespace lyrics
 		{
 			using std::cout;
 			using std::cerr;
+			using std::endl;
 
 			constexpr char ERROR[] = "Error";
 
 			switch ( errorCode )
 			{
 			case ErrorCode::WRONG_CHARACTER:
-				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character.";
+				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character." << endl;
 				break;
 
 			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
+				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
 				break;
 			}
 		}

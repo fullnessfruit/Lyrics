@@ -63,17 +63,18 @@ namespace
 	{
 		using std::cout;
 		using std::cerr;
+		using std::endl;
 
 		constexpr char ERROR[] = "Error";
 
 		switch ( errorCode )
 		{
 		case lyrics::ErrorCode::NO_INPUT_FILE:
-			cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input file.";
+			cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input file." << endl;
 			break;
 
 		default:
-			cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode );
+			cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
 			break;
 		}
 	}
