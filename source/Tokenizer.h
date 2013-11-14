@@ -133,7 +133,7 @@ namespace lyrics
 				}
 				else
 				{
-					if ( 2 > length || 7 < length )	// If the token is shorter than 2 or longer than 7, then the token is itentifier.
+					if ( 2 > length || 7 < length )	// If the token is shorter than 2 or longer than 7, then the token is identifier.
 					{
 						mLastToken = token.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 					}
