@@ -21,10 +21,8 @@ namespace lyrics
 	public:
 		BlockNode *Parse( const char * const fileName )
 		{
-			Tokenizer tokenizer( fileName );
 			forward_list<Token> token;
-
-			tokenizer.Tokenize( token );
+			Tokenizer().Tokenize( fileName, token );
 
 			mCurrentToken = token.cbegin();
 			mLastToken = token.cend();

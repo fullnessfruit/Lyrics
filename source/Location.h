@@ -18,11 +18,6 @@ namespace lyrics
 		{
 		}
 
-		const char *GetFileName() const
-		{
-			return mFileName;
-		}
-
 		void IncreaseLine()
 		{
 			mLine++;
