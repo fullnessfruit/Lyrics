@@ -38,7 +38,7 @@ namespace lyrics
 		{
 			BlockNode *node = new BlockNode( mCurrentToken->location );
 
-			node->last = node->list.cend();
+			node->last = node->list.cbefore_begin();
 			if ( mCurrentToken->type != Token::Type::END && mCurrentToken->type != Token::Type::ELSE && mCurrentToken->type != Token::Type::ELSEIF && mCurrentToken->type != Token::Type::WHEN && mCurrentToken != mLastToken )
 			{
 				node->last = node->list.insert_after( node->last, Statement() );
@@ -184,7 +184,7 @@ namespace lyrics
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 					{
-						node->last = node->list.cend();
+						node->last = node->list.cbefore_begin();
 						for (;;)
 						{
 							node->last = node->list.insert_after( node->last, Expression() );
@@ -220,7 +220,7 @@ namespace lyrics
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 					{
-						node->last = node->list.cend();
+						node->last = node->list.cbefore_begin();
 						for (;;)
 						{
 							ExpressionNode *left = Expression();
@@ -307,7 +307,7 @@ namespace lyrics
 
 				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
 				{
-					static_cast<CallNode *>( node->postfix )->last = static_cast<CallNode *>( node->postfix )->list.cend();
+					static_cast<CallNode *>( node->postfix )->last = static_cast<CallNode *>( node->postfix )->list.cbefore_begin();
 					for (;;)
 					{
 						static_cast<CallNode *>( node->postfix )->last = static_cast<CallNode *>( node->postfix )->list.insert_after( static_cast<CallNode *>( node->postfix )->last, Expression() );
@@ -630,7 +630,7 @@ namespace lyrics
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
 					{
-						node->lastParameter = node->parameter.cend();
+						node->lastParameter = node->parameter.cbefore_begin();
 						for (;;)
 						{
 							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
@@ -681,7 +681,7 @@ namespace lyrics
 
 						if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
 						{
-							node->lastOutParameter = node->outParameter.cend();
+							node->lastOutParameter = node->outParameter.cbefore_begin();
 							for (;;)
 							{
 								if ( mCurrentToken->type != Token::Type::IDENTIFIER )
@@ -827,7 +827,7 @@ namespace lyrics
 				mCurrentToken++;
 			}
 			tNode->block = Block();
-			node->last = node->list.cend();
+			node->last = node->list.cbefore_begin();
 			node->last = node->list.insert_after( node->last, tNode );
 
 			if ( mCurrentToken->type == Token::Type::END )
@@ -930,7 +930,7 @@ namespace lyrics
 					mCurrentToken++;
 				}
 				tNode->block = Block();
-				node->last = node->list.cend();
+				node->last = node->list.cbefore_begin();
 				node->last = node->list.insert_after( node->last, tNode );
 
 				for (;;)

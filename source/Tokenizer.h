@@ -31,7 +31,7 @@ namespace lyrics
 
 			mOffset = 0;
 
-			mLastToken = token.cend();
+			mLastToken = token.cbefore_begin();
 
 			while ( Scan( token, currentLocation ) );
 
