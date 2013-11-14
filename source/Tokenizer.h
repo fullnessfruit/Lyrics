@@ -745,6 +745,7 @@ namespace lyrics
 					}
 				}
 				while ( tChar != '\"' );
+				mOffset++;
 				length++;
 
 				mLastToken = token.emplace_after( mLastToken, Token::Type::STRING_LITERAL, tStr, currentLocation );
