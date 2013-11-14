@@ -108,7 +108,7 @@ namespace lyrics
 			{
 				u16string *tStr = new u16string();
 				unsigned int length;
-				bool isIdentifier = false;
+				bool isIdentifier = tChar == u'_' ? true : false;
 
 				do
 				{
