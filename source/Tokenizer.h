@@ -357,6 +357,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( tChar == u'(' || tChar == u')' || tChar == u'+' || tChar == u'-' || tChar == u'*' || tChar == u'/' || tChar == u'[' || tChar == u']' )
@@ -393,6 +395,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( tChar == u'>' )
@@ -423,6 +427,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( tChar == u'=' )
@@ -445,6 +451,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( tChar == u'!' )
@@ -467,6 +475,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( tChar == u'&' )
@@ -489,6 +499,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( tChar == u'|' )
@@ -511,6 +523,8 @@ namespace lyrics
 				{
 					mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
 					currentLocation.IncreaseColumn();
+
+					return false;
 				}
 			}
 			else if ( u'0' <= tChar && tChar <= u'9' )
@@ -593,7 +607,8 @@ namespace lyrics
 				else
 				{
 					Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
-					return true;
+
+					return false;
 				}
 
 				tStr = new u16string();
@@ -610,7 +625,8 @@ namespace lyrics
 						else
 						{
 							Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
-							return true;
+
+							return false;
 						}
 
 						switch ( tChar )
@@ -683,7 +699,8 @@ namespace lyrics
 							else
 							{
 								Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
-								return true;
+
+								return false;
 							}
 
 							if ( tChar == '\n' )
@@ -707,6 +724,7 @@ namespace lyrics
 					else if ( tChar == '\r' || tChar == '\n' )
 					{
 						Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+
 						return true;
 					}
 					else
@@ -722,7 +740,8 @@ namespace lyrics
 					else
 					{
 						Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
-						return true;
+
+						return false;
 					}
 				}
 				while ( tChar != '\"' );
