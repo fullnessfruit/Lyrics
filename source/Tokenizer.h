@@ -93,8 +93,6 @@ namespace lyrics
 		Token::Type mType;
 		Token::Value mValue;
 		Location mCurrentLocation;
-		unsigned int mLine;
-		unsigned int mColumn;
 
 		forward_list<Token>::const_iterator mLastToken;
 
