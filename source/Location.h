@@ -14,10 +14,6 @@ namespace lyrics
 		{
 		}
 
-		Location( const Location &location ) : mFileName( location.mFileName ), mLine( location.mLine ), mColumn( location.mColumn )
-		{
-		}
-
 		void IncreaseLine()
 		{
 			mLine++;
