@@ -3,7 +3,7 @@
 
 namespace lyrics
 {
-	enum class WarningCode : unsigned int { UNKNOWN_ESCAPE_SEQUENCE = 3001 };
+	enum class WarningCode : unsigned int { UNKNOWN_ESCAPE_SEQUENCE = 1001 };
 };
 
 #endif
