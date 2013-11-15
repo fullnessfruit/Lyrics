@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 
 #include "Compiler.h"
@@ -32,6 +33,9 @@ namespace lyrics
 
 namespace
 {
+	using std::setw;
+	using std::setfill;
+
 	void Error( const lyrics::ErrorCode errorCode );
 };
 
@@ -65,16 +69,16 @@ namespace
 		using std::cerr;
 		using std::endl;
 
-		constexpr char ERROR[] = "error";
+		constexpr char FATAL_ERROR[] = "fatal error";
 
 		switch ( errorCode )
 		{
 		case lyrics::ErrorCode::NO_INPUT_FILE:
-			cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input files." << endl;
+			cout << FATAL_ERROR << ' ' << std::setw( 4 ) << std::setfill( '0' ) << static_cast<unsigned int>( errorCode ) << ": " << "No input files." << endl;
 			break;
 
 		default:
-			cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
+			cerr << FATAL_ERROR << ' ' << std::setw( 4 ) << std::setfill( '0' ) << static_cast<unsigned int>( errorCode ) << endl;
 			break;
 		}
 	}
