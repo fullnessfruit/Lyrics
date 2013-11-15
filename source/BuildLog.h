@@ -53,6 +53,98 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "String not terminated." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_RIGHT_PARENTHESIS:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected )." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_ARRAY_LITERAL:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete array literal." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_HASH_PAIR:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected hash pair." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_HASH_LITERAL:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete hash literal." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PRIMARY_EXPRESSION:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected primary expression." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_INDEX:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected index." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PROCEDURE_CALL:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected procedure call." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_MEMBER:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected member." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_LHS:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected lhs." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PARAMETER_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter name." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_PROCEDURE:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete procedure." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PARAMETER:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PROCEDURE_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected procedure name." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_BASE_CLASS:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected base class." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_CLASS_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected class name." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PACKAGE_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected package name." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PACKAGE:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected package." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_END:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected end." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_END_ELSE_ELSEIF:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected end or else or elseif." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected when or else or elseif." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_WHEN:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected when." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_FOR:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete for statement." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_FOR_FOR_EACH:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete for or for each statement." << endl;
+				break;
+
 			default:
 				cerr << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
 				break;

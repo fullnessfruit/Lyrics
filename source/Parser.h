@@ -170,7 +170,7 @@ namespace lyrics
 					}
 					else
 					{
-						// TODO: Expected ).
+						BuildLog::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mCurrentToken->location );
 						delete node;
 
 						return nullptr;
@@ -200,7 +200,7 @@ namespace lyrics
 							}
 							else
 							{
-								// TODO: error: Expected , or ].
+								BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mCurrentToken->location );
 								delete node;
 
 								return nullptr;
@@ -227,7 +227,7 @@ namespace lyrics
 							ExpressionNode *left = Expression();
 							if ( mCurrentToken->type != static_cast<Token::Type>( u':' ) )
 							{
-								// TODO: Expected :.
+								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
 								delete node;
 								delete left;
 
@@ -250,7 +250,7 @@ namespace lyrics
 							}
 							else
 							{
-								// TODO: error: Expected , or }.
+								BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mCurrentToken->location );
 								delete node;
 
 								return nullptr;
@@ -264,7 +264,7 @@ namespace lyrics
 				}
 			
 			default:
-				// TODO: wrong token in primary expression.
+				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mCurrentToken->location );
 				return nullptr;
 			}
 		}
@@ -290,7 +290,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: error: Expected ].
+					BuildLog::Error( ErrorCode::EXPECTED_INDEX, mCurrentToken->location );
 					delete temp;
 					delete node;
 
@@ -323,7 +323,7 @@ namespace lyrics
 						}
 						else
 						{
-							// TODO: error: Expected , or ).
+							BuildLog::Error( ErrorCode::EXPECTED_PROCEDURE_CALL, mCurrentToken->location );
 							delete temp;
 							delete node;
 
@@ -352,7 +352,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: error: Expected identifier.
+					BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mCurrentToken->location );
 					delete temp;
 
 					return nullptr;
@@ -580,29 +580,29 @@ namespace lyrics
 
 		ExpressionNode *AssignmentExpression()
 		{
-			ExpressionNode *temp = LogicalOrExpression();
+			ExpressionNode *lhs = LogicalOrExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
 			{
-				return temp;
+				return lhs;
 			}
 			else
 			{
-				if ( temp->GetType() == Node::Type::IDENTIFIER || temp->GetType() == Node::Type::POSTFIX_EXPRESSION )
+				if ( lhs->GetType() == Node::Type::IDENTIFIER || lhs->GetType() == Node::Type::POSTFIX_EXPRESSION )
 				{
 					mCurrentToken++;
 
 					AssignmentExpressionNode *node = new AssignmentExpressionNode( mCurrentToken->location );
 
-					node->lhs = temp;
+					node->lhs = lhs;
 					node->rhs = AssignmentExpression();
 
 					return node;
 				}
 				else
 				{
-					// TODO: error: temp must be postfix expression.
-					delete temp;
+					BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
+					delete lhs;
 
 					return nullptr;
 				}
@@ -636,7 +636,7 @@ namespace lyrics
 						{
 							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
 							{
-								// TODO: Expected identifier.
+								BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
 								delete node;
 
 								return nullptr;
@@ -668,7 +668,7 @@ namespace lyrics
 							}
 							else
 							{
-								// TODO: error: Expected , or ) or out.
+								BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
 								delete node;
 
 								return nullptr;
@@ -687,7 +687,7 @@ namespace lyrics
 							{
 								if ( mCurrentToken->type != Token::Type::IDENTIFIER )
 								{
-									// TODO: Expected identifier.
+									BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
 									delete node;
 
 									return nullptr;
@@ -705,7 +705,7 @@ namespace lyrics
 								}
 								else
 								{
-									// TODO: error: Expected , or ).
+									BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
 									delete node;
 
 									return nullptr;
@@ -722,7 +722,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: Expected (.
+					BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
 					delete node;
 
 					return nullptr;
@@ -730,7 +730,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected Identifier.
+				BuildLog::Error( ErrorCode::EXPECTED_PROCEDURE_NAME, mCurrentToken->location );
 				return nullptr;
 			}
 		}
@@ -757,7 +757,7 @@ namespace lyrics
 					}
 					else
 					{
-						// TODO: Expected Identifier.
+						BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mCurrentToken->location );
 						delete node;
 
 						return nullptr;
@@ -770,7 +770,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected Identifier.
+				BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mCurrentToken->location );
 				return nullptr;
 			}
 		}
@@ -792,7 +792,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected Identifier.
+				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mCurrentToken->location );
 				return nullptr;
 			}
 		}
@@ -810,7 +810,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected Identifier.
+				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mCurrentToken->location );
 				return nullptr;
 			}
 		}
@@ -851,7 +851,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: Expected end.
+					BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
 					delete node;
 
 					return nullptr;
@@ -888,7 +888,7 @@ namespace lyrics
 						}
 						else
 						{
-							// TODO: Expected end.
+							BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
 							delete node;
 
 							return nullptr;
@@ -896,7 +896,7 @@ namespace lyrics
 					}
 					else if ( mCurrentToken->type != Token::Type::ELSEIF )
 					{
-						// TODO: Expected end or else or elseif.
+						BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mCurrentToken->location );
 						delete node;
 
 						return nullptr;
@@ -905,7 +905,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected end or else or elseif.
+				BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mCurrentToken->location );
 				delete node;
 
 				return nullptr;
@@ -963,7 +963,7 @@ namespace lyrics
 						}
 						else
 						{
-							// TODO: Expected end.
+							BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
 							delete node;
 
 							return nullptr;
@@ -977,7 +977,7 @@ namespace lyrics
 					}
 					else
 					{
-						// TODO: Expected when or else or end.
+						BuildLog::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mCurrentToken->location );
 						delete node;
 
 						return nullptr;
@@ -986,7 +986,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected when.
+				BuildLog::Error( ErrorCode::EXPECTED_WHEN, mCurrentToken->location );
 				delete node;
 
 				return nullptr;
@@ -1016,7 +1016,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected end.
+				BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
 				delete node;
 
 				return nullptr;
@@ -1059,7 +1059,7 @@ namespace lyrics
 					}
 					else
 					{
-						// TODO: Expected end.
+						BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
 						delete node;
 
 						return nullptr;
@@ -1067,7 +1067,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: Expected , or in.
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOR, mCurrentToken->location );
 					delete node;
 
 					return nullptr;
@@ -1083,7 +1083,7 @@ namespace lyrics
 				}
 				else
 				{
-					// TODO: Expected lhs.
+					BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
 					delete tExpression;
 
 					return nullptr;
@@ -1091,7 +1091,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected , or in.
+				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_FOR_EACH, mCurrentToken->location );
 				delete tExpression;
 
 				return nullptr;
@@ -1107,7 +1107,7 @@ namespace lyrics
 			node->expression2 = Expression();
 			if ( node->expression2->GetType() != Node::Type::IDENTIFIER && node->expression2->GetType() != Node::Type::POSTFIX_EXPRESSION )
 			{
-				// TODO: Expected lhs.
+				BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
 				delete node;
 
 				return nullptr;
@@ -1128,7 +1128,7 @@ namespace lyrics
 			}
 			else
 			{
-				// TODO: Expected end.
+				BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
 				delete node;
 
 				return nullptr;
