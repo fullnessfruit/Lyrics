@@ -33,9 +33,6 @@ namespace lyrics
 
 namespace
 {
-	using std::setw;
-	using std::setfill;
-
 	void Error( const lyrics::ErrorCode errorCode );
 };
 
@@ -68,6 +65,8 @@ namespace
 		using std::cout;
 		using std::cerr;
 		using std::endl;
+		using std::setw;
+		using std::setfill;
 
 		constexpr char FATAL_ERROR[] = "fatal error";
 
@@ -78,7 +77,7 @@ namespace
 			break;
 
 		default:
-			cerr << FATAL_ERROR << ' ' << std::setw( 4 ) << std::setfill( '0' ) << static_cast<unsigned int>( errorCode ) << endl;
+			cerr << FATAL_ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
 			break;
 		}
 	}
