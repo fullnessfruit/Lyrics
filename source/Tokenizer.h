@@ -1,12 +1,14 @@
-#include <iostream>
 #include <string>
 #include <forward_list>
 
 #include "TextLoader.h"
 #include "Token.h"
 #include "Location.h"
+
 #include "WarningCode.h"
 #include "ErrorCode.h"
+#include "FatalErrorCode.h"
+#include "BuildLog.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER
@@ -606,7 +608,7 @@ namespace lyrics
 				}
 				else
 				{
-					Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+					BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 
 					return false;
 				}
@@ -624,7 +626,7 @@ namespace lyrics
 						}
 						else
 						{
-							Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+							BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 
 							return false;
 						}
@@ -698,7 +700,7 @@ namespace lyrics
 							}
 							else
 							{
-								Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+								BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 
 								return false;
 							}
@@ -710,20 +712,20 @@ namespace lyrics
 							}
 							else
 							{
-								Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
+								BuildLog::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
 								tStr->push_back( tChar );
 								length += 3;
 							}
 							break;
 						
 						default:
-							Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
+							BuildLog::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
 							break;
 						}
 					}
 					else if ( tChar == '\r' || tChar == '\n' )
 					{
-						Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 
 						return true;
 					}
@@ -739,7 +741,7 @@ namespace lyrics
 					}
 					else
 					{
-						Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 
 						return false;
 					}
@@ -787,54 +789,10 @@ namespace lyrics
 			}
 			else
 			{
-				Error( ErrorCode::WRONG_CHARACTER, currentLocation );
+				BuildLog::Error( ErrorCode::WRONG_CHARACTER, currentLocation );
 			}
 
 			return true;
-		}
-
-		static void Warning( const WarningCode warningCode, const Location location )
-		{
-			using std::cout;
-			using std::cerr;
-			using std::endl;
-
-			constexpr char WARNING[] = "warning";
-
-			switch ( warningCode )
-			{
-			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
-				cout << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence." << endl;
-				break;
-				
-			default:
-				cerr << WARNING << ' ' << static_cast<unsigned int>( warningCode ) << endl;
-				break;
-			}
-		}
-
-		static void Error( const ErrorCode errorCode, const Location location )
-		{
-			using std::cout;
-			using std::cerr;
-			using std::endl;
-
-			constexpr char ERROR[] = "error";
-
-			switch ( errorCode )
-			{
-			case ErrorCode::WRONG_CHARACTER:
-				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character." << endl;
-				break;
-
-			case ErrorCode::STRING_NOT_TERMINATED:
-				cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "String not terminated." << endl;
-				break;
-				
-			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
-				break;
-			}
 		}
 	};
 };

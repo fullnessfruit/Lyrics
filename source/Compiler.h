@@ -1,7 +1,4 @@
-#include <iostream>
-
 #include "Parser.h"
-#include "ErrorCode.h"
 
 #ifndef COMPILER
 #define COMPILER
@@ -17,23 +14,6 @@ namespace lyrics
 			parser.Parse( fileName );
 
 			return true;
-		}
-	
-	private:
-		static void Error( const ErrorCode errorCode )
-		{
-			using std::cout;
-			using std::cerr;
-			using std::endl;
-
-			constexpr char ERROR[] = "error";
-
-			switch ( errorCode )
-			{
-			default:
-				cerr << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
-				break;
-			}
 		}
 	};
 };

@@ -1,9 +1,9 @@
-#include <iostream>
-#include <iomanip>
 #include <string>
 
 #include "Compiler.h"
-#include "ErrorCode.h"
+
+#include "FatalErrorCode.h"
+#include "BuildLog.h"
 
 namespace lyrics
 {
@@ -29,18 +29,17 @@ namespace lyrics
 	const u16string Tokenizer::TRUE = u"true";
 	const u16string Tokenizer::WHEN = u"when";
 	const u16string Tokenizer::WHILE = u"while";
-};
 
-namespace
-{
-	void Error( const lyrics::ErrorCode errorCode );
+	constexpr char BuildLog::WARNING[];
+	constexpr char BuildLog::ERROR[];
+	constexpr char BuildLog::FATAL_ERROR[];
 };
 
 int main( int argc, char *argv[] )
 {
 	if ( argc < 2 )
 	{
-		Error( lyrics::ErrorCode::NO_INPUT_FILES );
+		lyrics::BuildLog::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
 		return 0;
 	}
 
@@ -57,28 +56,3 @@ int main( int argc, char *argv[] )
 
 	return 0;
 }
-
-namespace
-{
-	void Error( const lyrics::ErrorCode errorCode )
-	{
-		using std::cout;
-		using std::cerr;
-		using std::endl;
-		using std::setw;
-		using std::setfill;
-
-		constexpr char FATAL_ERROR[] = "fatal error";
-
-		switch ( errorCode )
-		{
-		case lyrics::ErrorCode::NO_INPUT_FILES:
-			cout << FATAL_ERROR << ' ' << std::setw( 4 ) << std::setfill( '0' ) << static_cast<unsigned int>( errorCode ) << ": " << "No input files." << endl;
-			break;
-
-		default:
-			cerr << FATAL_ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
-			break;
-		}
-	}
-};
