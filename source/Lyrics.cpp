@@ -70,7 +70,7 @@ namespace
 		switch ( errorCode )
 		{
 		case lyrics::ErrorCode::NO_INPUT_FILE:
-			cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input file." << endl;
+			cout << ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "No input files." << endl;
 			break;
 
 		default:
