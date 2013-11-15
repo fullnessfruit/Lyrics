@@ -67,6 +67,10 @@ namespace lyrics
 				cout << BuildLog::FATAL_ERROR << ' ' << static_cast<unsigned int>( fatalErrorCode ) << ": " << "No input files." << endl;
 				break;
 
+			case FatalErrorCode::TEXT_LOADING_FAILED:
+				cout << BuildLog::FATAL_ERROR << ' ' << static_cast<unsigned int>( fatalErrorCode ) << ": " << "Cannot load text." << endl;
+				break;
+
 			default:
 				cerr << BuildLog::FATAL_ERROR << ' ' << static_cast<unsigned int>( fatalErrorCode ) << endl;
 				break;
