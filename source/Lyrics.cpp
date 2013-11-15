@@ -43,7 +43,7 @@ int main( int argc, char *argv[] )
 {
 	if ( argc < 2 )
 	{
-		Error( lyrics::ErrorCode::NO_INPUT_FILE );
+		Error( lyrics::ErrorCode::NO_INPUT_FILES );
 		return 0;
 	}
 
@@ -73,7 +73,7 @@ namespace
 
 		switch ( errorCode )
 		{
-		case lyrics::ErrorCode::NO_INPUT_FILE:
+		case lyrics::ErrorCode::NO_INPUT_FILES:
 			cout << FATAL_ERROR << ' ' << std::setw( 4 ) << std::setfill( '0' ) << static_cast<unsigned int>( errorCode ) << ": " << "No input files." << endl;
 			break;
 
