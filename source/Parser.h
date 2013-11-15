@@ -1161,7 +1161,7 @@ namespace lyrics
 			using std::cerr;
 			using std::endl;
 
-			constexpr char WARNING[] = "Warning";
+			constexpr char WARNING[] = "warning";
 
 			switch ( warningCode )
 			{
@@ -1181,7 +1181,7 @@ namespace lyrics
 			using std::cerr;
 			using std::endl;
 
-			constexpr char ERROR[] = "Error";
+			constexpr char ERROR[] = "error";
 
 			switch ( errorCode )
 			{

@@ -26,7 +26,7 @@ namespace lyrics
 			using std::cerr;
 			using std::endl;
 
-			constexpr char ERROR[] = "Error";
+			constexpr char ERROR[] = "error";
 
 			switch ( errorCode )
 			{
