@@ -20,8 +20,7 @@ namespace lyrics
 			BLOCK,
 						IDENTIFIER, LITERAL, ARRAY, HASH, PARENTHESIZED_EXPRESSION,
 							PAIR,
-					POSTFIX_EXPRESSION,
-						INDEX, CALL, MEMBER,
+						INDEX_REFERENCE, PROCEDURE_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				PROCEDURE,
 					PARAMETER, OUT_PARAMETER,
@@ -275,43 +274,46 @@ namespace lyrics
 		}
 	};
 
-	struct PostfixNode : public Node
+	struct PostfixExpressionNode : public ExpressionNode
 	{
-		explicit PostfixNode( const Location &location ) : Node( location )
+		PostfixExpressionNode( const Location &location, const ExpressionNode * const expression ) : ExpressionNode( location ), expression( expression )
 		{
 		}
 
-		virtual ~PostfixNode()
-		{
-		}
-	};
-
-	struct IndexNode : public PostfixNode
-	{
-		IndexNode( const Location &location, const ExpressionNode * const expression ) : PostfixNode( location ), expression( expression )
-		{
-		}
-
-		~IndexNode()
+		~PostfixExpressionNode()
 		{
 			delete expression;
 		}
 
 		const ExpressionNode * const expression;
+	};
+
+	struct IndexReferenceNode : public PostfixExpressionNode
+	{
+		IndexReferenceNode( const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index ) : PostfixExpressionNode( location, expression ), index( index )
+		{
+		}
+
+		~IndexReferenceNode()
+		{
+			delete index;
+		}
+
+		const ExpressionNode * const index;
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::INDEX;
+			return Node::Type::INDEX_REFERENCE;
 		}
 	};
 
-	struct CallNode : public PostfixNode
+	struct ProcedureCallNode : public PostfixExpressionNode
 	{
-		explicit CallNode( const Location &location ) : PostfixNode( location )
+		ProcedureCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
 		{
 		}
 
-		~CallNode()
+		~ProcedureCallNode()
 		{
 			for ( auto i : list )
 			{
@@ -324,17 +326,17 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::CALL;
+			return Node::Type::PROCEDURE_CALL;
 		}
 	};
 
-	struct MemberNode : public PostfixNode
+	struct MemberReferenceNode : public PostfixExpressionNode
 	{
-		MemberNode( const Location &location, const IdentifierNode * const identifier ) : PostfixNode( location ), identifier( identifier )
+		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const identifier ) : PostfixExpressionNode( location, expression ), identifier( identifier )
 		{
 		}
 
-		~MemberNode()
+		~MemberReferenceNode()
 		{
 			delete identifier;
 		}
@@ -343,28 +345,7 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::MEMBER;
-		}
-	};
-
-	struct PostfixExpressionNode : public ExpressionNode
-	{
-		explicit PostfixExpressionNode( const Location &location ) : ExpressionNode( location ), expression( nullptr ), postfix( nullptr )
-		{
-		}
-
-		~PostfixExpressionNode()
-		{
-			delete expression;
-			delete postfix;
-		}
-
-		ExpressionNode *expression;
-		PostfixNode *postfix;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::POSTFIX_EXPRESSION;
+			return Node::Type::MEMBER_REFERENCE;
 		}
 	};
 

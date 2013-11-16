@@ -271,16 +271,13 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
-			ExpressionNode *temp = PrimaryExpression();
+			ExpressionNode *expression = PrimaryExpression();
 
 			if ( mCurrentToken->type == static_cast<Token::Type>( u'[' ) )
 			{
 				mCurrentToken++;
 
-				PostfixExpressionNode *node = new PostfixExpressionNode( mCurrentToken->location );
-
-				node->expression = temp;
-				node->postfix = new IndexNode( mCurrentToken->location, Expression() );
+				IndexReferenceNode *node = new IndexReferenceNode( mCurrentToken->location, expression, Expression() );
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
 				{
@@ -291,7 +288,7 @@ namespace lyrics
 				else
 				{
 					BuildLog::Error( ErrorCode::EXPECTED_INDEX, mCurrentToken->location );
-					delete temp;
+					delete expression;
 					delete node;
 
 					return nullptr;
@@ -301,17 +298,14 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				PostfixExpressionNode *node = new PostfixExpressionNode( mCurrentToken->location );
-
-				node->expression = temp;
-				node->postfix = new CallNode( mCurrentToken->location );
+				ProcedureCallNode *node = new ProcedureCallNode( mCurrentToken->location, expression );
 
 				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
 				{
-					static_cast<CallNode *>( node->postfix )->last = static_cast<CallNode *>( node->postfix )->list.cbefore_begin();
+					node->last = node->list.cbefore_begin();
 					for (;;)
 					{
-						static_cast<CallNode *>( node->postfix )->last = static_cast<CallNode *>( node->postfix )->list.insert_after( static_cast<CallNode *>( node->postfix )->last, Expression() );
+						node->last = node->list.insert_after( node->last, Expression() );
 
 						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 						{
@@ -324,7 +318,7 @@ namespace lyrics
 						else
 						{
 							BuildLog::Error( ErrorCode::EXPECTED_PROCEDURE_CALL, mCurrentToken->location );
-							delete temp;
+							delete expression;
 							delete node;
 
 							return nullptr;
@@ -342,10 +336,8 @@ namespace lyrics
 
 				if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 				{
-					PostfixExpressionNode *node = new PostfixExpressionNode( mCurrentToken->location );
+					MemberReferenceNode *node = new MemberReferenceNode( mCurrentToken->location, expression, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
 
-					node->expression = temp;
-					node->postfix = new MemberNode( mCurrentToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
 					mCurrentToken++;
 
 					return node;
@@ -353,14 +345,14 @@ namespace lyrics
 				else
 				{
 					BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mCurrentToken->location );
-					delete temp;
+					delete expression;
 
 					return nullptr;
 				}
 			}
 			else
 			{
-				return temp;
+				return expression;
 			}
 		}
 
@@ -385,11 +377,11 @@ namespace lyrics
 
 		ExpressionNode *MultiplicativeExpression()
 		{
-			ExpressionNode *temp = UnaryExpression();
+			ExpressionNode *expression = UnaryExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'*' ) && mCurrentToken->type != static_cast<Token::Type>( u'/' ) && mCurrentToken->type != static_cast<Token::Type>( u'%' ) )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -398,7 +390,7 @@ namespace lyrics
 				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
-				node->left = temp;
+				node->left = expression;
 				node->right = MultiplicativeExpression();
 
 				return node;
@@ -407,11 +399,11 @@ namespace lyrics
 
 		ExpressionNode *AdditiveExpression()
 		{
-			ExpressionNode *temp = MultiplicativeExpression();
+			ExpressionNode *expression = MultiplicativeExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'+' ) && mCurrentToken->type != static_cast<Token::Type>( u'-' ) )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -420,7 +412,7 @@ namespace lyrics
 				AdditiveExpressionNode *node = new AdditiveExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
-				node->left = temp;
+				node->left = expression;
 				node->right = AdditiveExpression();
 
 				return node;
@@ -429,11 +421,11 @@ namespace lyrics
 
 		ExpressionNode *ShiftExpression()
 		{
-			ExpressionNode *temp = AdditiveExpression();
+			ExpressionNode *expression = AdditiveExpression();
 
 			if ( mCurrentToken->type != Token::Type::SHIFT_LEFT && mCurrentToken->type != Token::Type::SHIFT_RIGHT )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -442,7 +434,7 @@ namespace lyrics
 				ShiftExpressionNode *node = new ShiftExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
-				node->left = temp;
+				node->left = expression;
 				node->right = ShiftExpression();
 
 				return node;
@@ -451,11 +443,11 @@ namespace lyrics
 
 		ExpressionNode *AndExpression()
 		{
-			ExpressionNode *temp = ShiftExpression();
+			ExpressionNode *expression = ShiftExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'&' ) )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -463,7 +455,7 @@ namespace lyrics
 
 				AndExpressionNode *node = new AndExpressionNode( mCurrentToken->location );
 
-				node->left = temp;
+				node->left = expression;
 				node->right = AndExpression();
 
 				return node;
@@ -472,11 +464,11 @@ namespace lyrics
 
 		ExpressionNode *OrExpression()
 		{
-			ExpressionNode *temp = AndExpression();
+			ExpressionNode *expression = AndExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'|' ) && mCurrentToken->type != static_cast<Token::Type>( u'^' ) )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -485,7 +477,7 @@ namespace lyrics
 				OrExpressionNode *node = new OrExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
-				node->left = temp;
+				node->left = expression;
 				node->right = OrExpression();
 
 				return node;
@@ -494,11 +486,11 @@ namespace lyrics
 
 		ExpressionNode *RelationalExpression()
 		{
-			ExpressionNode *temp = OrExpression();
+			ExpressionNode *expression = OrExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'<' ) && mCurrentToken->type != static_cast<Token::Type>( u'>' ) && mCurrentToken->type != Token::Type::LESS_THAN_OR_EQUAL && mCurrentToken->type != Token::Type::GREATER_THAN_OR_EQUAL )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -507,7 +499,7 @@ namespace lyrics
 				RelationalExpressionNode *node = new RelationalExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
-				node->left = temp;
+				node->left = expression;
 				node->right = RelationalExpression();
 
 				return node;
@@ -516,11 +508,11 @@ namespace lyrics
 
 		ExpressionNode *EqualityExpression()
 		{
-			ExpressionNode *temp = RelationalExpression();
+			ExpressionNode *expression = RelationalExpression();
 
 			if ( mCurrentToken->type != Token::Type::EQUAL && mCurrentToken->type != Token::Type::NOT_EQUAL )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -529,7 +521,7 @@ namespace lyrics
 				EqualityExpressionNode *node = new EqualityExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
-				node->left = temp;
+				node->left = expression;
 				node->right = EqualityExpression();
 
 				return node;
@@ -538,11 +530,11 @@ namespace lyrics
 
 		ExpressionNode *LogicalAndExpression()
 		{
-			ExpressionNode *temp = EqualityExpression();
+			ExpressionNode *expression = EqualityExpression();
 
 			if ( mCurrentToken->type != Token::Type::AND )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -550,7 +542,7 @@ namespace lyrics
 
 				LogicalAndExpressionNode *node = new LogicalAndExpressionNode( mCurrentToken->location );
 
-				node->left = temp;
+				node->left = expression;
 				node->right = LogicalAndExpression();
 
 				return node;
@@ -559,11 +551,11 @@ namespace lyrics
 
 		ExpressionNode *LogicalOrExpression()
 		{
-			ExpressionNode *temp = LogicalAndExpression();
+			ExpressionNode *expression = LogicalAndExpression();
 
 			if ( mCurrentToken->type != Token::Type::OR )
 			{
-				return temp;
+				return expression;
 			}
 			else
 			{
@@ -571,7 +563,7 @@ namespace lyrics
 
 				LogicalOrExpressionNode *node = new LogicalOrExpressionNode( mCurrentToken->location );
 
-				node->left = temp;
+				node->left = expression;
 				node->right = LogicalOrExpression();
 
 				return node;
@@ -580,21 +572,21 @@ namespace lyrics
 
 		ExpressionNode *AssignmentExpression()
 		{
-			ExpressionNode *lhs = LogicalOrExpression();
+			ExpressionNode *expression = LogicalOrExpression();
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
 			{
-				return lhs;
+				return expression;
 			}
 			else
 			{
-				if ( lhs->GetType() == Node::Type::IDENTIFIER || lhs->GetType() == Node::Type::POSTFIX_EXPRESSION )
+				if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE  || expression->GetType() == Node::Type::INDEX_REFERENCE )
 				{
 					mCurrentToken++;
 
 					AssignmentExpressionNode *node = new AssignmentExpressionNode( mCurrentToken->location );
 
-					node->lhs = lhs;
+					node->lhs = expression;
 					node->rhs = AssignmentExpression();
 
 					return node;
@@ -602,7 +594,7 @@ namespace lyrics
 				else
 				{
 					BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
-					delete lhs;
+					delete expression;
 
 					return nullptr;
 				}
@@ -1077,7 +1069,7 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				if ( tExpression->GetType() == Node::Type::IDENTIFIER || tExpression->GetType() == Node::Type::POSTFIX_EXPRESSION )
+				if ( tExpression->GetType() == Node::Type::IDENTIFIER || tExpression->GetType() == Node::Type::MEMBER_REFERENCE || tExpression->GetType() == Node::Type::INDEX_REFERENCE )
 				{
 					return ForEach( tExpression );
 				}
@@ -1105,7 +1097,7 @@ namespace lyrics
 			node->expression1 = expression;
 
 			node->expression2 = Expression();
-			if ( node->expression2->GetType() != Node::Type::IDENTIFIER && node->expression2->GetType() != Node::Type::POSTFIX_EXPRESSION )
+			if ( node->expression2->GetType() != Node::Type::IDENTIFIER && node->expression2->GetType() != Node::Type::MEMBER_REFERENCE && node->expression2->GetType() != Node::Type::INDEX_REFERENCE )
 			{
 				BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
 				delete node;
