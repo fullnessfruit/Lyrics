@@ -99,7 +99,7 @@ namespace lyrics
 			struct BreakNode;
 			struct ReturnNode;
 
-	struct StatementNode : public Node
+	struct StatementNode: public Node
 	{
 		explicit StatementNode( const Location &location ) : Node( location )
 		{
@@ -110,7 +110,7 @@ namespace lyrics
 		}
 	};
 
-	struct BlockNode : public Node
+	struct BlockNode: public Node
 	{
 		explicit BlockNode( const Location &location ) : Node( location )
 		{
@@ -133,7 +133,7 @@ namespace lyrics
 		}
 	};
 
-	struct ExpressionNode : public StatementNode
+	struct ExpressionNode: public StatementNode
 	{
 		explicit ExpressionNode( const Location &location ) : StatementNode( location )
 		{
@@ -144,7 +144,7 @@ namespace lyrics
 		}
 	};
 
-	struct PrimaryExpressionNode : public ExpressionNode
+	struct PrimaryExpressionNode: public ExpressionNode
 	{
 		explicit PrimaryExpressionNode( const Location &location ) : ExpressionNode( location )
 		{
@@ -155,7 +155,7 @@ namespace lyrics
 		}
 	};
 
-	struct IdentifierNode : public PrimaryExpressionNode
+	struct IdentifierNode: public PrimaryExpressionNode
 	{
 		IdentifierNode( const Location &location, const u16string * const str ) : PrimaryExpressionNode( location ), str( str )
 		{
@@ -174,7 +174,7 @@ namespace lyrics
 		}
 	};
 
-	struct LiteralNode : public PrimaryExpressionNode
+	struct LiteralNode: public PrimaryExpressionNode
 	{
 		explicit LiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
@@ -188,7 +188,7 @@ namespace lyrics
 		}
 	};
 
-	struct ArrayNode : public PrimaryExpressionNode
+	struct ArrayNode: public PrimaryExpressionNode
 	{
 		explicit ArrayNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
@@ -211,7 +211,7 @@ namespace lyrics
 		}
 	};
 
-	struct PairNode : public Node
+	struct PairNode: public Node
 	{
 		PairNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : Node( location ), left( left ), right( right )
 		{
@@ -232,7 +232,7 @@ namespace lyrics
 		}
 	};
 
-	struct HashNode : public PrimaryExpressionNode
+	struct HashNode: public PrimaryExpressionNode
 	{
 		explicit HashNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
@@ -255,7 +255,7 @@ namespace lyrics
 		}
 	};
 
-	struct ParenthesizedExpressionNode : public PrimaryExpressionNode
+	struct ParenthesizedExpressionNode: public PrimaryExpressionNode
 	{
 		ParenthesizedExpressionNode( const Location &location, const ExpressionNode * const expression ) : PrimaryExpressionNode( location ), expression( expression )
 		{
@@ -274,7 +274,7 @@ namespace lyrics
 		}
 	};
 
-	struct PostfixExpressionNode : public ExpressionNode
+	struct PostfixExpressionNode: public ExpressionNode
 	{
 		PostfixExpressionNode( const Location &location, const ExpressionNode * const expression ) : ExpressionNode( location ), expression( expression )
 		{
@@ -288,7 +288,7 @@ namespace lyrics
 		const ExpressionNode * const expression;
 	};
 
-	struct IndexReferenceNode : public PostfixExpressionNode
+	struct IndexReferenceNode: public PostfixExpressionNode
 	{
 		IndexReferenceNode( const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index ) : PostfixExpressionNode( location, expression ), index( index )
 		{
@@ -307,7 +307,7 @@ namespace lyrics
 		}
 	};
 
-	struct ProcedureCallNode : public PostfixExpressionNode
+	struct ProcedureCallNode: public PostfixExpressionNode
 	{
 		ProcedureCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
 		{
@@ -330,7 +330,7 @@ namespace lyrics
 		}
 	};
 
-	struct MemberReferenceNode : public PostfixExpressionNode
+	struct MemberReferenceNode: public PostfixExpressionNode
 	{
 		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const identifier ) : PostfixExpressionNode( location, expression ), identifier( identifier )
 		{
@@ -349,7 +349,7 @@ namespace lyrics
 		}
 	};
 
-	struct UnaryExpressionNode : public ExpressionNode
+	struct UnaryExpressionNode: public ExpressionNode
 	{
 		explicit UnaryExpressionNode( const Location &location ) : ExpressionNode( location ), expression( nullptr )
 		{
@@ -369,7 +369,7 @@ namespace lyrics
 		}
 	};
 
-	struct MultiplicativeExpressionNode : public ExpressionNode
+	struct MultiplicativeExpressionNode: public ExpressionNode
 	{
 		explicit MultiplicativeExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -391,7 +391,7 @@ namespace lyrics
 		}
 	};
 
-	struct AdditiveExpressionNode : public ExpressionNode
+	struct AdditiveExpressionNode: public ExpressionNode
 	{
 		explicit AdditiveExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -413,7 +413,7 @@ namespace lyrics
 		}
 	};
 
-	struct ShiftExpressionNode : public ExpressionNode
+	struct ShiftExpressionNode: public ExpressionNode
 	{
 		explicit ShiftExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -435,7 +435,7 @@ namespace lyrics
 		}
 	};
 
-	struct AndExpressionNode : public ExpressionNode
+	struct AndExpressionNode: public ExpressionNode
 	{
 		explicit AndExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -456,7 +456,7 @@ namespace lyrics
 		}
 	};
 
-	struct OrExpressionNode : public ExpressionNode
+	struct OrExpressionNode: public ExpressionNode
 	{
 		explicit OrExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -478,7 +478,7 @@ namespace lyrics
 		}
 	};
 
-	struct RelationalExpressionNode : public ExpressionNode
+	struct RelationalExpressionNode: public ExpressionNode
 	{
 		explicit RelationalExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -500,7 +500,7 @@ namespace lyrics
 		}
 	};
 
-	struct EqualityExpressionNode : public ExpressionNode
+	struct EqualityExpressionNode: public ExpressionNode
 	{
 		explicit EqualityExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -522,7 +522,7 @@ namespace lyrics
 		}
 	};
 
-	struct LogicalAndExpressionNode : public ExpressionNode
+	struct LogicalAndExpressionNode: public ExpressionNode
 	{
 		explicit LogicalAndExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -543,7 +543,7 @@ namespace lyrics
 		}
 	};
 
-	struct LogicalOrExpressionNode : public ExpressionNode
+	struct LogicalOrExpressionNode: public ExpressionNode
 	{
 		explicit LogicalOrExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
 		{
@@ -564,7 +564,7 @@ namespace lyrics
 		}
 	};
 
-	struct AssignmentExpressionNode : public ExpressionNode
+	struct AssignmentExpressionNode: public ExpressionNode
 	{
 		explicit AssignmentExpressionNode( const Location &location ) : ExpressionNode( location ), lhs( nullptr ), rhs( nullptr )
 		{
@@ -585,7 +585,7 @@ namespace lyrics
 		}
 	};
 
-	struct ParameterNode : public Node
+	struct ParameterNode: public Node
 	{
 		ParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier )
 		{
@@ -599,7 +599,7 @@ namespace lyrics
 		const IdentifierNode * const identifier;
 	};
 
-	struct ValueParameterNode : public ParameterNode
+	struct ValueParameterNode: public ParameterNode
 	{
 		ValueParameterNode( const Location &location, IdentifierNode * const identifier, ExpressionNode * const expression ) : ParameterNode( location, identifier ), expression( expression )
 		{
@@ -618,7 +618,7 @@ namespace lyrics
 		}
 	};
 
-	struct OutputParameterNode : public ParameterNode
+	struct OutputParameterNode: public ParameterNode
 	{
 		OutputParameterNode( const Location &location, const IdentifierNode * const identifier ) : ParameterNode( location, identifier )
 		{
@@ -635,7 +635,7 @@ namespace lyrics
 		}
 	};
 
-	struct ProcedureNode : public StatementNode
+	struct ProcedureNode: public StatementNode
 	{
 		explicit ProcedureNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), block( nullptr )
 		{
@@ -664,7 +664,7 @@ namespace lyrics
 		}
 	};
 
-	struct ClassNode : public StatementNode
+	struct ClassNode: public StatementNode
 	{
 		explicit ClassNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), base( nullptr ), block( nullptr )
 		{
@@ -687,7 +687,7 @@ namespace lyrics
 		}
 	};
 
-	struct PackageNode : public StatementNode
+	struct PackageNode: public StatementNode
 	{
 		explicit PackageNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), block( nullptr )
 		{
@@ -707,7 +707,7 @@ namespace lyrics
 		}
 	};
 
-	struct ImportNode : public StatementNode
+	struct ImportNode: public StatementNode
 	{
 		ImportNode( const Location &location, const IdentifierNode * const identifier ) : StatementNode( location ), identifier( identifier )
 		{
@@ -726,7 +726,7 @@ namespace lyrics
 		}
 	};
 
-	struct SelectionNode : public StatementNode
+	struct SelectionNode: public StatementNode
 	{
 		explicit SelectionNode( const Location &location ) : StatementNode( location )
 		{
@@ -737,7 +737,7 @@ namespace lyrics
 		}
 	};
 
-	struct ElseIfNode : public Node
+	struct ElseIfNode: public Node
 	{
 		explicit ElseIfNode( const Location &location ) : Node( location ), expression( nullptr ), block( nullptr )
 		{
@@ -758,7 +758,7 @@ namespace lyrics
 		}
 	};
 
-	struct IfNode : public SelectionNode
+	struct IfNode: public SelectionNode
 	{
 		explicit IfNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
@@ -784,7 +784,7 @@ namespace lyrics
 		}
 	};
 
-	struct WhenNode : public Node
+	struct WhenNode: public Node
 	{
 		explicit WhenNode( const Location &location ) : Node( location ), expression( nullptr ), block( nullptr )
 		{
@@ -805,7 +805,7 @@ namespace lyrics
 		}
 	};
 
-	struct CaseNode : public SelectionNode
+	struct CaseNode: public SelectionNode
 	{
 		explicit CaseNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
@@ -832,7 +832,7 @@ namespace lyrics
 		}
 	};
 
-	struct IterationNode : public StatementNode
+	struct IterationNode: public StatementNode
 	{
 		explicit IterationNode( const Location &location ) : StatementNode( location )
 		{
@@ -843,7 +843,7 @@ namespace lyrics
 		}
 	};
 
-	struct WhileNode : public IterationNode
+	struct WhileNode: public IterationNode
 	{
 		explicit WhileNode( const Location &location ) : IterationNode( location ), expression( nullptr ), block( nullptr )
 		{
@@ -864,7 +864,7 @@ namespace lyrics
 		}
 	};
 
-	struct ForNode : public IterationNode
+	struct ForNode: public IterationNode
 	{
 		explicit ForNode( const Location &location ) : IterationNode( location ), expression1( nullptr ), expression2( nullptr ), expression3( nullptr ), block( nullptr )
 		{
@@ -889,7 +889,7 @@ namespace lyrics
 		}
 	};
 
-	struct ForEachNode : public IterationNode
+	struct ForEachNode: public IterationNode
 	{
 		explicit ForEachNode( const Location &location ) : IterationNode( location ), expression1( nullptr ), expression2( nullptr ), block( nullptr )
 		{
@@ -912,7 +912,7 @@ namespace lyrics
 		}
 	};
 
-	struct JumpNode : public StatementNode
+	struct JumpNode: public StatementNode
 	{
 		explicit JumpNode( const Location &location ) : StatementNode( location )
 		{
@@ -923,7 +923,7 @@ namespace lyrics
 		}
 	};
 
-	struct RedoNode : public JumpNode
+	struct RedoNode: public JumpNode
 	{
 		explicit RedoNode( const Location &location ) : JumpNode( location )
 		{
@@ -935,7 +935,7 @@ namespace lyrics
 		}
 	};
 
-	struct BreakNode : public JumpNode
+	struct BreakNode: public JumpNode
 	{
 		explicit BreakNode( const Location &location ) : JumpNode( location )
 		{
@@ -947,7 +947,7 @@ namespace lyrics
 		}
 	};
 
-	struct ReturnNode : public JumpNode
+	struct ReturnNode: public JumpNode
 	{
 		ReturnNode( const Location &location ) : JumpNode( location ), expression( nullptr )
 		{
