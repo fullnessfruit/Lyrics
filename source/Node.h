@@ -84,7 +84,8 @@ namespace lyrics
 			struct PrivateNode;
 		struct ProcedureNode;
 			struct ParameterNode;
-			struct OutParameterNode;
+				struct ValueParameterNode;
+				struct OutputParameterNode;
 		struct ClassNode;
 		struct PackageNode;
 		struct ImportNode;
