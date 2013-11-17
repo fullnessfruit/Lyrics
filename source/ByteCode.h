@@ -5,7 +5,7 @@ namespace lyrics
 {
 	struct ByteCode
 	{
-		enum class Opcode : unsigned short
+		enum class Opcode: unsigned short
 		{
 			NO_OPERATION,
 			BREAK,

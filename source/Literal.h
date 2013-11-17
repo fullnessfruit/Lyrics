@@ -13,7 +13,7 @@ namespace lyrics
 
 	struct Literal
 	{
-		enum struct Type : unsigned int { NIL, BOOLEAN, INTEGER, REAL, STRING, PROC, ARRAY, HASH, IMAGE, TEXT, SOUND, VIDEO, OBJECT } type;
+		enum struct Type: unsigned int { NIL, BOOLEAN, INTEGER, REAL, STRING, PROC, ARRAY, HASH, IMAGE, TEXT, SOUND, VIDEO, OBJECT } type;
 
 		union Value
 		{
