@@ -23,6 +23,7 @@ namespace lyrics
 	const u16string Tokenizer::NIL = u"nil";
 	const u16string Tokenizer::OUT = u"out";
 	const u16string Tokenizer::PACKAGE = u"package";
+	const u16string Tokenizer::PRIVATE = u"private";
 	const u16string Tokenizer::PROC = u"proc";
 	const u16string Tokenizer::REDO = u"redo";
 	const u16string Tokenizer::RETURN = u"return";
