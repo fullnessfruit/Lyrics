@@ -738,17 +738,17 @@ namespace lyrics
 
 	struct ElseIfNode: public Node
 	{
-		explicit ElseIfNode( const Location &location ) : Node( location ), expression( nullptr ), block( nullptr )
+		explicit ElseIfNode( const Location &location ) : Node( location ), condition( nullptr ), block( nullptr )
 		{
 		}
 
 		~ElseIfNode()
 		{
-			delete expression;
+			delete condition;
 			delete block;
 		}
 
-		ExpressionNode *expression;
+		ExpressionNode *condition;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -785,17 +785,17 @@ namespace lyrics
 
 	struct WhenNode: public Node
 	{
-		explicit WhenNode( const Location &location ) : Node( location ), expression( nullptr ), block( nullptr )
+		explicit WhenNode( const Location &location ) : Node( location ), condition( nullptr ), block( nullptr )
 		{
 		}
 
 		~WhenNode()
 		{
-			delete expression;
+			delete condition;
 			delete block;
 		}
 
-		ExpressionNode *expression;
+		ExpressionNode *condition;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -820,7 +820,7 @@ namespace lyrics
 			delete block;
 		}
 
-		ExpressionNode *expression;
+		ExpressionNode *value;
 		forward_list<WhenNode *> list;
 		forward_list<WhenNode *>::const_iterator last;
 		BlockNode *block;
@@ -844,17 +844,17 @@ namespace lyrics
 
 	struct WhileNode: public IterationNode
 	{
-		explicit WhileNode( const Location &location ) : IterationNode( location ), expression( nullptr ), block( nullptr )
+		explicit WhileNode( const Location &location ) : IterationNode( location ), condition( nullptr ), block( nullptr )
 		{
 		}
 
 		~WhileNode()
 		{
-			delete expression;
+			delete condition;
 			delete block;
 		}
 
-		ExpressionNode *expression;
+		ExpressionNode *condition;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -865,21 +865,21 @@ namespace lyrics
 
 	struct ForNode: public IterationNode
 	{
-		explicit ForNode( const Location &location ) : IterationNode( location ), expression1( nullptr ), expression2( nullptr ), expression3( nullptr ), block( nullptr )
+		explicit ForNode( const Location &location ) : IterationNode( location ), initializer( nullptr ), condition( nullptr ), iterator( nullptr ), block( nullptr )
 		{
 		}
 
 		~ForNode()
 		{
-			delete expression1;
-			delete expression2;
-			delete expression3;
+			delete initializer;
+			delete condition;
+			delete iterator;
 			delete block;
 		}
 
-		ExpressionNode *expression1;
-		ExpressionNode *expression2;
-		ExpressionNode *expression3;
+		ExpressionNode *initializer;
+		ExpressionNode *condition;
+		ExpressionNode *iterator;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -890,19 +890,19 @@ namespace lyrics
 
 	struct ForEachNode: public IterationNode
 	{
-		explicit ForEachNode( const Location &location ) : IterationNode( location ), expression1( nullptr ), expression2( nullptr ), block( nullptr )
+		explicit ForEachNode( const Location &location ) : IterationNode( location ), variable( nullptr ), enumerable( nullptr ), block( nullptr )
 		{
 		}
 
 		~ForEachNode()
 		{
-			delete expression1;
-			delete expression2;
+			delete variable;
+			delete enumerable;
 			delete block;
 		}
 
-		ExpressionNode *expression1;
-		ExpressionNode *expression2;
+		ExpressionNode *variable;
+		ExpressionNode *enumerable;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const

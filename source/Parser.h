@@ -803,7 +803,7 @@ namespace lyrics
 			IfNode *node = new IfNode( mCurrentToken->location );
 			ElseIfNode *tNode = new ElseIfNode( mCurrentToken->location );
 
-			tNode->expression = Expression();
+			tNode->condition = Expression();
 			if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 			{
 				mCurrentToken++;
@@ -845,7 +845,7 @@ namespace lyrics
 					mCurrentToken++;
 
 					tNode = new ElseIfNode( mCurrentToken->location );
-					tNode->expression = Expression();
+					tNode->condition = Expression();
 					tNode->block = Block();
 					node->last = node->list.insert_after( node->last, tNode );
 
@@ -899,14 +899,14 @@ namespace lyrics
 
 			CaseNode *node = new CaseNode( mCurrentToken->location );
 
-			node->expression = Expression();
+			node->value = Expression();
 
 			if ( mCurrentToken->type == Token::Type::WHEN )
 			{
 				mCurrentToken++;
 
 				WhenNode *tNode = new WhenNode( mCurrentToken->location );
-				tNode->expression = Expression();
+				tNode->condition = Expression();
 				if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 				{
 					mCurrentToken++;
@@ -922,7 +922,7 @@ namespace lyrics
 						mCurrentToken++;
 
 						tNode = new WhenNode( mCurrentToken->location );
-						tNode->expression = Expression();
+						tNode->condition = Expression();
 						if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 						{
 							mCurrentToken++;
@@ -980,7 +980,7 @@ namespace lyrics
 
 			WhileNode *node = new WhileNode( mCurrentToken->location );
 
-			node->expression = Expression();
+			node->condition = Expression();
 
 			if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 			{
@@ -1016,14 +1016,14 @@ namespace lyrics
 
 				ForNode *node = new ForNode( mCurrentToken->location );
 
-				node->expression1 = tExpression;
-				node->expression2 = Expression();
+				node->initializer = tExpression;
+				node->condition = Expression();
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 				{
 					mCurrentToken++;
 
-					node->expression3 = Expression();
+					node->iterator = Expression();
 
 					if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 					{
@@ -1083,10 +1083,10 @@ namespace lyrics
 		{
 			ForEachNode *node = new ForEachNode( mCurrentToken->location );
 
-			node->expression1 = expression;
+			node->variable = expression;
 
-			node->expression2 = Expression();
-			if ( node->expression2->GetType() != Node::Type::IDENTIFIER && node->expression2->GetType() != Node::Type::MEMBER_REFERENCE && node->expression2->GetType() != Node::Type::INDEX_REFERENCE )
+			node->enumerable = Expression();
+			if ( node->enumerable->GetType() != Node::Type::IDENTIFIER && node->enumerable->GetType() != Node::Type::MEMBER_REFERENCE && node->enumerable->GetType() != Node::Type::INDEX_REFERENCE )
 			{
 				BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
 				delete node;
