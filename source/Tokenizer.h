@@ -67,24 +67,24 @@ namespace lyrics
 		static const u16string WHILE;
 
 		// Unicode class Zs
-//		static const char16_t SPACE = 0x0020u;
-		static const char16_t NO_BREAK_SPACE = 0x00A0u;
-		static const char16_t OGHAM_SPACE_MARK = 0x1680u;
-		static const char16_t MONGOLIAN_VOWEL_SEPARATOR = 0x180Eu;
-		static const char16_t EN_QUAD = 0x2000u;
-//		static const char16_t EM_QUAD = 0x2001u;
-//		static const char16_t EN_SPACE = 0x2002u;
-//		static const char16_t EM_SPACE = 0x2003u;
-//		static const char16_t THREE_PER_EM_SPACE = 0x2004u;
-//		static const char16_t FOUR_PER_EM_SPACE = 0x2005u;
-//		static const char16_t SIX_PER_EM_SPACE = 0x2006u;
-//		static const char16_t FIGURE_SPACE = 0x2007u;
-//		static const char16_t PUNCTUATION_SPACE = 0x2008u;
-//		static const char16_t THIN_SPACE = 0x2009u;
-		static const char16_t HAIR_SPACE = 0x200Au;
-		static const char16_t NARROW_NO_BREAK_SPACE = 0x202Fu;
-		static const char16_t MEDIUM_MATHEMATICAL_SPACE = 0x205Fu;
-		static const char16_t IDEOGRAPHIC_SPACE = 0x3000u;
+//		static constexpr char16_t SPACE = 0x0020u;
+		static constexpr char16_t NO_BREAK_SPACE = 0x00A0u;
+		static constexpr char16_t OGHAM_SPACE_MARK = 0x1680u;
+		static constexpr char16_t MONGOLIAN_VOWEL_SEPARATOR = 0x180Eu;
+		static constexpr char16_t EN_QUAD = 0x2000u;
+//		static constexpr char16_t EM_QUAD = 0x2001u;
+//		static constexpr char16_t EN_SPACE = 0x2002u;
+//		static constexpr char16_t EM_SPACE = 0x2003u;
+//		static constexpr char16_t THREE_PER_EM_SPACE = 0x2004u;
+//		static constexpr char16_t FOUR_PER_EM_SPACE = 0x2005u;
+//		static constexpr char16_t SIX_PER_EM_SPACE = 0x2006u;
+//		static constexpr char16_t FIGURE_SPACE = 0x2007u;
+//		static constexpr char16_t PUNCTUATION_SPACE = 0x2008u;
+//		static constexpr char16_t THIN_SPACE = 0x2009u;
+		static constexpr char16_t HAIR_SPACE = 0x200Au;
+		static constexpr char16_t NARROW_NO_BREAK_SPACE = 0x202Fu;
+		static constexpr char16_t MEDIUM_MATHEMATICAL_SPACE = 0x205Fu;
+		static constexpr char16_t IDEOGRAPHIC_SPACE = 0x3000u;
 
 		char16_t *mText;
 		unsigned int mTextLength;
