@@ -89,6 +89,10 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected lhs." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_VARIABLE_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected variable name." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_PARAMETER_NAME:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter name." << endl;
 				break;

@@ -58,6 +58,9 @@ namespace lyrics
 			case Token::Type::FOR:
 				return For();
 
+			case Token::Type::PRIVATE:
+				return Private();
+
 			case Token::Type::PROC:
 				return Procedure();
 
@@ -75,6 +78,9 @@ namespace lyrics
 
 			case Token::Type::IMPORT:
 				return Import();
+
+			case Token::Type::PUBLIC:
+				return Public();
 
 			case Token::Type::PACKAGE:
 				return Package();
@@ -601,6 +607,62 @@ namespace lyrics
 		ExpressionNode *Expression()
 		{
 			return AssignmentExpression();
+		}
+
+		PublicNode *Public()
+		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				IdentifierNode *name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				mCurrentToken++;
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+				{
+					return new PublicNode( mCurrentToken->location, name );
+				}
+				else
+				{
+					mCurrentToken++;
+
+					return new PublicNode( mCurrentToken->location, name, Expression() );
+				}
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mCurrentToken->location );
+
+				return nullptr;
+			}
+		}
+
+		PrivateNode *Private()
+		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				IdentifierNode *name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				mCurrentToken++;
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+				{
+					return new PrivateNode( mCurrentToken->location, name );
+				}
+				else
+				{
+					mCurrentToken++;
+
+					return new PrivateNode( mCurrentToken->location, name, Expression() );
+				}
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mCurrentToken->location );
+
+				return nullptr;
+			}
 		}
 
 		ProcedureNode *Procedure()

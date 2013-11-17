@@ -22,6 +22,7 @@ namespace lyrics
 							PAIR,
 						INDEX_REFERENCE, PROCEDURE_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
+					PUBLIC, PRIVATE,
 				PROCEDURE,
 					VALUE_PARAMETER, OUTPUT_PARAMETER,
 				CLASS,
@@ -64,10 +65,9 @@ namespace lyrics
 					struct PairNode;
 				struct ParenthesizedExpressionNode;
 			struct PostfixExpressionNode;
-				struct PostfixNode;
-					struct IndexNode;
-					struct CallNode;
-					struct MemberNode;
+				struct IndexReferenceNode;
+				struct ProcedureCallNode;
+				struct MemberReferenceNode;
 			struct UnaryExpressionNode;
 			struct MultiplicativeExpressionNode;
 			struct AdditiveExpressionNode;
@@ -79,6 +79,9 @@ namespace lyrics
 			struct LogicalAndExpressionNode;
 			struct LogicalOrExpressionNode;
 		struct AssignmentNode;
+		struct DeclarationNode;
+			struct PublicNode;
+			struct PrivateNode;
 		struct ProcedureNode;
 			struct ParameterNode;
 			struct OutParameterNode;
@@ -582,6 +585,58 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::ASSIGNMENT_EXPRESSION;
+		}
+	};
+
+	struct DeclarationNode: public StatementNode
+	{
+		DeclarationNode( const Location &location, const IdentifierNode * const name ) : StatementNode( location ), name( name ), initializer( nullptr )
+		{
+		}
+
+		DeclarationNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : StatementNode( location ), name( name ), initializer( initializer )
+		{
+		}
+
+		virtual ~DeclarationNode()
+		{
+			delete name;
+			delete initializer;
+		}
+
+		const IdentifierNode * const name;
+		const ExpressionNode * const initializer;
+	};
+
+	struct PublicNode: public DeclarationNode
+	{
+		PublicNode( const Location &location, const IdentifierNode * const name ) : DeclarationNode( location, name )
+		{
+		}
+
+		PublicNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : DeclarationNode( location, name, initializer )
+		{
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PUBLIC;
+		}
+	};
+
+	struct PrivateNode: public DeclarationNode
+	{
+		PrivateNode( const Location &location, const IdentifierNode * const name ) : DeclarationNode( location, name )
+		{
+		}
+
+		PrivateNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : DeclarationNode( location, name, initializer )
+		{
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PRIVATE;
 		}
 	};
 
