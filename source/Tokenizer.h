@@ -50,6 +50,7 @@ namespace lyrics
 		static const u16string END;
 		static const u16string ELSE;
 		static const u16string ELSEIF;
+		static const u16string EXTENDS;
 		static const u16string FALSE;
 		static const u16string FOR;
 		static const u16string IF;
@@ -295,6 +296,11 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::EXTENDS )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::EXTENDS, currentLocation );
 							}
 							else
 							{
