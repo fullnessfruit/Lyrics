@@ -1134,7 +1134,14 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			return new ReturnNode( mCurrentToken->location );
+			if ( mCurrentToken->type == Token::Type::END || mCurrentToken->type == Token::Type::ELSE || mCurrentToken->type == Token::Type::ELSEIF || mCurrentToken->type == Token::Type::WHEN || mCurrentToken == mLastToken )
+			{
+				return new ReturnNode( mCurrentToken->location );
+			}
+			else
+			{
+				return new ReturnNode( mCurrentToken->location, Expression() );
+			}
 		}
 	};
 };

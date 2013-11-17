@@ -948,16 +948,20 @@ namespace lyrics
 
 	struct ReturnNode: public JumpNode
 	{
-		ReturnNode( const Location &location ) : JumpNode( location ), expression( nullptr )
+		explicit ReturnNode( const Location &location ) : JumpNode( location ), value( nullptr )
+		{
+		}
+
+		ReturnNode( const Location &location, const ExpressionNode * const value ) : JumpNode( location ), value( value )
 		{
 		}
 
 		~ReturnNode()
 		{
-			delete expression;
+			delete value;
 		}
 
-		ExpressionNode *expression;
+		const ExpressionNode * const value;
 
 		virtual Node::Type GetType() const
 		{
