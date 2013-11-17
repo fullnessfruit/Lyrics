@@ -283,7 +283,7 @@ namespace lyrics
 		{
 		}
 
-		~PostfixExpressionNode()
+		virtual ~PostfixExpressionNode()
 		{
 			delete expression;
 		}
@@ -646,7 +646,7 @@ namespace lyrics
 		{
 		}
 
-		~ParameterNode()
+		virtual ~ParameterNode()
 		{
 			delete name;
 		}
