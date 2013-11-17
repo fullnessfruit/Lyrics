@@ -1070,7 +1070,7 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			ExpressionNode *tExpression = Expression();
+			ExpressionNode *expression = Expression();
 
 			if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 			{
@@ -1078,7 +1078,7 @@ namespace lyrics
 
 				ForNode *node = new ForNode( mCurrentToken->location );
 
-				node->initializer = tExpression;
+				node->initializer = expression;
 				node->condition = Expression();
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
@@ -1120,14 +1120,14 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				if ( tExpression->GetType() == Node::Type::IDENTIFIER || tExpression->GetType() == Node::Type::MEMBER_REFERENCE || tExpression->GetType() == Node::Type::INDEX_REFERENCE )
+				if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
 				{
-					return ForEach( tExpression );
+					return ForEach( expression );
 				}
 				else
 				{
 					BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
-					delete tExpression;
+					delete expression;
 
 					return nullptr;
 				}
@@ -1135,7 +1135,7 @@ namespace lyrics
 			else
 			{
 				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_FOR_EACH, mCurrentToken->location );
-				delete tExpression;
+				delete expression;
 
 				return nullptr;
 			}
