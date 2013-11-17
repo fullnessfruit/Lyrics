@@ -86,6 +86,13 @@ namespace lyrics
 		static constexpr char16_t MEDIUM_MATHEMATICAL_SPACE = 0x205Fu;
 		static constexpr char16_t IDEOGRAPHIC_SPACE = 0x3000u;
 
+		// New line character
+//		static constexpr char16_t CARRIAGE_RETURN = 0x000Du;
+//		static constexpr char16_t LINE_FEED = 0x000Au;
+		static constexpr char16_t NEXT_LINE = 0x0085u;
+		static constexpr char16_t LINE_SEPARATOR = 0x2028u;
+		static constexpr char16_t PARAGRAPH_SEPARATOR = 0x2029u;
+
 		char16_t *mText;
 		unsigned int mTextLength;
 		unsigned int mOffset;
@@ -783,6 +790,13 @@ namespace lyrics
 			}
 			else if ( tChar == Tokenizer::NO_BREAK_SPACE || tChar == Tokenizer::OGHAM_SPACE_MARK || tChar == Tokenizer::MONGOLIAN_VOWEL_SEPARATOR || ( tChar >= Tokenizer::EN_QUAD && tChar <= Tokenizer::HAIR_SPACE ) || tChar == Tokenizer::NARROW_NO_BREAK_SPACE || tChar == Tokenizer::MEDIUM_MATHEMATICAL_SPACE || tChar == Tokenizer::IDEOGRAPHIC_SPACE )	// Unicode class Zs except space character.
 			{
+				mOffset++;
+
+				Scan( token, currentLocation );
+			}
+			else if ( tChar == Tokenizer::NEXT_LINE || tChar == Tokenizer::LINE_SEPARATOR || tChar == Tokenizer::PARAGRAPH_SEPARATOR )	// New line character.
+			{
+				currentLocation.IncreaseLine();
 				mOffset++;
 
 				Scan( token, currentLocation );
