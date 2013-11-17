@@ -61,6 +61,7 @@ namespace lyrics
 		static const u16string PRIVATE;
 		static const u16string PACKAGE;
 		static const u16string PROC;
+		static const u16string PUBLIC;
 		static const u16string REDO;
 		static const u16string RETURN;
 		static const u16string THEN;
@@ -285,6 +286,11 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::RETURN, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::PUBLIC )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::PUBLIC, currentLocation );
 							}
 							else
 							{
