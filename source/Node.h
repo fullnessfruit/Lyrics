@@ -890,19 +890,19 @@ namespace lyrics
 
 	struct ForEachNode: public IterationNode
 	{
-		explicit ForEachNode( const Location &location ) : IterationNode( location ), variable( nullptr ), enumerable( nullptr ), block( nullptr )
+		explicit ForEachNode( const Location &location ) : IterationNode( location ), variable( nullptr ), collection( nullptr ), block( nullptr )
 		{
 		}
 
 		~ForEachNode()
 		{
 			delete variable;
-			delete enumerable;
+			delete collection;
 			delete block;
 		}
 
 		ExpressionNode *variable;
-		ExpressionNode *enumerable;
+		ExpressionNode *collection;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const

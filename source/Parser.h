@@ -1085,8 +1085,8 @@ namespace lyrics
 
 			node->variable = expression;
 
-			node->enumerable = Expression();
-			if ( node->enumerable->GetType() != Node::Type::IDENTIFIER && node->enumerable->GetType() != Node::Type::MEMBER_REFERENCE && node->enumerable->GetType() != Node::Type::INDEX_REFERENCE )
+			node->collection = Expression();
+			if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 			{
 				BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
 				delete node;
