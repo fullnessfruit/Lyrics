@@ -676,7 +676,6 @@ namespace lyrics
 				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 			}
-			mCurrentToken++;
 
 			if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
 			{
