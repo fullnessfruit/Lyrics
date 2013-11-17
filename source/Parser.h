@@ -233,8 +233,8 @@ namespace lyrics
 							if ( mCurrentToken->type != static_cast<Token::Type>( u':' ) )
 							{
 								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
-								delete node;
 								delete left;
+								delete node;
 
 								return nullptr;
 							}
