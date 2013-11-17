@@ -367,11 +367,11 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				UnaryExpressionNode *node = new UnaryExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->expression = UnaryExpression();
 
 				return node;
@@ -388,11 +388,12 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
 
 				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->left = expression;
 				node->right = MultiplicativeExpression();
 
@@ -410,11 +411,11 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				AdditiveExpressionNode *node = new AdditiveExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->left = expression;
 				node->right = AdditiveExpression();
 
@@ -432,11 +433,11 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				ShiftExpressionNode *node = new ShiftExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->left = expression;
 				node->right = ShiftExpression();
 
@@ -454,9 +455,9 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				AndExpressionNode *node = new AndExpressionNode( mCurrentToken->location );
+
+				mCurrentToken++;
 
 				node->left = expression;
 				node->right = AndExpression();
@@ -475,11 +476,11 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				OrExpressionNode *node = new OrExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->left = expression;
 				node->right = OrExpression();
 
@@ -497,11 +498,11 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				RelationalExpressionNode *node = new RelationalExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->left = expression;
 				node->right = RelationalExpression();
 
@@ -519,11 +520,11 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				EqualityExpressionNode *node = new EqualityExpressionNode( mCurrentToken->location );
 
 				node->op = mCurrentToken->type;
+				mCurrentToken++;
+
 				node->left = expression;
 				node->right = EqualityExpression();
 
@@ -541,9 +542,9 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				LogicalAndExpressionNode *node = new LogicalAndExpressionNode( mCurrentToken->location );
+
+				mCurrentToken++;
 
 				node->left = expression;
 				node->right = LogicalAndExpression();
@@ -562,9 +563,9 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
-
 				LogicalOrExpressionNode *node = new LogicalOrExpressionNode( mCurrentToken->location );
+
+				mCurrentToken++;
 
 				node->left = expression;
 				node->right = LogicalOrExpression();
@@ -585,9 +586,9 @@ namespace lyrics
 			{
 				if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE  || expression->GetType() == Node::Type::INDEX_REFERENCE )
 				{
-					mCurrentToken++;
-
 					AssignmentExpressionNode *node = new AssignmentExpressionNode( mCurrentToken->location );
+
+					mCurrentToken++;
 
 					node->lhs = expression;
 					node->rhs = AssignmentExpression();
