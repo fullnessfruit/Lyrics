@@ -23,7 +23,7 @@ namespace lyrics
 						INDEX_REFERENCE, PROCEDURE_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				PROCEDURE,
-					PARAMETER, OUT_PARAMETER,
+					VALUE_ARAMETER, OUTPUT_PARAMETER,
 				CLASS,
 				PACKAGE,
 				IMPORT,
@@ -587,45 +587,51 @@ namespace lyrics
 
 	struct ParameterNode : public Node
 	{
-		ParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier ), expression( nullptr )
-		{
-		}
-
-		ParameterNode( const Location &location, IdentifierNode * const identifier, ExpressionNode * const expression ) : Node( location ), identifier( identifier ), expression( expression )
+		ParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier )
 		{
 		}
 
 		~ParameterNode()
 		{
 			delete identifier;
-			delete expression;
 		}
 
 		const IdentifierNode * const identifier;
+	};
+
+	struct ValueParameterNode : public ParameterNode
+	{
+		ValueParameterNode( const Location &location, IdentifierNode * const identifier, ExpressionNode * const expression ) : ParameterNode( location, identifier ), expression( expression )
+		{
+		}
+
+		~ValueParameterNodes()
+		{
+			delete expression;
+		}
+
 		const ExpressionNode * const expression;
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::PARAMETER;
+			return Node::Type::VALUE_PARAMETER;
 		}
 	};
 
-	struct OutParameterNode : public Node
+	struct OutputParameterNode : public ParameterNode
 	{
-		OutParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier )
+		OutputParameterNode( const Location &location, const IdentifierNode * const identifier ) : ParameterNode( location, identifier )
 		{
 		}
 
-		~OutParameterNode()
+		~OutputParameterNode()
 		{
 			delete identifier;
 		}
 
-		const IdentifierNode * const identifier;
-
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::OUT_PARAMETER;
+			return Node::Type::OUTPUT_PARAMETER;
 		}
 	};
 
@@ -644,19 +650,12 @@ namespace lyrics
 				delete i;
 			}
 
-			for ( auto i : outParameter )
-			{
-				delete i;
-			}
-
 			delete block;
 		}
 
 		IdentifierNode *identifier;
 		forward_list<ParameterNode *> parameter;
 		forward_list<ParameterNode *>::const_iterator lastParameter;
-		forward_list<OutParameterNode *> outParameter;
-		forward_list<OutParameterNode *>::const_iterator lastOutParameter;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
