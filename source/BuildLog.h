@@ -89,8 +89,16 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected lhs." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_VARIABLE_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected variable name." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_PARAMETER_NAME:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter name." << endl;
+				break;
+
+			case ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Output parameter cannot have default argument." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_PROCEDURE:
@@ -99,10 +107,6 @@ namespace lyrics
 
 			case ErrorCode::EXPECTED_PARAMETER:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter." << endl;
-				break;
-
-			case ErrorCode::EXPECTED_PROCEDURE_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected procedure name." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_BASE_CLASS:

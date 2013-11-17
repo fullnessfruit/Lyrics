@@ -58,6 +58,9 @@ namespace lyrics
 			case Token::Type::FOR:
 				return For();
 
+			case Token::Type::PRIVATE:
+				return Private();
+
 			case Token::Type::PROC:
 				return Procedure();
 
@@ -75,6 +78,9 @@ namespace lyrics
 
 			case Token::Type::IMPORT:
 				return Import();
+
+			case Token::Type::PUBLIC:
+				return Public();
 
 			case Token::Type::PACKAGE:
 				return Package();
@@ -207,7 +213,6 @@ namespace lyrics
 							}
 						}
 					}
-					
 					mCurrentToken++;
 
 					return node;
@@ -257,7 +262,6 @@ namespace lyrics
 							}
 						}
 					}
-					
 					mCurrentToken++;
 
 					return node;
@@ -325,7 +329,6 @@ namespace lyrics
 						}
 					}
 				}
-
 				mCurrentToken++;
 
 				return node;
@@ -606,123 +609,170 @@ namespace lyrics
 			return AssignmentExpression();
 		}
 
-		ProcedureNode *Procedure()
+		PublicNode *Public()
 		{
 			mCurrentToken++;
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				ProcedureNode *node = new ProcedureNode( mCurrentToken->location );
-
-				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				IdentifierNode *name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
-				if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
+				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
 				{
-					mCurrentToken++;
-
-					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
-					{
-						node->lastParameter = node->parameter.cbefore_begin();
-						for (;;)
-						{
-							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
-							{
-								BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
-								delete node;
-
-								return nullptr;
-							}
-							IdentifierNode *identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-							mCurrentToken++;
-
-							ParameterNode *parameter;
-							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
-							{
-								parameter = new ParameterNode( mCurrentToken->location, identifier );
-							}
-							else
-							{
-								mCurrentToken++;
-
-								parameter = new ParameterNode( mCurrentToken->location, identifier, Expression() );
-							}
-
-							node->lastParameter = node->parameter.insert_after( node->lastParameter, parameter );
-
-							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-							{
-								mCurrentToken++;
-							}
-							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
-							{
-								break;
-							}
-							else
-							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
-								delete node;
-
-								return nullptr;
-							}
-						}
-					}
-
-					if ( mCurrentToken->type == Token::Type::OUT )
-					{
-						mCurrentToken++;
-
-						if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
-						{
-							node->lastOutParameter = node->outParameter.cbefore_begin();
-							for (;;)
-							{
-								if ( mCurrentToken->type != Token::Type::IDENTIFIER )
-								{
-									BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
-									delete node;
-
-									return nullptr;
-								}
-								node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( mCurrentToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) ) );
-								mCurrentToken++;
-
-								if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-								{
-									mCurrentToken++;
-								}
-								else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
-								{
-									break;
-								}
-								else
-								{
-									BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
-									delete node;
-
-									return nullptr;
-								}
-							}
-						}
-					}
-
-					mCurrentToken++;
-
-					node->block = Block();
-
-					return node;
+					return new PublicNode( mCurrentToken->location, name );
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
-					delete node;
+					mCurrentToken++;
 
-					return nullptr;
+					return new PublicNode( mCurrentToken->location, name, Expression() );
 				}
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PROCEDURE_NAME, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mCurrentToken->location );
+
+				return nullptr;
+			}
+		}
+
+		PrivateNode *Private()
+		{
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				IdentifierNode *name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				mCurrentToken++;
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+				{
+					return new PrivateNode( mCurrentToken->location, name );
+				}
+				else
+				{
+					mCurrentToken++;
+
+					return new PrivateNode( mCurrentToken->location, name, Expression() );
+				}
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mCurrentToken->location );
+
+				return nullptr;
+			}
+		}
+
+		ProcedureNode *Procedure()
+		{
+			mCurrentToken++;
+
+			ProcedureNode *node = new ProcedureNode( mCurrentToken->location );
+
+			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			{
+				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				mCurrentToken++;
+			}
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
+			{
+				mCurrentToken++;
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+				{
+					ParameterNode *parameter;
+					bool isValueParameter;
+					IdentifierNode *name;
+
+					node->last = node->list.cbefore_begin();
+					for (;;)
+					{
+						if ( mCurrentToken->type != Token::Type::OUT )
+						{
+							isValueParameter = true;
+						}
+						else
+						{
+							mCurrentToken++;
+
+							isValueParameter = false;
+						}
+
+						if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+						{
+							name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+							mCurrentToken++;
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
+							delete node;
+
+							return nullptr;
+						}
+
+						if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+						{
+							if ( isValueParameter )
+							{
+								parameter = new ValueParameterNode( mCurrentToken->location, name );
+							}
+							else
+							{
+								parameter = new OutputParameterNode( mCurrentToken->location, name );
+							}
+						}
+						else
+						{
+							mCurrentToken++;
+
+							if ( isValueParameter )
+							{
+								parameter = new ValueParameterNode( mCurrentToken->location, name, Expression() );
+							}
+							else
+							{
+								BuildLog::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mCurrentToken->location );
+								delete name;
+								delete node;
+
+								return nullptr;
+							}
+						}
+
+						node->last = node->list.insert_after( node->last, parameter );
+
+						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+						{
+							mCurrentToken++;
+						}
+						else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+						{
+							break;
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
+							delete node;
+
+							return nullptr;
+						}
+					}
+				}
+				mCurrentToken++;
+
+				node->block = Block();
+
+				return node;
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
+				delete node;
+
 				return nullptr;
 			}
 		}
@@ -735,10 +785,10 @@ namespace lyrics
 			{
 				ClassNode *node = new ClassNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
-				if ( mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+				if ( mCurrentToken->type == Token::Type::EXTENDS )
 				{
 					mCurrentToken++;
 
@@ -775,7 +825,7 @@ namespace lyrics
 			{
 				PackageNode *node = new PackageNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
 				node->block = Block();
@@ -814,7 +864,7 @@ namespace lyrics
 			IfNode *node = new IfNode( mCurrentToken->location );
 			ElseIfNode *tNode = new ElseIfNode( mCurrentToken->location );
 
-			tNode->expression = Expression();
+			tNode->condition = Expression();
 			if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 			{
 				mCurrentToken++;
@@ -856,7 +906,7 @@ namespace lyrics
 					mCurrentToken++;
 
 					tNode = new ElseIfNode( mCurrentToken->location );
-					tNode->expression = Expression();
+					tNode->condition = Expression();
 					tNode->block = Block();
 					node->last = node->list.insert_after( node->last, tNode );
 
@@ -910,14 +960,14 @@ namespace lyrics
 
 			CaseNode *node = new CaseNode( mCurrentToken->location );
 
-			node->expression = Expression();
+			node->value = Expression();
 
 			if ( mCurrentToken->type == Token::Type::WHEN )
 			{
 				mCurrentToken++;
 
 				WhenNode *tNode = new WhenNode( mCurrentToken->location );
-				tNode->expression = Expression();
+				tNode->condition = Expression();
 				if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 				{
 					mCurrentToken++;
@@ -933,7 +983,7 @@ namespace lyrics
 						mCurrentToken++;
 
 						tNode = new WhenNode( mCurrentToken->location );
-						tNode->expression = Expression();
+						tNode->condition = Expression();
 						if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 						{
 							mCurrentToken++;
@@ -991,7 +1041,7 @@ namespace lyrics
 
 			WhileNode *node = new WhileNode( mCurrentToken->location );
 
-			node->expression = Expression();
+			node->condition = Expression();
 
 			if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 			{
@@ -1027,14 +1077,14 @@ namespace lyrics
 
 				ForNode *node = new ForNode( mCurrentToken->location );
 
-				node->expression1 = tExpression;
-				node->expression2 = Expression();
+				node->initializer = tExpression;
+				node->condition = Expression();
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 				{
 					mCurrentToken++;
 
-					node->expression3 = Expression();
+					node->iterator = Expression();
 
 					if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 					{
@@ -1094,10 +1144,10 @@ namespace lyrics
 		{
 			ForEachNode *node = new ForEachNode( mCurrentToken->location );
 
-			node->expression1 = expression;
+			node->variable = expression;
 
-			node->expression2 = Expression();
-			if ( node->expression2->GetType() != Node::Type::IDENTIFIER && node->expression2->GetType() != Node::Type::MEMBER_REFERENCE && node->expression2->GetType() != Node::Type::INDEX_REFERENCE )
+			node->collection = Expression();
+			if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 			{
 				BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
 				delete node;
@@ -1145,7 +1195,14 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
-			return new ReturnNode( mCurrentToken->location );
+			if ( mCurrentToken->type == Token::Type::END || mCurrentToken->type == Token::Type::ELSE || mCurrentToken->type == Token::Type::ELSEIF || mCurrentToken->type == Token::Type::WHEN || mCurrentToken == mLastToken )
+			{
+				return new ReturnNode( mCurrentToken->location );
+			}
+			else
+			{
+				return new ReturnNode( mCurrentToken->location, Expression() );
+			}
 		}
 	};
 };

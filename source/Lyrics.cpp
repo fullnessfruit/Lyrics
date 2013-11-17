@@ -14,6 +14,7 @@ namespace lyrics
 	const u16string Tokenizer::END = u"end";
 	const u16string Tokenizer::ELSE = u"else";
 	const u16string Tokenizer::ELSEIF = u"elseif";
+	const u16string Tokenizer::EXTENDS = u"extends";
 	const u16string Tokenizer::FALSE = u"false";
 	const u16string Tokenizer::FOR = u"for";
 	const u16string Tokenizer::IF = u"if";
@@ -22,7 +23,9 @@ namespace lyrics
 	const u16string Tokenizer::NIL = u"nil";
 	const u16string Tokenizer::OUT = u"out";
 	const u16string Tokenizer::PACKAGE = u"package";
+	const u16string Tokenizer::PRIVATE = u"private";
 	const u16string Tokenizer::PROC = u"proc";
+	const u16string Tokenizer::PUBLIC = u"public";
 	const u16string Tokenizer::REDO = u"redo";
 	const u16string Tokenizer::RETURN = u"return";
 	const u16string Tokenizer::THEN = u"then";

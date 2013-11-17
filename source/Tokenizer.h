@@ -50,6 +50,7 @@ namespace lyrics
 		static const u16string END;
 		static const u16string ELSE;
 		static const u16string ELSEIF;
+		static const u16string EXTENDS;
 		static const u16string FALSE;
 		static const u16string FOR;
 		static const u16string IF;
@@ -57,8 +58,10 @@ namespace lyrics
 		static const u16string IN;
 		static const u16string NIL;
 		static const u16string OUT;
+		static const u16string PRIVATE;
 		static const u16string PACKAGE;
 		static const u16string PROC;
+		static const u16string PUBLIC;
 		static const u16string REDO;
 		static const u16string RETURN;
 		static const u16string THEN;
@@ -284,6 +287,11 @@ namespace lyrics
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::RETURN, currentLocation );
 							}
+							else if ( *tStr == Tokenizer::PUBLIC )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::PUBLIC, currentLocation );
+							}
 							else
 							{
 								mLastToken = token.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
@@ -295,6 +303,16 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::PRIVATE )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::PRIVATE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::EXTENDS )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::EXTENDS, currentLocation );
 							}
 							else
 							{
