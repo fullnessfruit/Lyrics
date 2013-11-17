@@ -23,7 +23,7 @@ namespace lyrics
 						INDEX_REFERENCE, PROCEDURE_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				PROCEDURE,
-					VALUE_ARAMETER, OUTPUT_PARAMETER,
+					VALUE_PARAMETER, OUTPUT_PARAMETER,
 				CLASS,
 				PACKAGE,
 				IMPORT,
@@ -601,11 +601,15 @@ namespace lyrics
 
 	struct ValueParameterNode: public ParameterNode
 	{
-		ValueParameterNode( const Location &location, IdentifierNode * const identifier, ExpressionNode * const expression ) : ParameterNode( location, identifier ), expression( expression )
+		ValueParameterNode( const Location &location, const IdentifierNode * const identifier ) : ParameterNode( location, identifier ), expression( nullptr )
 		{
 		}
 
-		~ValueParameterNodes()
+		ValueParameterNode( const Location &location, const IdentifierNode * const identifier, const ExpressionNode * const expression ) : ParameterNode( location, identifier ), expression( expression )
+		{
+		}
+
+		~ValueParameterNode()
 		{
 			delete expression;
 		}
@@ -622,11 +626,6 @@ namespace lyrics
 	{
 		OutputParameterNode( const Location &location, const IdentifierNode * const identifier ) : ParameterNode( location, identifier )
 		{
-		}
-
-		~OutputParameterNode()
-		{
-			delete identifier;
 		}
 
 		virtual Node::Type GetType() const

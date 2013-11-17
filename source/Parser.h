@@ -207,7 +207,6 @@ namespace lyrics
 							}
 						}
 					}
-					
 					mCurrentToken++;
 
 					return node;
@@ -257,7 +256,6 @@ namespace lyrics
 							}
 						}
 					}
-					
 					mCurrentToken++;
 
 					return node;
@@ -325,7 +323,6 @@ namespace lyrics
 						}
 					}
 				}
-
 				mCurrentToken++;
 
 				return node;
@@ -610,119 +607,111 @@ namespace lyrics
 		{
 			mCurrentToken++;
 
+			ProcedureNode *node = new ProcedureNode( mCurrentToken->location );
+
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				ProcedureNode *node = new ProcedureNode( mCurrentToken->location );
-
 				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
+			}
+			mCurrentToken++;
 
-				if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
+			{
+				mCurrentToken++;
+
+				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
 				{
-					mCurrentToken++;
+					ParameterNode *parameter;
+					bool isValueParameter;
+					IdentifierNode *name;
 
-					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
+					node->lastParameter = node->parameter.cbefore_begin();
+					for (;;)
 					{
-						node->lastParameter = node->parameter.cbefore_begin();
-						for (;;)
+						if ( mCurrentToken->type != Token::Type::OUT )
 						{
-							if ( mCurrentToken->type != Token::Type::IDENTIFIER )
-							{
-								BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
-								delete node;
-
-								return nullptr;
-							}
-							IdentifierNode *identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+							isValueParameter = true;
+						}
+						else
+						{
 							mCurrentToken++;
 
-							ParameterNode *parameter;
-							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+							isValueParameter = false;
+						}
+
+						if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+						{
+							name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+							mCurrentToken++;
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
+							delete node;
+
+							return nullptr;
+						}
+
+						if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+						{
+							if ( isValueParameter )
 							{
-								parameter = new ParameterNode( mCurrentToken->location, identifier );
+								parameter = new ValueParameterNode( mCurrentToken->location, name );
 							}
 							else
 							{
-								mCurrentToken++;
-
-								parameter = new ParameterNode( mCurrentToken->location, identifier, Expression() );
+								parameter = new OutputParameterNode( mCurrentToken->location, name );
 							}
+						}
+						else
+						{
+							mCurrentToken++;
 
-							node->lastParameter = node->parameter.insert_after( node->lastParameter, parameter );
-
-							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							if ( isValueParameter )
 							{
-								mCurrentToken++;
-							}
-							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) || mCurrentToken->type == Token::Type::OUT )
-							{
-								break;
+								parameter = new ValueParameterNode( mCurrentToken->location, name, Expression() );
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
+								BuildLog::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mCurrentToken->location );
+								delete name;
 								delete node;
 
 								return nullptr;
 							}
 						}
-					}
 
-					if ( mCurrentToken->type == Token::Type::OUT )
-					{
-						mCurrentToken++;
+						node->lastParameter = node->parameter.insert_after( node->lastParameter, parameter );
 
-						if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 						{
-							node->lastOutParameter = node->outParameter.cbefore_begin();
-							for (;;)
-							{
-								if ( mCurrentToken->type != Token::Type::IDENTIFIER )
-								{
-									BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
-									delete node;
+							mCurrentToken++;
+						}
+						else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+						{
+							break;
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
+							delete node;
 
-									return nullptr;
-								}
-								node->lastOutParameter = node->outParameter.insert_after( node->lastOutParameter, new OutParameterNode( mCurrentToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) ) );
-								mCurrentToken++;
-
-								if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-								{
-									mCurrentToken++;
-								}
-								else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
-								{
-									break;
-								}
-								else
-								{
-									BuildLog::Error( ErrorCode::INCOMPLETE_PROCEDURE, mCurrentToken->location );
-									delete node;
-
-									return nullptr;
-								}
-							}
+							return nullptr;
 						}
 					}
-
-					mCurrentToken++;
-
-					node->block = Block();
-
-					return node;
 				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
-					delete node;
+				mCurrentToken++;
 
-					return nullptr;
-				}
+				node->block = Block();
+
+				return node;
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PROCEDURE_NAME, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
+				delete node;
+
 				return nullptr;
 			}
 		}

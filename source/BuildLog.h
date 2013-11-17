@@ -93,16 +93,16 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter name." << endl;
 				break;
 
+			case ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Output parameter cannot have default argument." << endl;
+				break;
+
 			case ErrorCode::INCOMPLETE_PROCEDURE:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete procedure." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PARAMETER:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter." << endl;
-				break;
-
-			case ErrorCode::EXPECTED_PROCEDURE_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected procedure name." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_BASE_CLASS:
