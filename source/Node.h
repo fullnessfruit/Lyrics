@@ -332,16 +332,16 @@ namespace lyrics
 
 	struct MemberReferenceNode: public PostfixExpressionNode
 	{
-		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const identifier ) : PostfixExpressionNode( location, expression ), identifier( identifier )
+		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const member ) : PostfixExpressionNode( location, expression ), member( member )
 		{
 		}
 
 		~MemberReferenceNode()
 		{
-			delete identifier;
+			delete member;
 		}
 
-		const IdentifierNode * const identifier;
+		const IdentifierNode * const member;
 
 		virtual Node::Type GetType() const
 		{
@@ -587,25 +587,25 @@ namespace lyrics
 
 	struct ParameterNode: public Node
 	{
-		ParameterNode( const Location &location, const IdentifierNode * const identifier ) : Node( location ), identifier( identifier )
+		ParameterNode( const Location &location, const IdentifierNode * const name ) : Node( location ), name( name )
 		{
 		}
 
 		~ParameterNode()
 		{
-			delete identifier;
+			delete name;
 		}
 
-		const IdentifierNode * const identifier;
+		const IdentifierNode * const name;
 	};
 
 	struct ValueParameterNode: public ParameterNode
 	{
-		ValueParameterNode( const Location &location, const IdentifierNode * const identifier ) : ParameterNode( location, identifier ), expression( nullptr )
+		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), expression( nullptr )
 		{
 		}
 
-		ValueParameterNode( const Location &location, const IdentifierNode * const identifier, const ExpressionNode * const expression ) : ParameterNode( location, identifier ), expression( expression )
+		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const expression ) : ParameterNode( location, name ), expression( expression )
 		{
 		}
 
@@ -624,7 +624,7 @@ namespace lyrics
 
 	struct OutputParameterNode: public ParameterNode
 	{
-		OutputParameterNode( const Location &location, const IdentifierNode * const identifier ) : ParameterNode( location, identifier )
+		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name )
 		{
 		}
 
@@ -636,13 +636,13 @@ namespace lyrics
 
 	struct ProcedureNode: public StatementNode
 	{
-		explicit ProcedureNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), block( nullptr )
+		explicit ProcedureNode( const Location &location ) : StatementNode( location ), name( nullptr ), block( nullptr )
 		{
 		}
 
 		~ProcedureNode()
 		{
-			delete identifier;
+			delete name;
 
 			for ( auto i : list )
 			{
@@ -652,7 +652,7 @@ namespace lyrics
 			delete block;
 		}
 
-		IdentifierNode *identifier;
+		IdentifierNode *name;
 		forward_list<ParameterNode *> list;
 		forward_list<ParameterNode *>::const_iterator last;
 		BlockNode *block;
@@ -665,18 +665,18 @@ namespace lyrics
 
 	struct ClassNode: public StatementNode
 	{
-		explicit ClassNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), base( nullptr ), block( nullptr )
+		explicit ClassNode( const Location &location ) : StatementNode( location ), name( nullptr ), base( nullptr ), block( nullptr )
 		{
 		}
 
 		~ClassNode()
 		{
-			delete identifier;
+			delete name;
 			delete base;
 			delete block;
 		}
 
-		IdentifierNode *identifier;
+		IdentifierNode *name;
 		IdentifierNode *base;
 		BlockNode *block;
 
@@ -688,16 +688,16 @@ namespace lyrics
 
 	struct PackageNode: public StatementNode
 	{
-		explicit PackageNode( const Location &location ) : StatementNode( location ), identifier( nullptr ), block( nullptr )
+		explicit PackageNode( const Location &location ) : StatementNode( location ), name( nullptr ), block( nullptr )
 		{
 		}
 
 		~PackageNode()
 		{
-			delete identifier;
+			delete name;
 			delete block;
 		}
-		IdentifierNode *identifier;
+		IdentifierNode *name;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
@@ -708,16 +708,16 @@ namespace lyrics
 
 	struct ImportNode: public StatementNode
 	{
-		ImportNode( const Location &location, const IdentifierNode * const identifier ) : StatementNode( location ), identifier( identifier )
+		ImportNode( const Location &location, const IdentifierNode * const package ) : StatementNode( location ), package( package )
 		{
 		}
 
 		~ImportNode()
 		{
-			delete identifier;
+			delete package;
 		}
 
-		const IdentifierNode * const identifier;
+		const IdentifierNode * const package;
 
 		virtual Node::Type GetType() const
 		{

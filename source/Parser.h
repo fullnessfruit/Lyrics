@@ -611,7 +611,7 @@ namespace lyrics
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{
-				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 			}
 			mCurrentToken++;
@@ -724,7 +724,7 @@ namespace lyrics
 			{
 				ClassNode *node = new ClassNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
 				if ( mCurrentToken->type == static_cast<Token::Type>( u':' ) )
@@ -764,7 +764,7 @@ namespace lyrics
 			{
 				PackageNode *node = new PackageNode( mCurrentToken->location );
 
-				node->identifier = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
 				node->block = Block();
