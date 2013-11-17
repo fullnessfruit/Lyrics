@@ -626,7 +626,7 @@ namespace lyrics
 					bool isValueParameter;
 					IdentifierNode *name;
 
-					node->lastParameter = node->parameter.cbefore_begin();
+					node->last = node->list.cbefore_begin();
 					for (;;)
 					{
 						if ( mCurrentToken->type != Token::Type::OUT )
@@ -682,7 +682,7 @@ namespace lyrics
 							}
 						}
 
-						node->lastParameter = node->parameter.insert_after( node->lastParameter, parameter );
+						node->last = node->list.insert_after( node->last, parameter );
 
 						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 						{

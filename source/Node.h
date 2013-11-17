@@ -644,7 +644,7 @@ namespace lyrics
 		{
 			delete identifier;
 
-			for ( auto i : parameter )
+			for ( auto i : list )
 			{
 				delete i;
 			}
@@ -653,8 +653,8 @@ namespace lyrics
 		}
 
 		IdentifierNode *identifier;
-		forward_list<ParameterNode *> parameter;
-		forward_list<ParameterNode *>::const_iterator lastParameter;
+		forward_list<ParameterNode *> list;
+		forward_list<ParameterNode *>::const_iterator last;
 		BlockNode *block;
 
 		virtual Node::Type GetType() const
