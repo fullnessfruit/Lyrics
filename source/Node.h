@@ -601,20 +601,20 @@ namespace lyrics
 
 	struct ValueParameterNode: public ParameterNode
 	{
-		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), expression( nullptr )
+		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), defalutArgument( nullptr )
 		{
 		}
 
-		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const expression ) : ParameterNode( location, name ), expression( expression )
+		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument ) : ParameterNode( location, name ), defalutArgument( defalutArgument )
 		{
 		}
 
 		~ValueParameterNode()
 		{
-			delete expression;
+			delete defalutArgument;
 		}
 
-		const ExpressionNode * const expression;
+		const ExpressionNode * const defalutArgument;
 
 		virtual Node::Type GetType() const
 		{
