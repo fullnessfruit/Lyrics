@@ -716,7 +716,7 @@ namespace lyrics
 				}
 				else
 				{
-					if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE  || expression->GetType() == Node::Type::INDEX_REFERENCE )
+					if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
 					{
 						AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
 
