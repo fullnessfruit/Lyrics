@@ -30,24 +30,29 @@ namespace lyrics
 			u16string *identifier;
 		};
 
-		Token( const Type type, const bool boolean, const Location &location ) : type( type ), location( location )
+		Token( const bool boolean, const Location &location ) : type( Type::BOOLEAN_LITERAL ), location( location )
 		{
 			value.boolean = boolean;
 		}
 
-		Token( const Type type, const long long integer, const Location &location ) : type( type ), location( location )
+		Token( const long long integer, const Location &location ) : type( Type::INTEGER_LITERAL ), location( location )
 		{
 			value.integer = integer;
 		}
 
-		Token( const Type type, const double real, const Location &location ) : type( type ), location( location )
+		Token( const double real, const Location &location ) : type( Type::REAL_LITERAL ), location( location )
 		{
 			value.real = real;
 		}
 
-		Token( const Type type, u16string * const string, const Location &location ) : type( type ), location( location )
+		Token( u16string * const string, const Location &location ) : type( Type::STRING_LITERAL ), location( location )
 		{
 			value.string = string;
+		}
+
+		Token( const Type type, u16string * const identifier, const Location &location ) : type( type ), location( location )
+		{
+			value.identifier = identifier;
 		}
 
 		Token( const Type type, const Location &location ) : type( type ), location( location )

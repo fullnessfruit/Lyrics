@@ -215,7 +215,7 @@ namespace lyrics
 							else if ( *tStr == Tokenizer::TRUE )
 							{
 								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::BOOLEAN_LITERAL, true, currentLocation );
+								mLastToken = token.emplace_after( mLastToken, true, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::CASE )
 							{
@@ -257,7 +257,7 @@ namespace lyrics
 							else if ( *tStr == Tokenizer::FALSE )
 							{
 								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::BOOLEAN_LITERAL, false, currentLocation );
+								mLastToken = token.emplace_after( mLastToken, false, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::CLASS )
 							{
@@ -369,7 +369,7 @@ namespace lyrics
 						}
 						while ( u'0' <= tChar && tChar <= u'9' );
 
-						mLastToken = token.emplace_after( mLastToken, Token::Type::REAL_LITERAL, double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
+						mLastToken = token.emplace_after( mLastToken, double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
 					}
 
 					currentLocation.IncreaseColumn( length );
@@ -576,7 +576,7 @@ namespace lyrics
 
 				if ( mOffset >= mTextLength || tChar != u'.' )
 				{
-					mLastToken = token.emplace_after( mLastToken, Token::Type::INTEGER_LITERAL, integer, currentLocation );
+					mLastToken = token.emplace_after( mLastToken, integer, currentLocation );
 					currentLocation.IncreaseColumn( length );
 				}
 				else
@@ -610,7 +610,7 @@ namespace lyrics
 						}
 					}
 
-					mLastToken = token.emplace_after( mLastToken, Token::Type::REAL_LITERAL, integer + double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
+					mLastToken = token.emplace_after( mLastToken, integer + double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
 					currentLocation.IncreaseColumn( length );
 				}
 			}
@@ -769,7 +769,7 @@ namespace lyrics
 				mOffset++;
 				length++;
 
-				mLastToken = token.emplace_after( mLastToken, Token::Type::STRING_LITERAL, tStr, currentLocation );
+				mLastToken = token.emplace_after( mLastToken, tStr, currentLocation );
 
 				while ( lineFeed-- )
 				{
