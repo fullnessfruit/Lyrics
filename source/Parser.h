@@ -789,7 +789,7 @@ namespace lyrics
 				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
 				mCurrentToken++;
 
-				if ( mCurrentToken->type == Token::Type::EXTENDS )
+				if ( mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 				{
 					mCurrentToken++;
 
