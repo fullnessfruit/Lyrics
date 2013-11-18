@@ -61,8 +61,8 @@ namespace lyrics
 			case Token::Type::PRIVATE:
 				return Private();
 
-			case Token::Type::PROC:
-				return Procedure();
+			case Token::Type::DEF:
+				return Function();
 
 			case Token::Type::RETURN:
 				return Return();
@@ -685,11 +685,11 @@ namespace lyrics
 			}
 		}
 
-		ProcedureNode *Procedure()
+		FunctionNode *Function()
 		{
 			mCurrentToken++;
 
-			ProcedureNode *node = new ProcedureNode( mCurrentToken->location );
+			FunctionNode *node = new FunctionNode( mCurrentToken->location );
 
 			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
 			{

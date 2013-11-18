@@ -46,6 +46,7 @@ namespace lyrics
 		static const u16string BREAK;
 		static const u16string CASE;
 		static const u16string CLASS;
+		static const u16string DEF;
 		static const u16string DO;
 		static const u16string END;
 		static const u16string ELSE;
@@ -59,7 +60,6 @@ namespace lyrics
 		static const u16string OUT;
 		static const u16string PRIVATE;
 		static const u16string PACKAGE;
-		static const u16string PROC;
 		static const u16string PUBLIC;
 		static const u16string REDO;
 		static const u16string RETURN;
@@ -185,15 +185,20 @@ namespace lyrics
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::FOR, currentLocation );
 							}
-							else if ( *tStr == Tokenizer::OUT )
+							else if ( *tStr == Tokenizer::DEF )
 							{
 								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::OUT, currentLocation );
+								mLastToken = token.emplace_after( mLastToken, Token::Type::DEF, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::NIL )
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::NIL_LITERAL, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::OUT )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::OUT, currentLocation );
 							}
 							else
 							{
@@ -206,11 +211,6 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::ELSE, currentLocation );
-							}
-							else if ( *tStr == Tokenizer::PROC )
-							{
-								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::PROC, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::TRUE )
 							{

@@ -82,7 +82,7 @@ namespace lyrics
 		struct DeclarationNode;
 			struct PublicNode;
 			struct PrivateNode;
-		struct ProcedureNode;
+		struct FunctionNode;
 			struct ParameterNode;
 				struct ValueParameterNode;
 				struct OutputParameterNode;
@@ -690,13 +690,13 @@ namespace lyrics
 		}
 	};
 
-	struct ProcedureNode: public StatementNode
+	struct FunctionNode: public StatementNode
 	{
-		explicit ProcedureNode( const Location &location ) : StatementNode( location ), name( nullptr ), block( nullptr )
+		explicit FunctionNode( const Location &location ) : StatementNode( location ), name( nullptr ), block( nullptr )
 		{
 		}
 
-		~ProcedureNode()
+		~FunctionNode()
 		{
 			delete name;
 
