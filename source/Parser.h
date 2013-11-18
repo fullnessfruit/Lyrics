@@ -396,85 +396,93 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mCurrentToken;
 			ExpressionNode *expression = PrimaryExpression();
 
-			if ( mCurrentToken->type == static_cast<Token::Type>( u'[' ) )
-			{
-				mCurrentToken++;
-
-				IndexReferenceNode *node = new IndexReferenceNode( tToken->location, expression, Expression() );
-
-				if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
-				{
-					mCurrentToken++;
-
-					return node;
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_INDEX, mCurrentToken->location );
-					delete expression;
-					delete node;
-
-					return nullptr;
-				}
-			}
-			else if ( mCurrentToken->type == static_cast<Token::Type>( u'(' ) )
-			{
-				mCurrentToken++;
-
-				FunctionCallNode *node = new FunctionCallNode( tToken->location, expression );
-
-				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
-				{
-					node->last = node->list.cbefore_begin();
-					for (;;)
-					{
-						node->last = node->list.insert_after( node->last, Expression() );
-
-						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-						{
-							mCurrentToken++;
-						}
-						else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
-						{
-							break;
-						}
-						else
-						{
-							BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mCurrentToken->location );
-							delete expression;
-							delete node;
-
-							return nullptr;
-						}
-					}
-				}
-				mCurrentToken++;
-
-				return node;
-			}
-			else if ( mCurrentToken->type == static_cast<Token::Type>( u'.' ) )
-			{
-				mCurrentToken++;
-
-				if ( mCurrentToken->type == Token::Type::IDENTIFIER )
-				{
-					MemberReferenceNode *node = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
-
-					mCurrentToken++;
-
-					return node;
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mCurrentToken->location );
-					delete expression;
-
-					return nullptr;
-				}
-			}
-			else
+			if ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::MEMBER_REFERENCE && expression->GetType() != Node::Type::INDEX_REFERENCE )
 			{
 				return expression;
+			}
+
+			for (;;)
+			{
+				if ( mCurrentToken->type == static_cast<Token::Type>( u'[' ) )
+				{
+					mCurrentToken++;
+
+					IndexReferenceNode *node = new IndexReferenceNode( tToken->location, expression, Expression() );
+
+					if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+					{
+						mCurrentToken++;
+
+						expression = static_cast<ExpressionNode *>( node );
+					}
+					else
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_INDEX, mCurrentToken->location );
+						delete node;
+						delete expression;
+
+						return nullptr;
+					}
+				}
+				else if ( mCurrentToken->type == static_cast<Token::Type>( u'(' ) )
+				{
+					mCurrentToken++;
+
+					FunctionCallNode *node = new FunctionCallNode( tToken->location, expression );
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+					{
+						node->last = node->list.cbefore_begin();
+						for (;;)
+						{
+							node->last = node->list.insert_after( node->last, Expression() );
+
+							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mCurrentToken++;
+							}
+							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+							{
+								break;
+							}
+							else
+							{
+								BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mCurrentToken->location );
+								delete node;
+								delete expression;
+
+								return nullptr;
+							}
+						}
+					}
+					mCurrentToken++;
+
+					expression = static_cast<ExpressionNode *>( node );
+				}
+				else if ( mCurrentToken->type == static_cast<Token::Type>( u'.' ) )
+				{
+					mCurrentToken++;
+
+					if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+					{
+						MemberReferenceNode *node = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
+
+						mCurrentToken++;
+
+						expression = static_cast<ExpressionNode *>( node );
+					}
+					else
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mCurrentToken->location );
+						delete expression;
+
+						return nullptr;
+					}
+				}
+				else
+				{
+					return expression;
+				}
 			}
 		}
 
