@@ -967,15 +967,16 @@ namespace lyrics
 			{
 				mCurrentToken++;
 
-				WhenNode *tNode = new WhenNode( mCurrentToken->location );
-				tNode->condition = Expression();
+				WhenNode *whenNode = new WhenNode( mCurrentToken->location );
+
+				whenNode->condition = Expression();
 				if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 				{
 					mCurrentToken++;
 				}
-				tNode->block = Block();
+				whenNode->block = Block();
 				node->last = node->list.cbefore_begin();
-				node->last = node->list.insert_after( node->last, tNode );
+				node->last = node->list.insert_after( node->last, whenNode );
 
 				for (;;)
 				{
@@ -983,14 +984,14 @@ namespace lyrics
 					{
 						mCurrentToken++;
 
-						tNode = new WhenNode( mCurrentToken->location );
-						tNode->condition = Expression();
+						whenNode = new WhenNode( mCurrentToken->location );
+						whenNode->condition = Expression();
 						if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
 						{
 							mCurrentToken++;
 						}
-						tNode->block = Block();
-						node->last = node->list.insert_after( node->last, tNode );
+						whenNode->block = Block();
+						node->last = node->list.insert_after( node->last, whenNode );
 					}
 					else if ( mCurrentToken->type == Token::Type::ELSE )
 					{
