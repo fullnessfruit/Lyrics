@@ -18,13 +18,11 @@ namespace lyrics
 		enum struct Type
 		{
 			BLOCK,
-						IDENTIFIER, LITERAL, ARRAY_LITERAL, HASH_LITERAL, PARENTHESIZED_EXPRESSION,
-							HASH,
+						IDENTIFIER, LITERAL, ARRAY_LITERAL, HASH_LITERAL, FUNCTION_LITERAL, PARENTHESIZED_EXPRESSION,
+							HASH, VALUE_PARAMETER, OUTPUT_PARAMETER,
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 					PUBLIC, PRIVATE,
-				FUNCTION,
-					VALUE_PARAMETER, OUTPUT_PARAMETER,
 				CLASS,
 				PACKAGE,
 				IMPORT,
@@ -66,7 +64,7 @@ namespace lyrics
 				struct ParenthesizedExpressionNode;
 			struct PostfixExpressionNode;
 				struct IndexReferenceNode;
-				struct ProcedureCallNode;
+				struct FunctionCallNode;
 				struct MemberReferenceNode;
 			struct UnaryExpressionNode;
 			struct MultiplicativeExpressionNode;
@@ -82,7 +80,7 @@ namespace lyrics
 		struct DeclarationNode;
 			struct PublicNode;
 			struct PrivateNode;
-		struct FunctionNode;
+		struct FunctionLiteralNode;
 			struct ParameterNode;
 				struct ValueParameterNode;
 				struct OutputParameterNode;
@@ -259,6 +257,81 @@ namespace lyrics
 		}
 	};
 
+	struct ParameterNode: public Node
+	{
+		ParameterNode( const Location &location, const IdentifierNode * const name ) : Node( location ), name( name )
+		{
+		}
+
+		virtual ~ParameterNode()
+		{
+			delete name;
+		}
+
+		const IdentifierNode * const name;
+	};
+
+	struct ValueParameterNode: public ParameterNode
+	{
+		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), defalutArgument( nullptr )
+		{
+		}
+
+		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument ) : ParameterNode( location, name ), defalutArgument( defalutArgument )
+		{
+		}
+
+		~ValueParameterNode()
+		{
+			delete defalutArgument;
+		}
+
+		const ExpressionNode * const defalutArgument;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::VALUE_PARAMETER;
+		}
+	};
+
+	struct OutputParameterNode: public ParameterNode
+	{
+		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name )
+		{
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::OUTPUT_PARAMETER;
+		}
+	};
+
+	struct FunctionLiteralNode: public PrimaryExpressionNode
+	{
+		explicit FunctionLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), block( nullptr )
+		{
+		}
+
+		~FunctionLiteralNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+
+			delete block;
+		}
+
+		forward_list<ParameterNode *> list;
+		forward_list<ParameterNode *>::const_iterator last;
+		BlockNode *block;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::FUNCTION_LITERAL;
+		}
+	};
+
 	struct ParenthesizedExpressionNode: public PrimaryExpressionNode
 	{
 		ParenthesizedExpressionNode( const Location &location, const ExpressionNode * const expression ) : PrimaryExpressionNode( location ), expression( expression )
@@ -311,13 +384,13 @@ namespace lyrics
 		}
 	};
 
-	struct ProcedureCallNode: public PostfixExpressionNode
+	struct FunctionCallNode: public PostfixExpressionNode
 	{
-		ProcedureCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
+		FunctionCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
 		{
 		}
 
-		~ProcedureCallNode()
+		~FunctionCallNode()
 		{
 			for ( auto i : list )
 			{
@@ -638,84 +711,6 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PRIVATE;
-		}
-	};
-
-	struct ParameterNode: public Node
-	{
-		ParameterNode( const Location &location, const IdentifierNode * const name ) : Node( location ), name( name )
-		{
-		}
-
-		virtual ~ParameterNode()
-		{
-			delete name;
-		}
-
-		const IdentifierNode * const name;
-	};
-
-	struct ValueParameterNode: public ParameterNode
-	{
-		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), defalutArgument( nullptr )
-		{
-		}
-
-		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument ) : ParameterNode( location, name ), defalutArgument( defalutArgument )
-		{
-		}
-
-		~ValueParameterNode()
-		{
-			delete defalutArgument;
-		}
-
-		const ExpressionNode * const defalutArgument;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::VALUE_PARAMETER;
-		}
-	};
-
-	struct OutputParameterNode: public ParameterNode
-	{
-		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name )
-		{
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::OUTPUT_PARAMETER;
-		}
-	};
-
-	struct FunctionNode: public StatementNode
-	{
-		explicit FunctionNode( const Location &location ) : StatementNode( location ), name( nullptr ), block( nullptr )
-		{
-		}
-
-		~FunctionNode()
-		{
-			delete name;
-
-			for ( auto i : list )
-			{
-				delete i;
-			}
-
-			delete block;
-		}
-
-		IdentifierNode *name;
-		forward_list<ParameterNode *> list;
-		forward_list<ParameterNode *>::const_iterator last;
-		BlockNode *block;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::FUNCTION;
 		}
 	};
 

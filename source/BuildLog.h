@@ -109,10 +109,6 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter." << endl;
 				break;
 
-			case ErrorCode::EXPECTED_FUNCTION_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected function name." << endl;
-				break;
-
 			case ErrorCode::EXPECTED_BASE_CLASS:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected base class." << endl;
 				break;
