@@ -21,7 +21,7 @@ namespace lyrics
 			long long integer;
 			double real;
 			u16string *string;
-			char *def;
+			char *function;
 			vector<Literal> *array;
 			unordered_map<u16string, Literal> *hash;
 			char *object;
