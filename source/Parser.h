@@ -226,24 +226,43 @@ namespace lyrics
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 					{
+						ExpressionNode *expression;
+
 						node->last = node->list.cbefore_begin();
 						for (;;)
 						{
-							ExpressionNode *left = Expression();
-							if ( mCurrentToken->type != static_cast<Token::Type>( u':' ) )
+							if ( mCurrentToken->type != static_cast<Token::Type>( u'[' ) )
 							{
 								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
-								delete left;
 								delete node;
 
 								return nullptr;
 							}
 							mCurrentToken++;
-							ExpressionNode *right = Expression();
 
-							PairNode *pair = new PairNode( mCurrentToken->location, left, right );
+							expression = Expression();
 
-							node->last = node->list.insert_after( node->last, pair );
+							if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
+							{
+								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
+								delete expression;
+								delete node;
+
+								return nullptr;
+							}
+							mCurrentToken++;
+
+							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+							{
+								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
+								delete expression;
+								delete node;
+
+								return nullptr;
+							}
+							mCurrentToken++;
+
+							node->last = node->list.insert_after( node->last, new PairNode( mCurrentToken->location, expression, Expression() ) );
 
 							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 							{
