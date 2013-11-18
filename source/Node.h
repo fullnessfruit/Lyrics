@@ -180,6 +180,31 @@ namespace lyrics
 	{
 		explicit LiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
+			literal.type = Literal::Type::NIL;
+		}
+
+		LiteralNode( const Location &location, const bool boolean ) : PrimaryExpressionNode( location )
+		{
+			literal.type = Literal::Type::BOOLEAN;
+			literal.value.integer = boolean;
+		}
+
+		LiteralNode( const Location &location, const long long integer ) : PrimaryExpressionNode( location )
+		{
+			literal.type = Literal::Type::INTEGER;
+			literal.value.integer = integer;
+		}
+
+		LiteralNode( const Location &location, const double real ) : PrimaryExpressionNode( location )
+		{
+			literal.type = Literal::Type::REAL;
+			literal.value.integer = real;
+		}
+
+		LiteralNode( const Location &location, u16string * const string ) : PrimaryExpressionNode( location )
+		{
+			literal.type = Literal::Type::STRING;
+			literal.value.string = string;
 		}
 
 		Literal literal;

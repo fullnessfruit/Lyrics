@@ -102,10 +102,7 @@ namespace lyrics
 
 			case Token::Type::INTEGER_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location );
-
-					node->literal.type = Literal::Type::INTEGER;
-					node->literal.value.integer = mCurrentToken->value.integer;
+					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.integer );
 
 					mCurrentToken++;
 
@@ -114,10 +111,7 @@ namespace lyrics
 
 			case Token::Type::STRING_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location );
-
-					node->literal.type = Literal::Type::STRING;
-					node->literal.value.string = mCurrentToken->value.string;
+					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.string );
 
 					mCurrentToken++;
 
@@ -126,10 +120,7 @@ namespace lyrics
 
 			case Token::Type::BOOLEAN_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location );
-
-					node->literal.type = Literal::Type::BOOLEAN;
-					node->literal.value.boolean = mCurrentToken->value.boolean;
+					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.boolean );
 
 					mCurrentToken++;
 
@@ -140,8 +131,6 @@ namespace lyrics
 				{
 					LiteralNode *node = new LiteralNode( mCurrentToken->location );
 
-					node->literal.type = Literal::Type::NIL;
-
 					mCurrentToken++;
 
 					return node;
@@ -149,10 +138,7 @@ namespace lyrics
 
 			case Token::Type::REAL_LITERAL:
 				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location );
-
-					node->literal.type = Literal::Type::REAL;
-					node->literal.value.real = mCurrentToken->value.real;
+					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.real );
 
 					mCurrentToken++;
 
