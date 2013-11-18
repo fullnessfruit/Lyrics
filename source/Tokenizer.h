@@ -298,15 +298,15 @@ namespace lyrics
 							break;
 
 						case 7:
-							if ( *tStr == Tokenizer::PACKAGE )
-							{
-								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
-							}
-							else if ( *tStr == Tokenizer::PRIVATE )
+							if ( *tStr == Tokenizer::PRIVATE )
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::PRIVATE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::PACKAGE )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
 							}
 							else
 							{
