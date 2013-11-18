@@ -13,7 +13,7 @@ namespace lyrics
 
 	struct Literal
 	{
-		enum struct Type: unsigned int { NIL, BOOLEAN, INTEGER, REAL, STRING, PROC, ARRAY, HASH, IMAGE, TEXT, SOUND, VIDEO, OBJECT } type;
+		enum struct Type: unsigned int { NIL, BOOLEAN, INTEGER, REAL, STRING, ARRAY, HASH, DEF, IMAGE, TEXT, SOUND, VIDEO, OBJECT } type;
 
 		union Value
 		{
@@ -21,7 +21,7 @@ namespace lyrics
 			long long integer;
 			double real;
 			u16string *string;
-			char *proc;
+			char *def;
 			vector<Literal> *array;
 			unordered_map<u16string, Literal> *hash;
 			char *object;

@@ -77,8 +77,8 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected index." << endl;
 				break;
 
-			case ErrorCode::EXPECTED_PROCEDURE_CALL:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected procedure call." << endl;
+			case ErrorCode::EXPECTED_FUNCTION_CALL:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected function call." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_MEMBER:
@@ -101,12 +101,16 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Output parameter cannot have default argument." << endl;
 				break;
 
-			case ErrorCode::INCOMPLETE_PROCEDURE:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete procedure." << endl;
+			case ErrorCode::INCOMPLETE_FUNCTION:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete function." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PARAMETER:
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_FUNCTION_NAME:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected function name." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_BASE_CLASS:
