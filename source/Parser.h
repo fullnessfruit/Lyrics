@@ -187,7 +187,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					ArrayNode *node = new ArrayNode( mCurrentToken->location );
+					ArrayLiteralNode *node = new ArrayLiteralNode( mCurrentToken->location );
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 					{
@@ -222,7 +222,7 @@ namespace lyrics
 				{
 					mCurrentToken++;
 
-					HashNode *node = new HashNode( mCurrentToken->location );
+					HashLiteralNode *node = new HashLiteralNode( mCurrentToken->location );
 
 					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
 					{
@@ -233,7 +233,7 @@ namespace lyrics
 						{
 							if ( mCurrentToken->type != static_cast<Token::Type>( u'[' ) )
 							{
-								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
+								BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
 								delete node;
 
 								return nullptr;
@@ -244,7 +244,7 @@ namespace lyrics
 
 							if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
 							{
-								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
+								BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
 								delete expression;
 								delete node;
 
@@ -254,7 +254,7 @@ namespace lyrics
 
 							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
 							{
-								BuildLog::Error( ErrorCode::EXPECTED_HASH_PAIR, mCurrentToken->location );
+								BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
 								delete expression;
 								delete node;
 
@@ -262,7 +262,7 @@ namespace lyrics
 							}
 							mCurrentToken++;
 
-							node->last = node->list.insert_after( node->last, new PairNode( mCurrentToken->location, expression, Expression() ) );
+							node->last = node->list.insert_after( node->last, new HashNode( mCurrentToken->location, expression, Expression() ) );
 
 							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
 							{

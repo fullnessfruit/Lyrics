@@ -61,8 +61,8 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete array literal." << endl;
 				break;
 
-			case ErrorCode::EXPECTED_HASH_PAIR:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected hash pair." << endl;
+			case ErrorCode::EXPECTED_HASH:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected hash." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_HASH_LITERAL:

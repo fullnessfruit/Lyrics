@@ -18,8 +18,8 @@ namespace lyrics
 		enum struct Type
 		{
 			BLOCK,
-						IDENTIFIER, LITERAL, ARRAY, HASH, PARENTHESIZED_EXPRESSION,
-							PAIR,
+						IDENTIFIER, LITERAL, ARRAY_LITERAL, HASH_LITERAL, PARENTHESIZED_EXPRESSION,
+							HASH,
 						INDEX_REFERENCE, PROCEDURE_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 					PUBLIC, PRIVATE,
@@ -60,9 +60,9 @@ namespace lyrics
 			struct PrimaryExpressionNode;
 				struct IdentifierNode;
 				struct LiteralNode;
-				struct ArrayNode;
-				struct HashNode;
-					struct PairNode;
+				struct ArrayLiteralNode;
+				struct HashLiteralNode;
+					struct HashNode;
 				struct ParenthesizedExpressionNode;
 			struct PostfixExpressionNode;
 				struct IndexReferenceNode;
@@ -192,13 +192,13 @@ namespace lyrics
 		}
 	};
 
-	struct ArrayNode: public PrimaryExpressionNode
+	struct ArrayLiteralNode: public PrimaryExpressionNode
 	{
-		explicit ArrayNode( const Location &location ) : PrimaryExpressionNode( location )
+		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
 		}
 
-		~ArrayNode()
+		~ArrayLiteralNode()
 		{
 			for ( auto i : list )
 			{
@@ -211,38 +211,38 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::ARRAY;
+			return Node::Type::ARRAY_LITERAL;
 		}
 	};
 
-	struct PairNode: public Node
+	struct HashNode: public Node
 	{
-		PairNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : Node( location ), left( left ), right( right )
-		{
-		}
-
-		~PairNode()
-		{
-			delete left;
-			delete right;
-		}
-
-		const ExpressionNode * const left;
-		const ExpressionNode * const right;
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PAIR;
-		}
-	};
-
-	struct HashNode: public PrimaryExpressionNode
-	{
-		explicit HashNode( const Location &location ) : PrimaryExpressionNode( location )
+		HashNode( const Location &location, const ExpressionNode * const key, const ExpressionNode * const value ) : Node( location ), key( key ), value( value )
 		{
 		}
 
 		~HashNode()
+		{
+			delete key;
+			delete value;
+		}
+
+		const ExpressionNode * const key;
+		const ExpressionNode * const value;
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::HASH;
+		}
+	};
+
+	struct HashLiteralNode: public PrimaryExpressionNode
+	{
+		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
+		{
+		}
+
+		~HashLiteralNode()
 		{
 			for ( auto i : list )
 			{
@@ -250,12 +250,12 @@ namespace lyrics
 			}
 		}
 
-		forward_list<PairNode *> list;
-		forward_list<PairNode *>::const_iterator last;
+		forward_list<HashNode *> list;
+		forward_list<HashNode *>::const_iterator last;
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::HASH;
+			return Node::Type::HASH_LITERAL;
 		}
 	};
 
