@@ -25,22 +25,22 @@ namespace lyrics
 			forward_list<Token> token;
 			Tokenizer().Tokenize( fileName, token );
 
-			mCurrentToken = token.cbegin();
+			mToken = token.cbegin();
 			mLastToken = token.cend();
 
 			return Block();
 		}
 	
 	private:
-		forward_list<Token>::const_iterator mCurrentToken;
+		forward_list<Token>::const_iterator mToken;
 		forward_list<Token>::const_iterator mLastToken;
 
 		BlockNode *Block()
 		{
-			BlockNode *node = new BlockNode( mCurrentToken->location );
+			BlockNode *node = new BlockNode( mToken->location );
 
 			node->last = node->list.cbefore_begin();
-			if ( mCurrentToken->type != Token::Type::END && mCurrentToken->type != Token::Type::ELSE && mCurrentToken->type != Token::Type::ELSEIF && mCurrentToken->type != Token::Type::WHEN && mCurrentToken != mLastToken )
+			if ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::WHEN && mToken != mLastToken )
 			{
 				node->last = node->list.insert_after( node->last, Statement() );
 			}
@@ -50,7 +50,7 @@ namespace lyrics
 
 		StatementNode *Statement()
 		{
-			switch ( mCurrentToken->type )
+			switch ( mToken->type )
 			{
 			case Token::Type::IF:
 				return If();
@@ -95,25 +95,25 @@ namespace lyrics
 
 		ExpressionNode *PrimaryExpression()
 		{
-			switch ( mCurrentToken->type )
+			switch ( mToken->type )
 			{
 			case Token::Type::IDENTIFIER:
-				return new IdentifierNode( mCurrentToken->location, mCurrentToken++->value.identifier );
+				return new IdentifierNode( mToken->location, mToken++->value.identifier );
 
 			case Token::Type::INTEGER_LITERAL:
-				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.integer );
+				return new LiteralNode( mToken->location, mToken++->value.integer );
 
 			case Token::Type::STRING_LITERAL:
-				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.string );
+				return new LiteralNode( mToken->location, mToken++->value.string );
 
 			case Token::Type::BOOLEAN_LITERAL:
-				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.boolean );
+				return new LiteralNode( mToken->location, mToken++->value.boolean );
 
 			case Token::Type::NIL_LITERAL:
-				return new LiteralNode( mCurrentToken++->location );
+				return new LiteralNode( mToken++->location );
 
 			case Token::Type::REAL_LITERAL:
-				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.real );
+				return new LiteralNode( mToken->location, mToken++->value.real );
 
 			case static_cast<Token::Type>( u'(' ):
 				return ParenthesizedExpression();
@@ -128,7 +128,7 @@ namespace lyrics
 				return FunctionLiteral();
 			
 			default:
-				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
 
 				return nullptr;
 			}
@@ -136,119 +136,119 @@ namespace lyrics
 
 		ArrayLiteralNode *ArrayLiteral()
 		{
-			ArrayLiteralNode *node = new ArrayLiteralNode( mCurrentToken->location );
+			ArrayLiteralNode *node = new ArrayLiteralNode( mToken->location );
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
+			if ( mToken->type != static_cast<Token::Type>( u']' ) )
 			{
 				node->last = node->list.cbefore_begin();
 				for (;;)
 				{
 					node->last = node->list.insert_after( node->last, Expression() );
 
-					if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
-						mCurrentToken++;
+						mToken++;
 					}
-					else if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+					else if ( mToken->type == static_cast<Token::Type>( u']' ) )
 					{
 						break;
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
 						delete node;
 
 						return nullptr;
 					}
 				}
 			}
-			mCurrentToken++;
+			mToken++;
 
 			return node;
 		}
 
 		HashLiteralNode *HashLiteral()
 		{
-			HashLiteralNode *node = new HashLiteralNode( mCurrentToken->location );
+			HashLiteralNode *node = new HashLiteralNode( mToken->location );
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'}' ) )
 			{
 				ExpressionNode *expression;
 
 				node->last = node->list.cbefore_begin();
 				for (;;)
 				{
-					if ( mCurrentToken->type != static_cast<Token::Type>( u'[' ) )
+					if ( mToken->type != static_cast<Token::Type>( u'[' ) )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
 						delete node;
 
 						return nullptr;
 					}
 
-					forward_list<Token>::const_iterator tToken = mCurrentToken;
+					forward_list<Token>::const_iterator tToken = mToken;
 
-					mCurrentToken++;
+					mToken++;
 
 					expression = Expression();
 
-					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
+					if ( mToken->type != static_cast<Token::Type>( u']' ) )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
 						delete expression;
 						delete node;
 
 						return nullptr;
 					}
-					mCurrentToken++;
+					mToken++;
 
-					if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+					if ( mToken->type != static_cast<Token::Type>( u'=' ) )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
 						delete expression;
 						delete node;
 
 						return nullptr;
 					}
-					mCurrentToken++;
+					mToken++;
 
 					node->last = node->list.insert_after( node->last, new HashNode( tToken->location, expression, Expression() ) );
 
-					if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
-						mCurrentToken++;
+						mToken++;
 					}
-					else if ( mCurrentToken->type == static_cast<Token::Type>( u'}' ) )
+					else if ( mToken->type == static_cast<Token::Type>( u'}' ) )
 					{
 						break;
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
 						delete node;
 
 						return nullptr;
 					}
 				}
 			}
-			mCurrentToken++;
+			mToken++;
 
 			return node;
 		}
 
 		FunctionLiteralNode *FunctionLiteral()
 		{
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'(' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'(' ) )
 			{
-				FunctionLiteralNode *node = new FunctionLiteralNode( mCurrentToken->location );
+				FunctionLiteralNode *node = new FunctionLiteralNode( mToken->location );
 
-				mCurrentToken++;
+				mToken++;
 
-				if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+				if ( mToken->type != static_cast<Token::Type>( u')' ) )
 				{
 					ParameterNode *parameter;
 					bool isValueParameter;
@@ -257,33 +257,33 @@ namespace lyrics
 					node->last = node->list.cbefore_begin();
 					for (;;)
 					{
-						forward_list<Token>::const_iterator tToken = mCurrentToken;
+						forward_list<Token>::const_iterator tToken = mToken;
 
-						if ( mCurrentToken->type != Token::Type::OUT )
+						if ( mToken->type != Token::Type::OUT )
 						{
 							isValueParameter = true;
 						}
 						else
 						{
-							mCurrentToken++;
+							mToken++;
 
 							isValueParameter = false;
 						}
 
-						if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+						if ( mToken->type == Token::Type::IDENTIFIER )
 						{
-							name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-							mCurrentToken++;
+							name = new IdentifierNode( mToken->location, mToken->value.identifier );
+							mToken++;
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mCurrentToken->location );
+							BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mToken->location );
 							delete node;
 
 							return nullptr;
 						}
 
-						if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+						if ( mToken->type != static_cast<Token::Type>( u'=' ) )
 						{
 							if ( isValueParameter )
 							{
@@ -296,7 +296,7 @@ namespace lyrics
 						}
 						else
 						{
-							mCurrentToken++;
+							mToken++;
 
 							if ( isValueParameter )
 							{
@@ -304,7 +304,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mCurrentToken->location );
+								BuildLog::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mToken->location );
 								delete name;
 								delete node;
 
@@ -314,24 +314,24 @@ namespace lyrics
 
 						node->last = node->list.insert_after( node->last, parameter );
 
-						if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+						if ( mToken->type == static_cast<Token::Type>( u',' ) )
 						{
-							mCurrentToken++;
+							mToken++;
 						}
-						else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+						else if ( mToken->type == static_cast<Token::Type>( u')' ) )
 						{
 							break;
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mCurrentToken->location );
+							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 							delete node;
 
 							return nullptr;
 						}
 					}
 				}
-				mCurrentToken++;
+				mToken++;
 
 				node->block = Block();
 
@@ -339,7 +339,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mToken->location );
 
 				return nullptr;
 			}
@@ -347,19 +347,19 @@ namespace lyrics
 
 		ParenthesizedExpressionNode *ParenthesizedExpression()
 		{
-			ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mCurrentToken->location, Expression() );
+			ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mToken->location, Expression() );
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+			if ( mToken->type == static_cast<Token::Type>( u')' ) )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				return node;
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -368,7 +368,7 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
 			if ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::MEMBER_REFERENCE && expression->GetType() != Node::Type::INDEX_REFERENCE )
@@ -378,51 +378,51 @@ namespace lyrics
 
 			for (;;)
 			{
-				if ( mCurrentToken->type == static_cast<Token::Type>( u'[' ) )
+				if ( mToken->type == static_cast<Token::Type>( u'[' ) )
 				{
-					mCurrentToken++;
+					mToken++;
 
 					IndexReferenceNode *node = new IndexReferenceNode( tToken->location, expression, Expression() );
 
-					if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+					if ( mToken->type == static_cast<Token::Type>( u']' ) )
 					{
-						mCurrentToken++;
+						mToken++;
 
 						expression = static_cast<ExpressionNode *>( node );
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_INDEX, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
 						delete node;
 						delete expression;
 
 						return nullptr;
 					}
 				}
-				else if ( mCurrentToken->type == static_cast<Token::Type>( u'(' ) )
+				else if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 				{
-					mCurrentToken++;
+					mToken++;
 
 					FunctionCallNode *node = new FunctionCallNode( tToken->location, expression );
 
-					if ( mCurrentToken->type != static_cast<Token::Type>( u')' ) )
+					if ( mToken->type != static_cast<Token::Type>( u')' ) )
 					{
 						node->last = node->list.cbefore_begin();
 						for (;;)
 						{
 							node->last = node->list.insert_after( node->last, Expression() );
 
-							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+							if ( mToken->type == static_cast<Token::Type>( u',' ) )
 							{
-								mCurrentToken++;
+								mToken++;
 							}
-							else if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+							else if ( mToken->type == static_cast<Token::Type>( u')' ) )
 							{
 								break;
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mCurrentToken->location );
+								BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
 								delete node;
 								delete expression;
 
@@ -430,25 +430,25 @@ namespace lyrics
 							}
 						}
 					}
-					mCurrentToken++;
+					mToken++;
 
 					expression = static_cast<ExpressionNode *>( node );
 				}
-				else if ( mCurrentToken->type == static_cast<Token::Type>( u'.' ) )
+				else if ( mToken->type == static_cast<Token::Type>( u'.' ) )
 				{
-					mCurrentToken++;
+					mToken++;
 
-					if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+					if ( mToken->type == Token::Type::IDENTIFIER )
 					{
-						MemberReferenceNode *node = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
+						MemberReferenceNode *node = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mToken->location, mToken->value.identifier ) );
 
-						mCurrentToken++;
+						mToken++;
 
 						expression = static_cast<ExpressionNode *>( node );
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -463,16 +463,16 @@ namespace lyrics
 
 		ExpressionNode *UnaryExpression()
 		{
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'+' ) && mCurrentToken->type != static_cast<Token::Type>( u'-' ) && mCurrentToken->type != static_cast<Token::Type>( u'~' ) && mCurrentToken->type != static_cast<Token::Type>( u'!' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) && mToken->type != static_cast<Token::Type>( u'~' ) && mToken->type != static_cast<Token::Type>( u'!' ) )
 			{
 				return PostfixExpression();
 			}
 			else
 			{
-				UnaryExpressionNode *node = new UnaryExpressionNode( mCurrentToken->location );
+				UnaryExpressionNode *node = new UnaryExpressionNode( mToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->expression = UnaryExpression();
 
@@ -482,10 +482,10 @@ namespace lyrics
 
 		ExpressionNode *MultiplicativeExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = UnaryExpression();
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'*' ) && mCurrentToken->type != static_cast<Token::Type>( u'/' ) && mCurrentToken->type != static_cast<Token::Type>( u'%' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'*' ) && mToken->type != static_cast<Token::Type>( u'/' ) && mToken->type != static_cast<Token::Type>( u'%' ) )
 			{
 				return expression;
 			}
@@ -494,8 +494,8 @@ namespace lyrics
 
 				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode( tToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->left = expression;
 				node->right = MultiplicativeExpression();
@@ -506,10 +506,10 @@ namespace lyrics
 
 		ExpressionNode *AdditiveExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = MultiplicativeExpression();
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'+' ) && mCurrentToken->type != static_cast<Token::Type>( u'-' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) )
 			{
 				return expression;
 			}
@@ -517,8 +517,8 @@ namespace lyrics
 			{
 				AdditiveExpressionNode *node = new AdditiveExpressionNode( tToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->left = expression;
 				node->right = AdditiveExpression();
@@ -529,10 +529,10 @@ namespace lyrics
 
 		ExpressionNode *ShiftExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = AdditiveExpression();
 
-			if ( mCurrentToken->type != Token::Type::SHIFT_LEFT && mCurrentToken->type != Token::Type::SHIFT_RIGHT )
+			if ( mToken->type != Token::Type::SHIFT_LEFT && mToken->type != Token::Type::SHIFT_RIGHT )
 			{
 				return expression;
 			}
@@ -540,8 +540,8 @@ namespace lyrics
 			{
 				ShiftExpressionNode *node = new ShiftExpressionNode( tToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->left = expression;
 				node->right = ShiftExpression();
@@ -552,10 +552,10 @@ namespace lyrics
 
 		ExpressionNode *AndExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = ShiftExpression();
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'&' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'&' ) )
 			{
 				return expression;
 			}
@@ -563,7 +563,7 @@ namespace lyrics
 			{
 				AndExpressionNode *node = new AndExpressionNode( tToken->location );
 
-				mCurrentToken++;
+				mToken++;
 
 				node->left = expression;
 				node->right = AndExpression();
@@ -574,10 +574,10 @@ namespace lyrics
 
 		ExpressionNode *OrExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = AndExpression();
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'|' ) && mCurrentToken->type != static_cast<Token::Type>( u'^' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'|' ) && mToken->type != static_cast<Token::Type>( u'^' ) )
 			{
 				return expression;
 			}
@@ -585,8 +585,8 @@ namespace lyrics
 			{
 				OrExpressionNode *node = new OrExpressionNode( tToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->left = expression;
 				node->right = OrExpression();
@@ -597,10 +597,10 @@ namespace lyrics
 
 		ExpressionNode *RelationalExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = OrExpression();
 
-			if ( mCurrentToken->type != static_cast<Token::Type>( u'<' ) && mCurrentToken->type != static_cast<Token::Type>( u'>' ) && mCurrentToken->type != Token::Type::LESS_THAN_OR_EQUAL && mCurrentToken->type != Token::Type::GREATER_THAN_OR_EQUAL )
+			if ( mToken->type != static_cast<Token::Type>( u'<' ) && mToken->type != static_cast<Token::Type>( u'>' ) && mToken->type != Token::Type::LESS_THAN_OR_EQUAL && mToken->type != Token::Type::GREATER_THAN_OR_EQUAL )
 			{
 				return expression;
 			}
@@ -608,8 +608,8 @@ namespace lyrics
 			{
 				RelationalExpressionNode *node = new RelationalExpressionNode( tToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->left = expression;
 				node->right = RelationalExpression();
@@ -620,10 +620,10 @@ namespace lyrics
 
 		ExpressionNode *EqualityExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = RelationalExpression();
 
-			if ( mCurrentToken->type != Token::Type::EQUAL && mCurrentToken->type != Token::Type::NOT_EQUAL )
+			if ( mToken->type != Token::Type::EQUAL && mToken->type != Token::Type::NOT_EQUAL )
 			{
 				return expression;
 			}
@@ -631,8 +631,8 @@ namespace lyrics
 			{
 				EqualityExpressionNode *node = new EqualityExpressionNode( tToken->location );
 
-				node->op = mCurrentToken->type;
-				mCurrentToken++;
+				node->op = mToken->type;
+				mToken++;
 
 				node->left = expression;
 				node->right = EqualityExpression();
@@ -643,10 +643,10 @@ namespace lyrics
 
 		ExpressionNode *LogicalAndExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = EqualityExpression();
 
-			if ( mCurrentToken->type != Token::Type::AND )
+			if ( mToken->type != Token::Type::AND )
 			{
 				return expression;
 			}
@@ -654,7 +654,7 @@ namespace lyrics
 			{
 				LogicalAndExpressionNode *node = new LogicalAndExpressionNode( tToken->location );
 
-				mCurrentToken++;
+				mToken++;
 
 				node->left = expression;
 				node->right = LogicalAndExpression();
@@ -665,10 +665,10 @@ namespace lyrics
 
 		ExpressionNode *LogicalOrExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = LogicalAndExpression();
 
-			if ( mCurrentToken->type != Token::Type::OR )
+			if ( mToken->type != Token::Type::OR )
 			{
 				return expression;
 			}
@@ -676,7 +676,7 @@ namespace lyrics
 			{
 				LogicalOrExpressionNode *node = new LogicalOrExpressionNode( tToken->location );
 
-				mCurrentToken++;
+				mToken++;
 
 				node->left = expression;
 				node->right = LogicalOrExpression();
@@ -687,13 +687,13 @@ namespace lyrics
 
 		ExpressionNode *AssignmentExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			if ( mCurrentToken->type != Token::Type::DEF )
+			if ( mToken->type != Token::Type::DEF )
 			{
 				ExpressionNode *expression = LogicalOrExpression();
 
-				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+				if ( mToken->type != static_cast<Token::Type>( u'=' ) )
 				{
 					return expression;
 				}
@@ -703,7 +703,7 @@ namespace lyrics
 					{
 						AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
 
-						mCurrentToken++;
+						mToken++;
 
 						node->lhs = expression;
 						node->rhs = AssignmentExpression();
@@ -712,7 +712,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -721,13 +721,13 @@ namespace lyrics
 			}
 			else
 			{
-				mCurrentToken++;
+				mToken++;
 
-				if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
 					AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
 
-					node->lhs = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
+					node->lhs = new IdentifierNode( mToken->location, mToken->value.identifier );
 					node->rhs = FunctionLiteral();	// TODO: Location of function is not correct.
 					if ( node->rhs == nullptr )
 					{
@@ -742,7 +742,7 @@ namespace lyrics
 				}
 				else
 				{
-					mCurrentToken = tToken;
+					mToken = tToken;
 
 					return PrimaryExpression();
 				}
@@ -756,29 +756,29 @@ namespace lyrics
 
 		PublicNode *Public()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				IdentifierNode *name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-				mCurrentToken++;
+				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				mToken++;
 
-				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+				if ( mToken->type != static_cast<Token::Type>( u'=' ) )
 				{
 					return new PublicNode( tToken->location, name );
 				}
 				else
 				{
-					mCurrentToken++;
+					mToken++;
 
 					return new PublicNode( tToken->location, name, Expression() );
 				}
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mToken->location );
 
 				return nullptr;
 			}
@@ -786,29 +786,29 @@ namespace lyrics
 
 		PrivateNode *Private()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				IdentifierNode *name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-				mCurrentToken++;
+				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				mToken++;
 
-				if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+				if ( mToken->type != static_cast<Token::Type>( u'=' ) )
 				{
 					return new PrivateNode( tToken->location, name );
 				}
 				else
 				{
-					mCurrentToken++;
+					mToken++;
 
 					return new PrivateNode( tToken->location, name, Expression() );
 				}
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mToken->location );
 
 				return nullptr;
 			}
@@ -816,29 +816,29 @@ namespace lyrics
 
 		ClassNode *Class()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
 				ClassNode *node = new ClassNode( tToken->location );
 
-				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-				mCurrentToken++;
+				node->name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				mToken++;
 
-				if ( mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+				if ( mToken->type == static_cast<Token::Type>( u':' ) )
 				{
-					mCurrentToken++;
+					mToken++;
 
-					if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+					if ( mToken->type == Token::Type::IDENTIFIER )
 					{
-						node->base = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-						mCurrentToken++;
+						node->base = new IdentifierNode( mToken->location, mToken->value.identifier );
+						mToken++;
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -851,7 +851,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
 
 				return nullptr;
 			}
@@ -859,16 +859,16 @@ namespace lyrics
 
 		PackageNode *Package()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
 				PackageNode *node = new PackageNode( tToken->location );
 
-				node->name = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-				mCurrentToken++;
+				node->name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				mToken++;
 
 				node->block = Block();
 
@@ -876,7 +876,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
 
 				return nullptr;
 			}
@@ -884,20 +884,20 @@ namespace lyrics
 
 		ImportNode *Import()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				ImportNode *node = new ImportNode( tToken->location, new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier ) );
-				mCurrentToken++;
+				ImportNode *node = new ImportNode( tToken->location, new IdentifierNode( mToken->location, mToken->value.identifier ) );
+				mToken++;
 
 				return node;
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
 
 				return nullptr;
 			}
@@ -905,86 +905,86 @@ namespace lyrics
 
 		IfNode* If()
 		{
-			IfNode *node = new IfNode( mCurrentToken->location );
-			ElseIfNode *tNode = new ElseIfNode( mCurrentToken->location );
+			IfNode *node = new IfNode( mToken->location );
+			ElseIfNode *tNode = new ElseIfNode( mToken->location );
 
-			mCurrentToken++;
+			mToken++;
 
 			tNode->condition = Expression();
-			if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+			if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 			{
-				mCurrentToken++;
+				mToken++;
 			}
 			tNode->block = Block();
 			node->last = node->list.cbefore_begin();
 			node->last = node->list.insert_after( node->last, tNode );
 
-			if ( mCurrentToken->type == Token::Type::END )
+			if ( mToken->type == Token::Type::END )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				return node;
 			}
-			else if ( mCurrentToken->type == Token::Type::ELSE )
+			else if ( mToken->type == Token::Type::ELSE )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				node->block = Block();
 
-				if ( mCurrentToken->type == Token::Type::END )
+				if ( mToken->type == Token::Type::END )
 				{
-					mCurrentToken++;
+					mToken++;
 
 					return node;
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
+					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 					delete node;
 
 					return nullptr;
 				}
 			}
-			else if ( mCurrentToken->type == Token::Type::ELSEIF )
+			else if ( mToken->type == Token::Type::ELSEIF )
 			{
 				for (;;)
 				{
-					tNode = new ElseIfNode( mCurrentToken->location );
-					mCurrentToken++;
+					tNode = new ElseIfNode( mToken->location );
+					mToken++;
 
 					tNode->condition = Expression();
 					tNode->block = Block();
 					node->last = node->list.insert_after( node->last, tNode );
 
-					if ( mCurrentToken->type == Token::Type::END )
+					if ( mToken->type == Token::Type::END )
 					{
-						mCurrentToken++;
+						mToken++;
 
 						return node;
 					}
-					else if ( mCurrentToken->type == Token::Type::ELSE )
+					else if ( mToken->type == Token::Type::ELSE )
 					{
-						mCurrentToken++;
+						mToken++;
 
 						node->block = Block();
 
-						if ( mCurrentToken->type == Token::Type::END )
+						if ( mToken->type == Token::Type::END )
 						{
-							mCurrentToken++;
+							mToken++;
 
 							return node;
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
+							BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 							delete node;
 
 							return nullptr;
 						}
 					}
-					else if ( mCurrentToken->type != Token::Type::ELSEIF )
+					else if ( mToken->type != Token::Type::ELSEIF )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -993,7 +993,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1002,22 +1002,22 @@ namespace lyrics
 
 		CaseNode* Case()
 		{
-			CaseNode *node = new CaseNode( mCurrentToken->location );
+			CaseNode *node = new CaseNode( mToken->location );
 
-			mCurrentToken++;
+			mToken++;
 
 			node->value = Expression();
 
-			if ( mCurrentToken->type == Token::Type::WHEN )
+			if ( mToken->type == Token::Type::WHEN )
 			{
-				WhenNode *whenNode = new WhenNode( mCurrentToken->location );
+				WhenNode *whenNode = new WhenNode( mToken->location );
 
-				mCurrentToken++;
+				mToken++;
 
 				whenNode->condition = Expression();
-				if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+				if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 				{
-					mCurrentToken++;
+					mToken++;
 				}
 				whenNode->block = Block();
 				node->last = node->list.cbefore_begin();
@@ -1025,48 +1025,48 @@ namespace lyrics
 
 				for (;;)
 				{
-					if ( mCurrentToken->type == Token::Type::WHEN )
+					if ( mToken->type == Token::Type::WHEN )
 					{
-						whenNode = new WhenNode( mCurrentToken->location );
-						mCurrentToken++;
+						whenNode = new WhenNode( mToken->location );
+						mToken++;
 
 						whenNode->condition = Expression();
-						if ( mCurrentToken->type == Token::Type::THEN || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+						if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 						{
-							mCurrentToken++;
+							mToken++;
 						}
 						whenNode->block = Block();
 						node->last = node->list.insert_after( node->last, whenNode );
 					}
-					else if ( mCurrentToken->type == Token::Type::ELSE )
+					else if ( mToken->type == Token::Type::ELSE )
 					{
-						mCurrentToken++;
+						mToken++;
 
 						node->block = Block();
 
-						if ( mCurrentToken->type == Token::Type::END )
+						if ( mToken->type == Token::Type::END )
 						{
-							mCurrentToken++;
+							mToken++;
 
 							return node;
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
+							BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 							delete node;
 
 							return nullptr;
 						}
 					}
-					else if ( mCurrentToken->type == Token::Type::END )
+					else if ( mToken->type == Token::Type::END )
 					{
-						mCurrentToken++;
+						mToken++;
 
 						return node;
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1075,7 +1075,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_WHEN, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_WHEN, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1084,28 +1084,28 @@ namespace lyrics
 
 		WhileNode* While()
 		{
-			WhileNode *node = new WhileNode( mCurrentToken->location );
+			WhileNode *node = new WhileNode( mToken->location );
 
-			mCurrentToken++;
+			mToken++;
 
 			node->condition = Expression();
 
-			if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+			if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 			{
-				mCurrentToken++;
+				mToken++;
 			}
 
 			node->block = Block();
 
-			if ( mCurrentToken->type == Token::Type::END )
+			if ( mToken->type == Token::Type::END )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				return node;
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1114,43 +1114,43 @@ namespace lyrics
 
 		IterationNode* For()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
 			ExpressionNode *expression = Expression();
 
-			if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+			if ( mToken->type == static_cast<Token::Type>( u',' ) )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				ForNode *node = new ForNode( tToken->location );
 
 				node->initializer = expression;
 				node->condition = Expression();
 
-				if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+				if ( mToken->type == static_cast<Token::Type>( u',' ) )
 				{
-					mCurrentToken++;
+					mToken++;
 
 					node->iterator = Expression();
 
-					if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 					{
-						mCurrentToken++;
+						mToken++;
 					}
 
 					node->block = Block();
 
-					if ( mCurrentToken->type == Token::Type::END )
+					if ( mToken->type == Token::Type::END )
 					{
-						mCurrentToken++;
+						mToken++;
 
 						return node;
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1158,15 +1158,15 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FOR, mCurrentToken->location );
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOR, mToken->location );
 					delete node;
 
 					return nullptr;
 				}
 			}
-			else if ( mCurrentToken->type == Token::Type::IN )
+			else if ( mToken->type == Token::Type::IN )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
 				{
@@ -1174,7 +1174,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
+					BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
 					delete expression;
 
 					return nullptr;
@@ -1182,7 +1182,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_FOR_EACH, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_FOR_EACH, mToken->location );
 				delete expression;
 
 				return nullptr;
@@ -1198,28 +1198,28 @@ namespace lyrics
 			node->collection = Expression();
 			if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_LHS, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
 				delete node;
 
 				return nullptr;
 			}
 
-			if ( mCurrentToken->type == Token::Type::DO || mCurrentToken->type == static_cast<Token::Type>( u':' ) )
+			if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 			{
-				mCurrentToken++;
+				mToken++;
 			}
 
 			node->block = Block();
 
-			if ( mCurrentToken->type == Token::Type::END )
+			if ( mToken->type == Token::Type::END )
 			{
-				mCurrentToken++;
+				mToken++;
 
 				return node;
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mCurrentToken->location );
+				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1228,21 +1228,21 @@ namespace lyrics
 
 		RedoNode *Redo()
 		{
-			return new RedoNode( mCurrentToken++->location );
+			return new RedoNode( mToken++->location );
 		}
 
 		BreakNode *Break()
 		{
-			return new BreakNode( mCurrentToken++->location );
+			return new BreakNode( mToken++->location );
 		}
 
 		ReturnNode *Return()
 		{
-			forward_list<Token>::const_iterator tToken = mCurrentToken;
+			forward_list<Token>::const_iterator tToken = mToken;
 
-			mCurrentToken++;
+			mToken++;
 
-			if ( mCurrentToken->type == Token::Type::END || mCurrentToken->type == Token::Type::ELSE || mCurrentToken->type == Token::Type::ELSEIF || mCurrentToken->type == Token::Type::WHEN || mCurrentToken == mLastToken )
+			if ( mToken->type == Token::Type::END || mToken->type == Token::Type::ELSE || mToken->type == Token::Type::ELSEIF || mToken->type == Token::Type::WHEN || mToken == mLastToken )
 			{
 				return new ReturnNode( tToken->location );
 			}
