@@ -432,7 +432,6 @@ namespace lyrics
 							{
 								BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
 								delete node;
-								delete expression;
 
 								return nullptr;
 							}
@@ -440,7 +439,7 @@ namespace lyrics
 					}
 					mToken++;
 
-					return expression;
+					return node;
 				}
 				else if ( mToken->type == static_cast<Token::Type>( u'.' ) )
 				{
