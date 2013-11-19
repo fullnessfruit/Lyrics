@@ -483,7 +483,7 @@ namespace lyrics
 
 	struct UnaryExpressionNode: public ExpressionNode
 	{
-		explicit UnaryExpressionNode( const Location &location ) : ExpressionNode( location ), expression( nullptr )
+		UnaryExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const expression ) : ExpressionNode( location ), op( op ), expression( expression )
 		{
 		}
 
@@ -492,8 +492,8 @@ namespace lyrics
 			delete expression;
 		}
 
-		Token::Type op;
-		ExpressionNode *expression;
+		const Token::Type op;
+		const ExpressionNode * const expression;
 
 		virtual Node::Type GetType() const
 		{
@@ -503,7 +503,7 @@ namespace lyrics
 
 	struct MultiplicativeExpressionNode: public ExpressionNode
 	{
-		explicit MultiplicativeExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -513,9 +513,9 @@ namespace lyrics
 			delete right;
 		}
 
-		Token::Type op;
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const Token::Type op;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -525,7 +525,7 @@ namespace lyrics
 
 	struct AdditiveExpressionNode: public ExpressionNode
 	{
-		explicit AdditiveExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -535,9 +535,9 @@ namespace lyrics
 			delete right;
 		}
 
-		Token::Type op;
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const Token::Type op;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -547,7 +547,7 @@ namespace lyrics
 
 	struct ShiftExpressionNode: public ExpressionNode
 	{
-		explicit ShiftExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -557,9 +557,9 @@ namespace lyrics
 			delete right;
 		}
 
-		Token::Type op;
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const Token::Type op;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -569,7 +569,7 @@ namespace lyrics
 
 	struct AndExpressionNode: public ExpressionNode
 	{
-		explicit AndExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
 
@@ -579,8 +579,8 @@ namespace lyrics
 			delete right;
 		}
 
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -590,7 +590,7 @@ namespace lyrics
 
 	struct OrExpressionNode: public ExpressionNode
 	{
-		explicit OrExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -600,9 +600,9 @@ namespace lyrics
 			delete right;
 		}
 
-		Token::Type op;
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const Token::Type op;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -612,7 +612,7 @@ namespace lyrics
 
 	struct RelationalExpressionNode: public ExpressionNode
 	{
-		explicit RelationalExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -622,9 +622,9 @@ namespace lyrics
 			delete right;
 		}
 
-		Token::Type op;
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const Token::Type op;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -634,7 +634,7 @@ namespace lyrics
 
 	struct EqualityExpressionNode: public ExpressionNode
 	{
-		explicit EqualityExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -644,9 +644,9 @@ namespace lyrics
 			delete right;
 		}
 
-		Token::Type op;
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const Token::Type op;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -656,7 +656,7 @@ namespace lyrics
 
 	struct LogicalAndExpressionNode: public ExpressionNode
 	{
-		explicit LogicalAndExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
 
@@ -666,8 +666,8 @@ namespace lyrics
 			delete right;
 		}
 
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
@@ -677,7 +677,7 @@ namespace lyrics
 
 	struct LogicalOrExpressionNode: public ExpressionNode
 	{
-		explicit LogicalOrExpressionNode( const Location &location ) : ExpressionNode( location ), left( nullptr ), right( nullptr )
+		explicit LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
 
@@ -687,8 +687,8 @@ namespace lyrics
 			delete right;
 		}
 
-		ExpressionNode *left;
-		ExpressionNode *right;
+		const ExpressionNode * const left;
+		const ExpressionNode * const right;
 
 		virtual Node::Type GetType() const
 		{
