@@ -98,192 +98,146 @@ namespace lyrics
 			switch ( mCurrentToken->type )
 			{
 			case Token::Type::IDENTIFIER:
-				return new IdentifierNode( mCurrentToken->location, ( mCurrentToken++ )->value.identifier );
+				return new IdentifierNode( mCurrentToken->location, mCurrentToken++->value.identifier );
 
 			case Token::Type::INTEGER_LITERAL:
-				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.integer );
-
-					mCurrentToken++;
-
-					return node;
-				}
+				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.integer );
 
 			case Token::Type::STRING_LITERAL:
-				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.string );
-
-					mCurrentToken++;
-
-					return node;
-				}
+				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.string );
 
 			case Token::Type::BOOLEAN_LITERAL:
-				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.boolean );
-
-					mCurrentToken++;
-
-					return node;
-				}
+				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.boolean );
 
 			case Token::Type::NIL_LITERAL:
-				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location );
-
-					mCurrentToken++;
-
-					return node;
-				}
+				return new LiteralNode( mCurrentToken++->location );
 
 			case Token::Type::REAL_LITERAL:
-				{
-					LiteralNode *node = new LiteralNode( mCurrentToken->location, mCurrentToken->value.real );
-
-					mCurrentToken++;
-
-					return node;
-				}
+				return new LiteralNode( mCurrentToken->location, mCurrentToken++->value.real );
 
 			case static_cast<Token::Type>( u'(' ):
-				{
-					ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mCurrentToken->location, Expression() );
-
-					mCurrentToken++;
-
-					if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
-					{
-						mCurrentToken++;
-
-						return node;
-					}
-					else
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mCurrentToken->location );
-						delete node;
-
-						return nullptr;
-					}
-				}
+				return ParenthesizedExpression();
 
 			case static_cast<Token::Type>( u'[' ):
-				{
-					ArrayLiteralNode *node = new ArrayLiteralNode( mCurrentToken->location );
-
-					mCurrentToken++;
-
-					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
-					{
-						node->last = node->list.cbefore_begin();
-						for (;;)
-						{
-							node->last = node->list.insert_after( node->last, Expression() );
-
-							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-							{
-								mCurrentToken++;
-							}
-							else if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
-							{
-								break;
-							}
-							else
-							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mCurrentToken->location );
-								delete node;
-
-								return nullptr;
-							}
-						}
-					}
-					mCurrentToken++;
-
-					return node;
-				}
+				return ArrayLiteral();
 
 			case static_cast<Token::Type>( u'{' ):
-				{
-					HashLiteralNode *node = new HashLiteralNode( mCurrentToken->location );
-
-					mCurrentToken++;
-
-					if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
-					{
-						ExpressionNode *expression;
-
-						node->last = node->list.cbefore_begin();
-						for (;;)
-						{
-							if ( mCurrentToken->type != static_cast<Token::Type>( u'[' ) )
-							{
-								BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
-								delete node;
-
-								return nullptr;
-							}
-
-							forward_list<Token>::const_iterator tToken = mCurrentToken;
-
-							mCurrentToken++;
-
-							expression = Expression();
-
-							if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
-							{
-								BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
-								delete expression;
-								delete node;
-
-								return nullptr;
-							}
-							mCurrentToken++;
-
-							if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
-							{
-								BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
-								delete expression;
-								delete node;
-
-								return nullptr;
-							}
-							mCurrentToken++;
-
-							node->last = node->list.insert_after( node->last, new HashNode( tToken->location, expression, Expression() ) );
-
-							if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
-							{
-								mCurrentToken++;
-							}
-							else if ( mCurrentToken->type == static_cast<Token::Type>( u'}' ) )
-							{
-								break;
-							}
-							else
-							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mCurrentToken->location );
-								delete node;
-
-								return nullptr;
-							}
-						}
-					}
-					mCurrentToken++;
-
-					return node;
-				}
+				return HashLiteral();
 
 			case Token::Type::DEF:
-				{
-					mCurrentToken++;
-
-					return FunctionLiteral();
-				}
+				return FunctionLiteral();
 			
 			default:
 				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mCurrentToken->location );
 
 				return nullptr;
 			}
+		}
+
+		ArrayLiteralNode *ArrayLiteral()
+		{
+			ArrayLiteralNode *node = new ArrayLiteralNode( mCurrentToken->location );
+
+			mCurrentToken++;
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
+			{
+				node->last = node->list.cbefore_begin();
+				for (;;)
+				{
+					node->last = node->list.insert_after( node->last, Expression() );
+
+					if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+					{
+						mCurrentToken++;
+					}
+					else if ( mCurrentToken->type == static_cast<Token::Type>( u']' ) )
+					{
+						break;
+					}
+					else
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mCurrentToken->location );
+						delete node;
+
+						return nullptr;
+					}
+				}
+			}
+			mCurrentToken++;
+
+			return node;
+		}
+
+		HashLiteralNode *HashLiteral()
+		{
+			HashLiteralNode *node = new HashLiteralNode( mCurrentToken->location );
+
+			mCurrentToken++;
+
+			if ( mCurrentToken->type != static_cast<Token::Type>( u'}' ) )
+			{
+				ExpressionNode *expression;
+
+				node->last = node->list.cbefore_begin();
+				for (;;)
+				{
+					if ( mCurrentToken->type != static_cast<Token::Type>( u'[' ) )
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
+						delete node;
+
+						return nullptr;
+					}
+
+					forward_list<Token>::const_iterator tToken = mCurrentToken;
+
+					mCurrentToken++;
+
+					expression = Expression();
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u']' ) )
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
+						delete expression;
+						delete node;
+
+						return nullptr;
+					}
+					mCurrentToken++;
+
+					if ( mCurrentToken->type != static_cast<Token::Type>( u'=' ) )
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_HASH, mCurrentToken->location );
+						delete expression;
+						delete node;
+
+						return nullptr;
+					}
+					mCurrentToken++;
+
+					node->last = node->list.insert_after( node->last, new HashNode( tToken->location, expression, Expression() ) );
+
+					if ( mCurrentToken->type == static_cast<Token::Type>( u',' ) )
+					{
+						mCurrentToken++;
+					}
+					else if ( mCurrentToken->type == static_cast<Token::Type>( u'}' ) )
+					{
+						break;
+					}
+					else
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mCurrentToken->location );
+						delete node;
+
+						return nullptr;
+					}
+				}
+			}
+			mCurrentToken++;
+
+			return node;
 		}
 
 		FunctionLiteralNode *FunctionLiteral()
@@ -386,6 +340,27 @@ namespace lyrics
 			else
 			{
 				BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mCurrentToken->location );
+
+				return nullptr;
+			}
+		}
+
+		ParenthesizedExpressionNode *ParenthesizedExpression()
+		{
+			ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mCurrentToken->location, Expression() );
+
+			mCurrentToken++;
+
+			if ( mCurrentToken->type == static_cast<Token::Type>( u')' ) )
+			{
+				mCurrentToken++;
+
+				return node;
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mCurrentToken->location );
+				delete node;
 
 				return nullptr;
 			}
@@ -753,9 +728,7 @@ namespace lyrics
 					AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
 
 					node->lhs = new IdentifierNode( mCurrentToken->location, mCurrentToken->value.identifier );
-					mCurrentToken++;
-
-					node->rhs = FunctionLiteral();
+					node->rhs = FunctionLiteral();	// TODO: Location of function is not correct.
 					if ( node->rhs == nullptr )
 					{
 						delete node;
