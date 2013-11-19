@@ -17,6 +17,7 @@ namespace lyrics
 	const u16string Tokenizer::ELSEIF = u"elseif";
 	const u16string Tokenizer::FALSE = u"false";
 	const u16string Tokenizer::FOR = u"for";
+	const u16string Tokenizer::FOREACH = u"foreach";
 	const u16string Tokenizer::IF = u"if";
 	const u16string Tokenizer::IMPORT = u"import";
 	const u16string Tokenizer::IN = u"in";

@@ -145,8 +145,8 @@ namespace lyrics
 				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete for statement." << endl;
 				break;
 
-			case ErrorCode::INCOMPLETE_FOR_FOR_EACH:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete for or for each statement." << endl;
+			case ErrorCode::INCOMPLETE_FOREACH:
+				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete foreach statement." << endl;
 				break;
 
 			default:

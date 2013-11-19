@@ -53,6 +53,7 @@ namespace lyrics
 		static const u16string ELSEIF;
 		static const u16string FALSE;
 		static const u16string FOR;
+		static const u16string FOREACH;
 		static const u16string IF;
 		static const u16string IMPORT;
 		static const u16string IN;
@@ -302,6 +303,11 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::PRIVATE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::FOREACH )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::FOREACH, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::PACKAGE )
 							{

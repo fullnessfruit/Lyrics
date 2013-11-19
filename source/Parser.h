@@ -91,6 +91,9 @@ namespace lyrics
 			case Token::Type::PUBLIC:
 				return Public();
 
+			case Token::Type::FOREACH:
+				return ForEach();
+
 			case Token::Type::PACKAGE:
 				return Package();
 
@@ -128,13 +131,7 @@ namespace lyrics
 				return new LiteralNode( mToken->location, mToken++->value.real );
 
 			case Token::Type::DEF:
-				{
-					forward_list<Token>::const_iterator tToken = mToken;
-					
-					mToken++;
-
-					return FunctionLiteral( tToken );
-				}
+				return FunctionLiteral( mToken++ );
 
 			case static_cast<Token::Type>( u'(' ):
 				return ParenthesizedExpression();
@@ -256,7 +253,7 @@ namespace lyrics
 			return node;
 		}
 
-		FunctionLiteralNode *FunctionLiteral( forward_list<Token>::const_iterator &token )
+		FunctionLiteralNode *FunctionLiteral( forward_list<Token>::const_iterator token )
 		{
 			if ( mToken->type != static_cast<Token::Type>( u'(' ) )
 			{
@@ -909,7 +906,7 @@ namespace lyrics
 			}
 		}
 
-		IfNode* If()
+		IfNode *If()
 		{
 			IfNode *node = new IfNode( mToken->location );
 			ElseIfNode *elseIfNode = new ElseIfNode( mToken->location );
@@ -1005,7 +1002,7 @@ namespace lyrics
 			}
 		}
 
-		CaseNode* Case()
+		CaseNode *Case()
 		{
 			CaseNode *node = new CaseNode( mToken->location );
 
@@ -1086,7 +1083,7 @@ namespace lyrics
 			}
 		}
 
-		WhileNode* While()
+		WhileNode *While()
 		{
 			WhileNode *node = new WhileNode( mToken->location );
 
@@ -1116,21 +1113,18 @@ namespace lyrics
 			}
 		}
 
-		IterationNode* For()
+		ForNode *For()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			ForNode *node = new ForNode( mToken->location );
 
 			mToken++;
 
-			ExpressionNode *expression = Expression();
+			node->initializer = Expression();
 
 			if ( mToken->type == static_cast<Token::Type>( u',' ) )
 			{
 				mToken++;
 
-				ForNode *node = new ForNode( tToken->location );
-
-				node->initializer = expression;
 				node->condition = Expression();
 
 				if ( mToken->type == static_cast<Token::Type>( u',' ) )
@@ -1168,62 +1162,69 @@ namespace lyrics
 					return nullptr;
 				}
 			}
-			else if ( mToken->type == Token::Type::IN )
+			else
 			{
-				mToken++;
+				BuildLog::Error( ErrorCode::INCOMPLETE_FOR, mToken->location );
+				delete node;
 
-				if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
+				return nullptr;
+			}
+		}
+
+		ForEachNode *ForEach()
+		{
+			ForEachNode *node = new ForEachNode( mToken->location );
+
+			mToken++;
+
+			node->variable = Expression();
+			if ( node->variable ->GetType() == Node::Type::IDENTIFIER || node->variable ->GetType() == Node::Type::MEMBER_REFERENCE || node->variable ->GetType() == Node::Type::INDEX_REFERENCE )
+			{
+				if ( mToken->type == Token::Type::IN )
 				{
-					return ForEach( expression, tToken );
+					mToken++;
+
+					node->collection = Expression();
+					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+						delete node;
+
+						return nullptr;
+					}
+
+					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
+					{
+						mToken++;
+					}
+
+					node->block = Block();
+
+					if ( mToken->type == Token::Type::END )
+					{
+						mToken++;
+
+						return node;
+					}
+					else
+					{
+						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+						delete node;
+
+						return nullptr;
+					}
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
-					delete expression;
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH, mToken->location );
+					delete node;
 
 					return nullptr;
 				}
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_FOR_EACH, mToken->location );
-				delete expression;
-
-				return nullptr;
-			}
-		}
-
-		ForEachNode *ForEach( ExpressionNode *expression, forward_list<Token>::const_iterator &token )
-		{
-			ForEachNode *node = new ForEachNode( token->location );
-
-			node->variable = expression;
-
-			node->collection = Expression();
-			if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
-			{
 				BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
-				delete node;
-
-				return nullptr;
-			}
-
-			if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
-			{
-				mToken++;
-			}
-
-			node->block = Block();
-
-			if ( mToken->type == Token::Type::END )
-			{
-				mToken++;
-
-				return node;
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 				delete node;
 
 				return nullptr;
