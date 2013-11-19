@@ -503,7 +503,7 @@ namespace lyrics
 
 	struct MultiplicativeExpressionNode: public ExpressionNode
 	{
-		explicit MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -525,7 +525,7 @@ namespace lyrics
 
 	struct AdditiveExpressionNode: public ExpressionNode
 	{
-		explicit AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -547,7 +547,7 @@ namespace lyrics
 
 	struct ShiftExpressionNode: public ExpressionNode
 	{
-		explicit ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -569,7 +569,7 @@ namespace lyrics
 
 	struct AndExpressionNode: public ExpressionNode
 	{
-		explicit AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
+		AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
 
@@ -590,7 +590,7 @@ namespace lyrics
 
 	struct OrExpressionNode: public ExpressionNode
 	{
-		explicit OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -612,7 +612,7 @@ namespace lyrics
 
 	struct RelationalExpressionNode: public ExpressionNode
 	{
-		explicit RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -634,7 +634,7 @@ namespace lyrics
 
 	struct EqualityExpressionNode: public ExpressionNode
 	{
-		explicit EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -656,7 +656,7 @@ namespace lyrics
 
 	struct LogicalAndExpressionNode: public ExpressionNode
 	{
-		explicit LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
+		LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
 
@@ -677,7 +677,7 @@ namespace lyrics
 
 	struct LogicalOrExpressionNode: public ExpressionNode
 	{
-		explicit LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
+		LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
 
