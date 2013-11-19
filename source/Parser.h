@@ -912,17 +912,17 @@ namespace lyrics
 		IfNode* If()
 		{
 			IfNode *node = new IfNode( mToken->location );
-			ElseIfNode *tNode = new ElseIfNode( mToken->location );
+			ElseIfNode *elseIfNode = new ElseIfNode( mToken->location );
 
 			mToken++;
 
-			tNode->condition = Expression();
+			elseIfNode->condition = Expression();
 			if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 			{
 				mToken++;
 			}
-			tNode->block = Block();
-			node->AddElseIf( tNode );
+			elseIfNode->block = Block();
+			node->AddElseIf( elseIfNode );
 
 			if ( mToken->type == Token::Type::END )
 			{
@@ -954,12 +954,12 @@ namespace lyrics
 			{
 				for (;;)
 				{
-					tNode = new ElseIfNode( mToken->location );
+					elseIfNode = new ElseIfNode( mToken->location );
 					mToken++;
 
-					tNode->condition = Expression();
-					tNode->block = Block();
-					node->AddElseIf( tNode );
+					elseIfNode->condition = Expression();
+					elseIfNode->block = Block();
+					node->AddElseIf( elseIfNode );
 
 					if ( mToken->type == Token::Type::END )
 					{
