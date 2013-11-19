@@ -783,10 +783,7 @@ namespace lyrics
 
 			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				ImportNode *node = new ImportNode( tToken->location, new IdentifierNode( mToken->location, mToken->value.identifier ) );
-				mToken++;
-
-				return node;
+				return new ImportNode( tToken->location, new IdentifierNode( mToken->location, mToken->value.identifier ) );
 			}
 			else
 			{
