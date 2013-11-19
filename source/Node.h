@@ -698,7 +698,7 @@ namespace lyrics
 
 	struct AssignmentExpressionNode: public ExpressionNode
 	{
-		explicit AssignmentExpressionNode( const Location &location ) : ExpressionNode( location ), lhs( nullptr ), rhs( nullptr )
+		AssignmentExpressionNode( const Location &location, const ExpressionNode * const lhs, const ExpressionNode * const rhs ) : ExpressionNode( location ), lhs( lhs ), rhs( rhs )
 		{
 		}
 
@@ -708,8 +708,8 @@ namespace lyrics
 			delete rhs;
 		}
 
-		ExpressionNode *lhs;
-		ExpressionNode *rhs;
+		const ExpressionNode * const lhs;
+		const ExpressionNode * const rhs;
 
 		virtual Node::Type GetType() const
 		{

@@ -612,14 +612,9 @@ namespace lyrics
 				{
 					if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
 					{
-						AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
-
 						mToken++;
 
-						node->lhs = expression;
-						node->rhs = AssignmentExpression();
-
-						return node;
+						return new AssignmentExpressionNode( tToken->location, expression, AssignmentExpression() );
 					}
 					else
 					{
@@ -636,22 +631,7 @@ namespace lyrics
 
 				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
-
-					node->lhs = new IdentifierNode( mToken->location, mToken->value.identifier );
-					mToken++;
-
-					node->rhs = FunctionLiteral( tToken );
-					if ( node->rhs == nullptr )
-					{
-						delete node;
-
-						return nullptr;
-					}
-					else
-					{
-						return node;
-					}
+					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), FunctionLiteral( tToken ) );
 				}
 				else
 				{
