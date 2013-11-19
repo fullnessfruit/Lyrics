@@ -394,18 +394,15 @@ namespace lyrics
 				{
 					mToken++;
 
-					IndexReferenceNode *node = new IndexReferenceNode( tToken->location, expression, Expression() );
+					expression = new IndexReferenceNode( tToken->location, expression, Expression() );
 
 					if ( mToken->type == static_cast<Token::Type>( u']' ) )
 					{
 						mToken++;
-
-						expression = static_cast<ExpressionNode *>( node );
 					}
 					else
 					{
 						BuildLog::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
-						delete node;
 						delete expression;
 
 						return nullptr;
@@ -451,11 +448,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::IDENTIFIER )
 					{
-						MemberReferenceNode *node = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mToken->location, mToken->value.identifier ) );
-
-						mToken++;
-
-						expression = static_cast<ExpressionNode *>( node );
+						expression = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mToken->location, mToken++->value.identifier ) );
 					}
 					else
 					{
@@ -491,7 +484,7 @@ namespace lyrics
 
 			while ( mToken->type == static_cast<Token::Type>( u'*' ) || mToken->type == static_cast<Token::Type>( u'/' ) || mToken->type == static_cast<Token::Type>( u'%' ) )
 			{
-				expression = static_cast<ExpressionNode *>( new MultiplicativeExpressionNode( tToken->location, mToken++->type, expression, UnaryExpression() ) );
+				expression = new MultiplicativeExpressionNode( tToken->location, mToken++->type, expression, UnaryExpression() );
 			}
 
 			return expression;
@@ -504,7 +497,7 @@ namespace lyrics
 
 			while ( mToken->type == static_cast<Token::Type>( u'+' ) || mToken->type == static_cast<Token::Type>( u'-' ) )
 			{
-				expression = static_cast<ExpressionNode *>( new AdditiveExpressionNode( tToken->location, mToken++->type, expression, MultiplicativeExpression() ) );
+				expression = new AdditiveExpressionNode( tToken->location, mToken++->type, expression, MultiplicativeExpression() );
 			}
 
 			return expression;
@@ -517,7 +510,7 @@ namespace lyrics
 
 			while ( mToken->type == Token::Type::SHIFT_LEFT || mToken->type == Token::Type::SHIFT_RIGHT )
 			{
-				expression = static_cast<ExpressionNode *>( new ShiftExpressionNode( tToken->location, mToken++->type, expression, AdditiveExpression() ) );
+				expression = new ShiftExpressionNode( tToken->location, mToken++->type, expression, AdditiveExpression() );
 			}
 
 			return expression;
@@ -531,7 +524,7 @@ namespace lyrics
 			while ( mToken->type == static_cast<Token::Type>( u'&' ) )
 			{
 				mToken++;
-				expression = static_cast<ExpressionNode *>( new AndExpressionNode( tToken->location, expression, ShiftExpression() ) );
+				expression = new AndExpressionNode( tToken->location, expression, ShiftExpression() );
 			}
 
 			return expression;
@@ -544,7 +537,7 @@ namespace lyrics
 
 			while ( mToken->type == static_cast<Token::Type>( u'|' ) || mToken->type == static_cast<Token::Type>( u'^' ) )
 			{
-				expression = static_cast<ExpressionNode *>( new OrExpressionNode( tToken->location, mToken++->type, expression, AndExpression() ) );
+				expression = new OrExpressionNode( tToken->location, mToken++->type, expression, AndExpression() );
 			}
 
 			return expression;
@@ -557,7 +550,7 @@ namespace lyrics
 
 			while ( mToken->type == static_cast<Token::Type>( u'<' ) || mToken->type == static_cast<Token::Type>( u'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
 			{
-				expression = static_cast<ExpressionNode *>( new RelationalExpressionNode( tToken->location, mToken++->type, expression, OrExpression() ) );
+				expression = new RelationalExpressionNode( tToken->location, mToken++->type, expression, OrExpression() );
 			}
 
 			return expression;
@@ -570,7 +563,7 @@ namespace lyrics
 
 			while ( mToken->type == Token::Type::EQUAL || mToken->type == Token::Type::NOT_EQUAL )
 			{
-				expression = static_cast<ExpressionNode *>( new EqualityExpressionNode( tToken->location, mToken++->type, expression, RelationalExpression() ) );
+				expression = new EqualityExpressionNode( tToken->location, mToken++->type, expression, RelationalExpression() );
 			}
 
 			return expression;
@@ -584,7 +577,7 @@ namespace lyrics
 			while ( mToken->type == Token::Type::AND )
 			{
 				mToken++;
-				expression = static_cast<ExpressionNode *>( new LogicalAndExpressionNode( tToken->location, expression, EqualityExpression() ) );
+				expression = new LogicalAndExpressionNode( tToken->location, expression, EqualityExpression() );
 			}
 
 			return expression;
@@ -598,7 +591,7 @@ namespace lyrics
 			while ( mToken->type == Token::Type::OR )
 			{
 				mToken++;
-				expression = static_cast<ExpressionNode *>( new LogicalOrExpressionNode( tToken->location, expression, LogicalAndExpression() ) );
+				expression = new LogicalOrExpressionNode( tToken->location, expression, LogicalAndExpression() );
 			}
 
 			return expression;
