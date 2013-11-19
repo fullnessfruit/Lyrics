@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include "Node.h"
 
 #ifndef COMPILER
 #define COMPILER
@@ -10,8 +11,12 @@ namespace lyrics
 	public:
 		bool Compile( const char * const fileName )
 		{
-			Parser parser;
-			parser.Parse( fileName );
+			BlockNode *root;
+
+			if ( !Parser().Parse( fileName, root ) )
+			{
+				return false;
+			}
 
 			return true;
 		}

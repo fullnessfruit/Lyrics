@@ -20,15 +20,28 @@ namespace lyrics
 	class Parser
 	{
 	public:
-		BlockNode *Parse( const char * const fileName )
+		bool Parse( const char * const fileName, BlockNode *&root )
 		{
 			forward_list<Token> token;
-			Tokenizer().Tokenize( fileName, token );
+
+			if ( !Tokenizer().Tokenize( fileName, token ) )
+			{
+				return false;
+			}
 
 			mToken = token.cbegin();
 			mLastToken = token.cend();
 
-			return Block();
+			root = Block();
+
+			if ( root )
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	
 	private:
