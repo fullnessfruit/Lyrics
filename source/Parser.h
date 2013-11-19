@@ -125,7 +125,7 @@ namespace lyrics
 				return HashLiteral();
 
 			case Token::Type::DEF:
-				return FunctionLiteral();
+				return FunctionLiteral( mToken++ );
 			
 			default:
 				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
@@ -240,11 +240,11 @@ namespace lyrics
 			return node;
 		}
 
-		FunctionLiteralNode *FunctionLiteral()
+		FunctionLiteralNode *FunctionLiteral( forward_list<Token>::const_iterator &token )
 		{
 			if ( mToken->type != static_cast<Token::Type>( u'(' ) )
 			{
-				FunctionLiteralNode *node = new FunctionLiteralNode( mToken->location );
+				FunctionLiteralNode *node = new FunctionLiteralNode( token->location );
 
 				mToken++;
 
@@ -728,7 +728,9 @@ namespace lyrics
 					AssignmentExpressionNode *node = new AssignmentExpressionNode( tToken->location );
 
 					node->lhs = new IdentifierNode( mToken->location, mToken->value.identifier );
-					node->rhs = FunctionLiteral();	// TODO: Location of function is not correct.
+					mToken++;
+
+					node->rhs = FunctionLiteral( tToken );
 					if ( node->rhs == nullptr )
 					{
 						delete node;
