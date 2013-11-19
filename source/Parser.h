@@ -758,14 +758,7 @@ namespace lyrics
 
 			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				PackageNode *node = new PackageNode( tToken->location );
-
-				node->name = new IdentifierNode( mToken->location, mToken->value.identifier );
-				mToken++;
-
-				node->block = Block();
-
-				return node;
+				return new PackageNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), Block() );
 			}
 			else
 			{

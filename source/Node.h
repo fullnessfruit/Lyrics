@@ -794,7 +794,7 @@ namespace lyrics
 
 	struct PackageNode: public StatementNode
 	{
-		explicit PackageNode( const Location &location ) : StatementNode( location ), name( nullptr ), block( nullptr )
+		PackageNode( const Location &location, const IdentifierNode * const name, const BlockNode * const block ) : StatementNode( location ), name( name ), block( block )
 		{
 		}
 
@@ -803,8 +803,9 @@ namespace lyrics
 			delete name;
 			delete block;
 		}
-		IdentifierNode *name;
-		BlockNode *block;
+
+		const IdentifierNode * const name;
+		const BlockNode * const block;
 
 		virtual Node::Type GetType() const
 		{
