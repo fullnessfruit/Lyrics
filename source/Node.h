@@ -116,6 +116,7 @@ namespace lyrics
 	{
 		explicit BlockNode( const Location &location ) : Node( location )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~BlockNode()
@@ -132,6 +133,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::BLOCK;
+		}
+
+		void AddStatement( StatementNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -219,6 +225,7 @@ namespace lyrics
 	{
 		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~ArrayLiteralNode()
@@ -235,6 +242,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::ARRAY_LITERAL;
+		}
+
+		void AddExpression( ExpressionNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -263,6 +275,7 @@ namespace lyrics
 	{
 		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~HashLiteralNode()
@@ -279,6 +292,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::HASH_LITERAL;
+		}
+
+		void AddHash( HashNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -335,6 +353,7 @@ namespace lyrics
 	{
 		explicit FunctionLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), block( nullptr )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~FunctionLiteralNode()
@@ -354,6 +373,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::FUNCTION_LITERAL;
+		}
+
+		void AddParameter( ParameterNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -413,6 +437,7 @@ namespace lyrics
 	{
 		FunctionCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~FunctionCallNode()
@@ -429,6 +454,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::FUNCTION_CALL;
+		}
+
+		void AddArgument( ExpressionNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -837,6 +867,7 @@ namespace lyrics
 	{
 		explicit IfNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~IfNode()
@@ -856,6 +887,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::IF;
+		}
+
+		void AddElseIf( ElseIfNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -884,6 +920,7 @@ namespace lyrics
 	{
 		explicit CaseNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
+			last = list.cbefore_begin();
 		}
 
 		~CaseNode()
@@ -904,6 +941,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::CASE;
+		}
+
+		void AddWhen( WhenNode *node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 

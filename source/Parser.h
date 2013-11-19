@@ -52,10 +52,9 @@ namespace lyrics
 		{
 			BlockNode *node = new BlockNode( mToken->location );
 
-			node->last = node->list.cbefore_begin();
 			if ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::WHEN && mToken != mLastToken )
 			{
-				node->last = node->list.insert_after( node->last, Statement() );
+				node->AddStatement( Statement() );
 			}
 
 			return node;
@@ -161,10 +160,9 @@ namespace lyrics
 
 			if ( mToken->type != static_cast<Token::Type>( u']' ) )
 			{
-				node->last = node->list.cbefore_begin();
 				for (;;)
 				{
-					node->last = node->list.insert_after( node->last, Expression() );
+					node->AddExpression( Expression() );
 
 					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
@@ -198,7 +196,6 @@ namespace lyrics
 			{
 				ExpressionNode *expression;
 
-				node->last = node->list.cbefore_begin();
 				for (;;)
 				{
 					if ( mToken->type != static_cast<Token::Type>( u'[' ) )
@@ -235,7 +232,7 @@ namespace lyrics
 					}
 					mToken++;
 
-					node->last = node->list.insert_after( node->last, new HashNode( tToken->location, expression, Expression() ) );
+					node->AddHash( new HashNode( tToken->location, expression, Expression() ) );
 
 					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
@@ -273,7 +270,6 @@ namespace lyrics
 					bool isValueParameter;
 					IdentifierNode *name;
 
-					node->last = node->list.cbefore_begin();
 					for (;;)
 					{
 						forward_list<Token>::const_iterator tToken = mToken;
@@ -331,7 +327,7 @@ namespace lyrics
 							}
 						}
 
-						node->last = node->list.insert_after( node->last, parameter );
+						node->AddParameter( parameter );
 
 						if ( mToken->type == static_cast<Token::Type>( u',' ) )
 						{
@@ -426,10 +422,9 @@ namespace lyrics
 
 					if ( mToken->type != static_cast<Token::Type>( u')' ) )
 					{
-						node->last = node->list.cbefore_begin();
 						for (;;)
 						{
-							node->last = node->list.insert_after( node->last, Expression() );
+							node->AddArgument( Expression() );
 
 							if ( mToken->type == static_cast<Token::Type>( u',' ) )
 							{
@@ -927,8 +922,7 @@ namespace lyrics
 				mToken++;
 			}
 			tNode->block = Block();
-			node->last = node->list.cbefore_begin();
-			node->last = node->list.insert_after( node->last, tNode );
+			node->AddElseIf( tNode );
 
 			if ( mToken->type == Token::Type::END )
 			{
@@ -965,7 +959,7 @@ namespace lyrics
 
 					tNode->condition = Expression();
 					tNode->block = Block();
-					node->last = node->list.insert_after( node->last, tNode );
+					node->AddElseIf( tNode );
 
 					if ( mToken->type == Token::Type::END )
 					{
@@ -1031,8 +1025,7 @@ namespace lyrics
 					mToken++;
 				}
 				whenNode->block = Block();
-				node->last = node->list.cbefore_begin();
-				node->last = node->list.insert_after( node->last, whenNode );
+				node->AddWhen( whenNode );
 
 				for (;;)
 				{
@@ -1047,7 +1040,7 @@ namespace lyrics
 							mToken++;
 						}
 						whenNode->block = Block();
-						node->last = node->list.insert_after( node->last, whenNode );
+						node->AddWhen( whenNode );
 					}
 					else if ( mToken->type == Token::Type::ELSE )
 					{
