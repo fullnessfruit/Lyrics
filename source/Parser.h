@@ -371,7 +371,7 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
-			if ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::MEMBER_REFERENCE && expression->GetType() != Node::Type::INDEX_REFERENCE )
+			if ( expression->GetType() != Node::Type::IDENTIFIER )
 			{
 				return expression;
 			}
@@ -432,7 +432,7 @@ namespace lyrics
 					}
 					mToken++;
 
-					expression = static_cast<ExpressionNode *>( node );
+					return expression;
 				}
 				else if ( mToken->type == static_cast<Token::Type>( u'.' ) )
 				{
@@ -485,22 +485,24 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = UnaryExpression();
 
-			if ( mToken->type != static_cast<Token::Type>( u'*' ) && mToken->type != static_cast<Token::Type>( u'/' ) && mToken->type != static_cast<Token::Type>( u'%' ) )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
+				if ( mToken->type != static_cast<Token::Type>( u'*' ) && mToken->type != static_cast<Token::Type>( u'/' ) && mToken->type != static_cast<Token::Type>( u'%' ) )
+				{
+					return expression;
+				}
+				else
+				{
+					MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode( tToken->location );
 
-				MultiplicativeExpressionNode *node = new MultiplicativeExpressionNode( tToken->location );
+					node->op = mToken->type;
+					mToken++;
 
-				node->op = mToken->type;
-				mToken++;
+					node->left = expression;
+					node->right = MultiplicativeExpression();
 
-				node->left = expression;
-				node->right = MultiplicativeExpression();
-
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -509,21 +511,24 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = MultiplicativeExpression();
 
-			if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				AdditiveExpressionNode *node = new AdditiveExpressionNode( tToken->location );
+				if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) )
+				{
+					return expression;
+				}
+				else
+				{
+					AdditiveExpressionNode *node = new AdditiveExpressionNode( tToken->location );
 
-				node->op = mToken->type;
-				mToken++;
+					node->op = mToken->type;
+					mToken++;
 
-				node->left = expression;
-				node->right = AdditiveExpression();
+					node->left = expression;
+					node->right = AdditiveExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -532,21 +537,24 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = AdditiveExpression();
 
-			if ( mToken->type != Token::Type::SHIFT_LEFT && mToken->type != Token::Type::SHIFT_RIGHT )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				ShiftExpressionNode *node = new ShiftExpressionNode( tToken->location );
+				if ( mToken->type != Token::Type::SHIFT_LEFT && mToken->type != Token::Type::SHIFT_RIGHT )
+				{
+					return expression;
+				}
+				else
+				{
+					ShiftExpressionNode *node = new ShiftExpressionNode( tToken->location );
 
-				node->op = mToken->type;
-				mToken++;
+					node->op = mToken->type;
+					mToken++;
 
-				node->left = expression;
-				node->right = ShiftExpression();
+					node->left = expression;
+					node->right = ShiftExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -555,20 +563,23 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = ShiftExpression();
 
-			if ( mToken->type != static_cast<Token::Type>( u'&' ) )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				AndExpressionNode *node = new AndExpressionNode( tToken->location );
+				if ( mToken->type != static_cast<Token::Type>( u'&' ) )
+				{
+					return expression;
+				}
+				else
+				{
+					AndExpressionNode *node = new AndExpressionNode( tToken->location );
 
-				mToken++;
+					mToken++;
 
-				node->left = expression;
-				node->right = AndExpression();
+					node->left = expression;
+					node->right = AndExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -577,21 +588,24 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = AndExpression();
 
-			if ( mToken->type != static_cast<Token::Type>( u'|' ) && mToken->type != static_cast<Token::Type>( u'^' ) )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				OrExpressionNode *node = new OrExpressionNode( tToken->location );
+				if ( mToken->type != static_cast<Token::Type>( u'|' ) && mToken->type != static_cast<Token::Type>( u'^' ) )
+				{
+					return expression;
+				}
+				else
+				{
+					OrExpressionNode *node = new OrExpressionNode( tToken->location );
 
-				node->op = mToken->type;
-				mToken++;
+					node->op = mToken->type;
+					mToken++;
 
-				node->left = expression;
-				node->right = OrExpression();
+					node->left = expression;
+					node->right = OrExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -600,21 +614,24 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = OrExpression();
 
-			if ( mToken->type != static_cast<Token::Type>( u'<' ) && mToken->type != static_cast<Token::Type>( u'>' ) && mToken->type != Token::Type::LESS_THAN_OR_EQUAL && mToken->type != Token::Type::GREATER_THAN_OR_EQUAL )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				RelationalExpressionNode *node = new RelationalExpressionNode( tToken->location );
+				if ( mToken->type != static_cast<Token::Type>( u'<' ) && mToken->type != static_cast<Token::Type>( u'>' ) && mToken->type != Token::Type::LESS_THAN_OR_EQUAL && mToken->type != Token::Type::GREATER_THAN_OR_EQUAL )
+				{
+					return expression;
+				}
+				else
+				{
+					RelationalExpressionNode *node = new RelationalExpressionNode( tToken->location );
 
-				node->op = mToken->type;
-				mToken++;
+					node->op = mToken->type;
+					mToken++;
 
-				node->left = expression;
-				node->right = RelationalExpression();
+					node->left = expression;
+					node->right = RelationalExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -623,21 +640,24 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = RelationalExpression();
 
-			if ( mToken->type != Token::Type::EQUAL && mToken->type != Token::Type::NOT_EQUAL )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				EqualityExpressionNode *node = new EqualityExpressionNode( tToken->location );
+				if ( mToken->type != Token::Type::EQUAL && mToken->type != Token::Type::NOT_EQUAL )
+				{
+					return expression;
+				}
+				else
+				{
+					EqualityExpressionNode *node = new EqualityExpressionNode( tToken->location );
 
-				node->op = mToken->type;
-				mToken++;
+					node->op = mToken->type;
+					mToken++;
 
-				node->left = expression;
-				node->right = EqualityExpression();
+					node->left = expression;
+					node->right = EqualityExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -646,20 +666,23 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = EqualityExpression();
 
-			if ( mToken->type != Token::Type::AND )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				LogicalAndExpressionNode *node = new LogicalAndExpressionNode( tToken->location );
+				if ( mToken->type != Token::Type::AND )
+				{
+					return expression;
+				}
+				else
+				{
+					LogicalAndExpressionNode *node = new LogicalAndExpressionNode( tToken->location );
 
-				mToken++;
+					mToken++;
 
-				node->left = expression;
-				node->right = LogicalAndExpression();
+					node->left = expression;
+					node->right = LogicalAndExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
@@ -668,20 +691,23 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = LogicalAndExpression();
 
-			if ( mToken->type != Token::Type::OR )
+			for (;;)
 			{
-				return expression;
-			}
-			else
-			{
-				LogicalOrExpressionNode *node = new LogicalOrExpressionNode( tToken->location );
+				if ( mToken->type != Token::Type::OR )
+				{
+					return expression;
+				}
+				else
+				{
+					LogicalOrExpressionNode *node = new LogicalOrExpressionNode( tToken->location );
 
-				mToken++;
+					mToken++;
 
-				node->left = expression;
-				node->right = LogicalOrExpression();
+					node->left = expression;
+					node->right = LogicalOrExpression();
 
-				return node;
+					expression = static_cast<ExpressionNode *>( node );
+				}
 			}
 		}
 
