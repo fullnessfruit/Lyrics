@@ -115,6 +115,15 @@ namespace lyrics
 			case Token::Type::REAL_LITERAL:
 				return new LiteralNode( mToken->location, mToken++->value.real );
 
+			case Token::Type::DEF:
+				{
+					forward_list<Token>::const_iterator tToken = mToken;
+					
+					mToken++;
+
+					return FunctionLiteral( tToken );
+				}
+
 			case static_cast<Token::Type>( u'(' ):
 				return ParenthesizedExpression();
 
@@ -123,9 +132,6 @@ namespace lyrics
 
 			case static_cast<Token::Type>( u'{' ):
 				return HashLiteral();
-
-			case Token::Type::DEF:
-				return FunctionLiteral( mToken++ );
 			
 			default:
 				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
