@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include "LocalResolver.h"
 #include "Node.h"
 
 #ifndef SEMANTIC_ANALYZER
@@ -15,6 +16,10 @@ namespace lyrics
 			{
 				return false;
 			}
+
+			LocalResolver localResolver;
+
+			root->Accept( localResolver );
 
 			return true;
 		}

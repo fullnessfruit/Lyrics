@@ -5,6 +5,9 @@
 #include "Location.h"
 #include "Literal.h"
 
+#include "Visitor.h"
+#include "Element.h"
+
 #ifndef NODE
 #define NODE
 
@@ -13,7 +16,7 @@ namespace lyrics
 	using std::u16string;
 	using std::forward_list;
 
-	class Node
+	class Node : public Element
 	{
 	public:
 		enum struct Type
@@ -62,6 +65,10 @@ namespace lyrics
 				class ArrayLiteralNode;
 				class HashLiteralNode;
 					class HashNode;
+				class FunctionLiteralNode;
+					class ParameterNode;
+						class ValueParameterNode;
+						class OutputParameterNode;
 				class ParenthesizedExpressionNode;
 			class PostfixExpressionNode;
 				class IndexReferenceNode;
@@ -77,14 +84,10 @@ namespace lyrics
 			class EqualityExpressionNode;
 			class LogicalAndExpressionNode;
 			class LogicalOrExpressionNode;
-		class AssignmentNode;
+			class AssignmentExpressionNode;
 		class DeclarationNode;
 			class PublicNode;
 			class PrivateNode;
-		class FunctionLiteralNode;
-			class ParameterNode;
-				class ValueParameterNode;
-				class OutputParameterNode;
 		class ClassNode;
 		class PackageNode;
 		class ImportNode;
@@ -132,6 +135,11 @@ namespace lyrics
 
 		forward_list<StatementNode *> list;
 		forward_list<StatementNode *>::const_iterator last;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -182,6 +190,11 @@ namespace lyrics
 
 		const u16string * const str;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::IDENTIFIER;
@@ -222,6 +235,11 @@ namespace lyrics
 
 		Literal literal;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::LITERAL;
@@ -246,6 +264,11 @@ namespace lyrics
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -274,6 +297,11 @@ namespace lyrics
 		const ExpressionNode * const key;
 		const ExpressionNode * const value;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::HASH;
@@ -298,6 +326,11 @@ namespace lyrics
 
 		forward_list<HashNode *> list;
 		forward_list<HashNode *>::const_iterator last;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -343,6 +376,11 @@ namespace lyrics
 
 		const ExpressionNode * const defalutArgument;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::VALUE_PARAMETER;
@@ -354,6 +392,11 @@ namespace lyrics
 	public:
 		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name )
 		{
+		}
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
 		}
 
 		virtual Node::Type GetType() const
@@ -384,6 +427,11 @@ namespace lyrics
 		forward_list<ParameterNode *>::const_iterator last;
 		BlockNode *block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::FUNCTION_LITERAL;
@@ -408,6 +456,11 @@ namespace lyrics
 		}
 
 		const ExpressionNode * const expression;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -444,6 +497,11 @@ namespace lyrics
 
 		const ExpressionNode * const index;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::INDEX_REFERENCE;
@@ -468,6 +526,11 @@ namespace lyrics
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -494,6 +557,11 @@ namespace lyrics
 
 		const IdentifierNode * const member;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::MEMBER_REFERENCE;
@@ -514,6 +582,11 @@ namespace lyrics
 
 		const Token::Type op;
 		const ExpressionNode * const expression;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -538,6 +611,11 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::MULTIPLICATIVE_EXPRESSION;
@@ -560,6 +638,11 @@ namespace lyrics
 		const Token::Type op;
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -584,6 +667,11 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::SHIFT_EXPRESSION;
@@ -605,6 +693,11 @@ namespace lyrics
 
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -629,6 +722,11 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::OR_EXPRESSION;
@@ -651,6 +749,11 @@ namespace lyrics
 		const Token::Type op;
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -675,6 +778,11 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::EQUALITY_EXPRESSION;
@@ -696,6 +804,11 @@ namespace lyrics
 
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -719,6 +832,11 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::LOGICAL_OR_EXPRESSION;
@@ -740,6 +858,11 @@ namespace lyrics
 
 		const ExpressionNode * const lhs;
 		const ExpressionNode * const rhs;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -779,6 +902,11 @@ namespace lyrics
 		{
 		}
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PUBLIC;
@@ -794,6 +922,11 @@ namespace lyrics
 
 		PrivateNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : DeclarationNode( location, name, initializer )
 		{
+		}
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
 		}
 
 		virtual Node::Type GetType() const
@@ -820,6 +953,11 @@ namespace lyrics
 		IdentifierNode *base;
 		BlockNode *block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::CLASS;
@@ -842,6 +980,11 @@ namespace lyrics
 		const IdentifierNode * const name;
 		const BlockNode * const block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PACKAGE;
@@ -861,6 +1004,11 @@ namespace lyrics
 		}
 
 		const IdentifierNode * const package;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -896,6 +1044,11 @@ namespace lyrics
 		ExpressionNode *condition;
 		BlockNode *block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::ELSEIF;
@@ -924,6 +1077,11 @@ namespace lyrics
 		forward_list<ElseIfNode *>::const_iterator last;
 		BlockNode *block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::IF;
@@ -950,6 +1108,11 @@ namespace lyrics
 
 		ExpressionNode *condition;
 		BlockNode *block;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -979,6 +1142,11 @@ namespace lyrics
 		forward_list<WhenNode *> list;
 		forward_list<WhenNode *>::const_iterator last;
 		BlockNode *block;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -1019,6 +1187,11 @@ namespace lyrics
 		ExpressionNode *condition;
 		BlockNode *block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::WHILE;
@@ -1045,6 +1218,11 @@ namespace lyrics
 		ExpressionNode *iterator;
 		BlockNode *block;
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::FOR;
@@ -1068,6 +1246,11 @@ namespace lyrics
 		ExpressionNode *variable;
 		ExpressionNode *collection;
 		BlockNode *block;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
@@ -1094,6 +1277,11 @@ namespace lyrics
 		{
 		}
 
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
+
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::REDO;
@@ -1105,6 +1293,11 @@ namespace lyrics
 	public:
 		explicit BreakNode( const Location &location ) : JumpNode( location )
 		{
+		}
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
 		}
 
 		virtual Node::Type GetType() const
@@ -1130,6 +1323,11 @@ namespace lyrics
 		}
 
 		const ExpressionNode * const value;
+
+		virtual void Accept( const Visitor &visitor ) const
+		{
+			visitor.Visit( this );
+		}
 
 		virtual Node::Type GetType() const
 		{
