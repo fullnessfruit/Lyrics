@@ -10,10 +10,12 @@ namespace lyrics
 	public:
 		bool Compile( const char * const fileName )
 		{
-			BlockNode *root;
+			BlockNode *root = nullptr;
 
 			if ( !SemanticAnalyzer().SemanticAnalysis( fileName, root ) )
 			{
+				delete root;
+
 				return false;
 			}
 

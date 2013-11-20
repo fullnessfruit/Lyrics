@@ -1,5 +1,9 @@
 #include "Parser.h"
 #include "LocalResolver.h"
+#include "TypeResolver.h"
+#include "TypeTable.h"
+#include "DereferenceChecker.h"
+#include "TypeChecker.h"
 #include "Node.h"
 
 #ifndef SEMANTIC_ANALYZER
@@ -17,11 +21,15 @@ namespace lyrics
 				return false;
 			}
 
-			LocalResolver localResolver;
+			bool canProgress;
 
-			root->Accept( localResolver );
+			canProgress = root->Accept( LocalResolver() );
+			canProgress = root->Accept( TypeResolver() );
+			canProgress = root->Accept( TypeTable() );
+			canProgress = root->Accept( DereferenceChecker() );
+			canProgress = root->Accept( TypeChecker() );
 
-			return true;
+			return canProgress;
 		}
 	};
 }

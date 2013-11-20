@@ -1,12 +1,12 @@
 #include "Visitor.h"
 #include "Node.h"
 
-#ifndef LOCAL_RESOLVER
-#define LOCAL_RESOLVER
+#ifndef DEREFERENCE_CHECKER
+#define DEREFERENCE_CHECKER
 
 namespace lyrics
 {
-	class LocalResolver : public Visitor
+	class DereferenceChecker : public Visitor
 	{
 		virtual bool Visit( const BlockNode * const node ) const
 		{
