@@ -138,7 +138,7 @@ namespace lyrics
 			return Node::Type::BLOCK;
 		}
 
-		void AddStatement( StatementNode *node )
+		void AddStatement( StatementNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
@@ -252,7 +252,7 @@ namespace lyrics
 			return Node::Type::ARRAY_LITERAL;
 		}
 
-		void AddExpression( ExpressionNode *node )
+		void AddExpression( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
@@ -304,7 +304,7 @@ namespace lyrics
 			return Node::Type::HASH_LITERAL;
 		}
 
-		void AddHash( HashNode *node )
+		void AddHash( HashNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
@@ -389,7 +389,7 @@ namespace lyrics
 			return Node::Type::FUNCTION_LITERAL;
 		}
 
-		void AddParameter( ParameterNode *node )
+		void AddParameter( ParameterNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
@@ -474,7 +474,7 @@ namespace lyrics
 			return Node::Type::FUNCTION_CALL;
 		}
 
-		void AddArgument( ExpressionNode *node )
+		void AddArgument( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
@@ -929,7 +929,7 @@ namespace lyrics
 			return Node::Type::IF;
 		}
 
-		void AddElseIf( ElseIfNode *node )
+		void AddElseIf( ElseIfNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
@@ -985,7 +985,7 @@ namespace lyrics
 			return Node::Type::CASE;
 		}
 
-		void AddWhen( WhenNode *node )
+		void AddWhen( WhenNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}
