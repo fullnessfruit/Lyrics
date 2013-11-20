@@ -20,8 +20,7 @@ namespace lyrics
 			unsigned int size;
 			char *data;
 
-			Loader::LoadData( fileName, data, size );
-			if ( data == false )
+			if ( !Loader::LoadData( fileName, data, size ) )
 			{
 				// TODO:
 				return false;

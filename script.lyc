@@ -1,0 +1,144 @@
+t = true
+f = false
+i = 65537
+r = 99.9
+s = "Cherry petals fall like teardrops..."
+a = []
+h = {}
+
+image = Image( "Graphics/illust_005_800x600.jpg" )
+text = Text()
+sound = Sound( "Audio/Title.wav" )
+video = Video( "Video/video.avi" )
+
+write( "It's a Wonderful Life", text )
+
+write( text )
+
+show( image, 100, 100 )
+show( 100, 100 )
+show( image )
+play( sound )
+
+if t
+	write( s )
+end
+
+case i
+when 1 then
+	write( f )
+when 2 :
+	write( r )
+when 3
+	write( a )
+else
+	write( h )
+end
+
+case s
+when "It's a Wonderful Life" then
+	write( f )
+when "\n" :
+	write( r )
+when "\'"
+	write( a )
+else
+	write( h )
+end
+
+while i > 10 do
+	if i > 100000 then
+		break
+	elseif i > 200000 :
+		i = 100
+		redo
+	end
+
+	i = i - 1
+end
+
+while i > 0 :
+	i = i - 1
+end
+
+while i > -10
+	i = i - 1
+end
+
+do
+	i = i + 100
+while i < 70000
+
+for j = 0, j < 10, j = j + 2 do
+	i = i + j
+end
+
+for j = 0, j < 10, j = j + 2 :
+	i = i + j
+end
+
+for j = 0, j < 10, j = j + 2
+	i = i + j
+end
+
+foreach j in a do
+	write( j )
+end
+
+foreach j in a :
+	write( j )
+end
+
+foreach j in a
+	write( j )
+end
+
+def factorial( i )
+	if i <= 1
+		return 1
+	else
+		return i * factorial( i - 1 )
+	end
+end
+
+write( factorial( 9 ) )
+
+def add( a, i = 10 )
+	k = 0
+	for j = a, j <= i
+		k = k + j
+	end
+	return k
+end
+
+k = add( 2 )
+j = add( 2, 9 )
+
+k = -i
+j = +i
+
+j = k + i - i * 3 / 2 - i % 4
+r = r / 2
+
+if !( t && f || false )
+	j = ~i
+	k = j & i | ( i << 3 >> 5 ) ^ i * i
+end
+
+if i == 2 :
+	i = 3
+elseif i > 100 then
+	i = i + 4
+elseif i < -100
+	i = i - 5
+elseif i >= 1000
+	i = i % 6
+elseif i <= -1000
+	i = 7
+elseif i != -2
+	i = i << 8
+else
+	i = i >> 9
+end
+
+video = null

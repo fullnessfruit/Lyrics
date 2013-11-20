@@ -25,7 +25,7 @@ namespace lyrics
 		{
 			if ( !TextLoader::LoadText( fileName, mText, mTextLength ) )
 			{
-				BuildLog::FatalError( FatalErrorCode::TEXT_LOADING_FAILED );
+				BuildLog::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;
 			}
 
