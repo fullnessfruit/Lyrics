@@ -835,6 +835,10 @@ namespace lyrics
 					mToken++;
 
 					elseIfNode->condition = Expression();
+					if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
+					{
+						mToken++;
+					}
 					elseIfNode->block = Block();
 					node->AddElseIf( elseIfNode );
 
