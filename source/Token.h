@@ -63,6 +63,6 @@ namespace lyrics
 		Value value;
 		const Location location;
 	};
-};
+}
 
 #endif

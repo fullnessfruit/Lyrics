@@ -178,6 +178,6 @@ namespace lyrics
 			cout << "Build terminated." << endl;
 		}
 	};
-};
+}
 
 #endif

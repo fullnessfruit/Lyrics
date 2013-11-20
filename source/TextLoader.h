@@ -220,6 +220,6 @@ namespace lyrics
 			return tStr;
 		}
 	};
-};
+}
 
 #endif

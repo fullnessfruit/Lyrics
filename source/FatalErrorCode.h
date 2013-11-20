@@ -8,6 +8,6 @@ namespace lyrics
 		NO_INPUT_FILES = 1001,
 		NO_SUCH_FILE = 2001
 	};
-};
+}
 
 #endif

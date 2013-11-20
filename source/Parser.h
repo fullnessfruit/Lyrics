@@ -1141,6 +1141,6 @@ namespace lyrics
 			}
 		}
 	};
-};
+}
 
 #endif

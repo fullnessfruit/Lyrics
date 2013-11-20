@@ -1136,6 +1136,6 @@ namespace lyrics
 			return Node::Type::RETURN;
 		}
 	};
-};
+}
 
 #endif

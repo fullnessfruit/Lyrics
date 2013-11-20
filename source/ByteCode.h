@@ -83,6 +83,6 @@ namespace lyrics
 	};
 
 	enum struct Register : short { TV0, V0, TV1, V1, TA0, A0, TA1, A1, TT0, T0, TT1, T1, GP, SP, FP, RA };
-};
+}
 
 #endif

@@ -19,6 +19,6 @@ namespace lyrics
 			return true;
 		}
 	};
-};
+}
 
 #endif

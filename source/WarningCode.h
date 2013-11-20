@@ -7,6 +7,6 @@ namespace lyrics
 	{
 		UNKNOWN_ESCAPE_SEQUENCE = 2001
 	};
-};
+}
 
 #endif

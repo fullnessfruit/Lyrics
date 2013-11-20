@@ -42,6 +42,6 @@ namespace lyrics
 	{
 		return out << location.mFileName << ':' << location.mLine << ':' << location.mColumn << ':';
 	}
-};
+}
 
 #endif

@@ -27,6 +27,6 @@ namespace lyrics
 			char *object;
 		} value;
 	};
-};
+}
 
 #endif

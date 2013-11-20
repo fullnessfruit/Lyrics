@@ -38,7 +38,7 @@ namespace lyrics
 	constexpr char BuildLog::WARNING[];
 	constexpr char BuildLog::ERROR[];
 	constexpr char BuildLog::FATAL_ERROR[];
-};
+}
 
 int main( int argc, char *argv[] )
 {
