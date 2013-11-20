@@ -1,8 +1,8 @@
 #include <string>
 #include <forward_list>
 
-#include "Location.h"
 #include "Token.h"
+#include "Location.h"
 #include "Literal.h"
 
 #ifndef NODE
