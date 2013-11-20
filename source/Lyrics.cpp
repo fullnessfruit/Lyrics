@@ -7,6 +7,8 @@
 
 namespace lyrics
 {
+	using std::u16string;
+
 	const u16string Tokenizer::BREAK = u"break";
 	const u16string Tokenizer::CASE = u"case";
 	const u16string Tokenizer::CLASS = u"class";
