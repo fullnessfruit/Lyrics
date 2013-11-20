@@ -13,8 +13,9 @@ namespace lyrics
 	using std::u16string;
 	using std::forward_list;
 
-	struct Node
+	class Node
 	{
+	public:
 		enum struct Type
 		{
 			BLOCK,
@@ -52,57 +53,58 @@ namespace lyrics
 		}
 	};
 
-	struct BlockNode;
-	struct StatementNode;
-		struct ExpressionNode;
-			struct PrimaryExpressionNode;
-				struct IdentifierNode;
-				struct LiteralNode;
-				struct ArrayLiteralNode;
-				struct HashLiteralNode;
-					struct HashNode;
-				struct ParenthesizedExpressionNode;
-			struct PostfixExpressionNode;
-				struct IndexReferenceNode;
-				struct FunctionCallNode;
-				struct MemberReferenceNode;
-			struct UnaryExpressionNode;
-			struct MultiplicativeExpressionNode;
-			struct AdditiveExpressionNode;
-			struct ShiftExpressionNode;
-			struct AndExpressionNode;
-			struct OrExpressionNode;
-			struct RelationalExpressionNode;
-			struct EqualityExpressionNode;
-			struct LogicalAndExpressionNode;
-			struct LogicalOrExpressionNode;
-		struct AssignmentNode;
-		struct DeclarationNode;
-			struct PublicNode;
-			struct PrivateNode;
-		struct FunctionLiteralNode;
-			struct ParameterNode;
-				struct ValueParameterNode;
-				struct OutputParameterNode;
-		struct ClassNode;
-		struct PackageNode;
-		struct ImportNode;
-		struct SelectionNode;
-			struct IfNode;
-				struct ElseIfNode;
-			struct CaseNode;
-				struct WhenNode;
-		struct IterationNode;
-			struct WhileNode;
-			struct ForNode;
-			struct ForEachNode;
-		struct JumpNode;
-			struct RedoNode;
-			struct BreakNode;
-			struct ReturnNode;
+	class BlockNode;
+	class StatementNode;
+		class ExpressionNode;
+			class PrimaryExpressionNode;
+				class IdentifierNode;
+				class LiteralNode;
+				class ArrayLiteralNode;
+				class HashLiteralNode;
+					class HashNode;
+				class ParenthesizedExpressionNode;
+			class PostfixExpressionNode;
+				class IndexReferenceNode;
+				class FunctionCallNode;
+				class MemberReferenceNode;
+			class UnaryExpressionNode;
+			class MultiplicativeExpressionNode;
+			class AdditiveExpressionNode;
+			class ShiftExpressionNode;
+			class AndExpressionNode;
+			class OrExpressionNode;
+			class RelationalExpressionNode;
+			class EqualityExpressionNode;
+			class LogicalAndExpressionNode;
+			class LogicalOrExpressionNode;
+		class AssignmentNode;
+		class DeclarationNode;
+			class PublicNode;
+			class PrivateNode;
+		class FunctionLiteralNode;
+			class ParameterNode;
+				class ValueParameterNode;
+				class OutputParameterNode;
+		class ClassNode;
+		class PackageNode;
+		class ImportNode;
+		class SelectionNode;
+			class IfNode;
+				class ElseIfNode;
+			class CaseNode;
+				class WhenNode;
+		class IterationNode;
+			class WhileNode;
+			class ForNode;
+			class ForEachNode;
+		class JumpNode;
+			class RedoNode;
+			class BreakNode;
+			class ReturnNode;
 
-	struct StatementNode: public Node
+	class StatementNode: public Node
 	{
+	public:
 		explicit StatementNode( const Location &location ) : Node( location )
 		{
 		}
@@ -112,8 +114,9 @@ namespace lyrics
 		}
 	};
 
-	struct BlockNode: public Node
+	class BlockNode: public Node
 	{
+	public:
 		explicit BlockNode( const Location &location ) : Node( location )
 		{
 			last = list.cbefore_begin();
@@ -141,8 +144,9 @@ namespace lyrics
 		}
 	};
 
-	struct ExpressionNode: public StatementNode
+	class ExpressionNode: public StatementNode
 	{
+	public:
 		explicit ExpressionNode( const Location &location ) : StatementNode( location )
 		{
 		}
@@ -152,8 +156,9 @@ namespace lyrics
 		}
 	};
 
-	struct PrimaryExpressionNode: public ExpressionNode
+	class PrimaryExpressionNode: public ExpressionNode
 	{
+	public:
 		explicit PrimaryExpressionNode( const Location &location ) : ExpressionNode( location )
 		{
 		}
@@ -163,8 +168,9 @@ namespace lyrics
 		}
 	};
 
-	struct IdentifierNode: public PrimaryExpressionNode
+	class IdentifierNode: public PrimaryExpressionNode
 	{
+	public:
 		IdentifierNode( const Location &location, const u16string * const str ) : PrimaryExpressionNode( location ), str( str )
 		{
 		}
@@ -182,8 +188,9 @@ namespace lyrics
 		}
 	};
 
-	struct LiteralNode: public PrimaryExpressionNode
+	class LiteralNode: public PrimaryExpressionNode
 	{
+	public:
 		explicit LiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
 			literal.type = Literal::Type::NIL;
@@ -221,8 +228,9 @@ namespace lyrics
 		}
 	};
 
-	struct ArrayLiteralNode: public PrimaryExpressionNode
+	class ArrayLiteralNode: public PrimaryExpressionNode
 	{
+	public:
 		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
 			last = list.cbefore_begin();
@@ -250,8 +258,9 @@ namespace lyrics
 		}
 	};
 
-	struct HashNode: public Node
+	class HashNode: public Node
 	{
+	public:
 		HashNode( const Location &location, const ExpressionNode * const key, const ExpressionNode * const value ) : Node( location ), key( key ), value( value )
 		{
 		}
@@ -271,8 +280,9 @@ namespace lyrics
 		}
 	};
 
-	struct HashLiteralNode: public PrimaryExpressionNode
+	class HashLiteralNode: public PrimaryExpressionNode
 	{
+	public:
 		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
 			last = list.cbefore_begin();
@@ -300,8 +310,9 @@ namespace lyrics
 		}
 	};
 
-	struct ParameterNode: public Node
+	class ParameterNode: public Node
 	{
+	public:
 		ParameterNode( const Location &location, const IdentifierNode * const name ) : Node( location ), name( name )
 		{
 		}
@@ -314,8 +325,9 @@ namespace lyrics
 		const IdentifierNode * const name;
 	};
 
-	struct ValueParameterNode: public ParameterNode
+	class ValueParameterNode: public ParameterNode
 	{
+	public:
 		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), defalutArgument( nullptr )
 		{
 		}
@@ -337,8 +349,9 @@ namespace lyrics
 		}
 	};
 
-	struct OutputParameterNode: public ParameterNode
+	class OutputParameterNode: public ParameterNode
 	{
+	public:
 		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name )
 		{
 		}
@@ -349,8 +362,9 @@ namespace lyrics
 		}
 	};
 
-	struct FunctionLiteralNode: public PrimaryExpressionNode
+	class FunctionLiteralNode: public PrimaryExpressionNode
 	{
+	public:
 		explicit FunctionLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), block( nullptr )
 		{
 			last = list.cbefore_begin();
@@ -381,8 +395,9 @@ namespace lyrics
 		}
 	};
 
-	struct ParenthesizedExpressionNode: public PrimaryExpressionNode
+	class ParenthesizedExpressionNode: public PrimaryExpressionNode
 	{
+	public:
 		ParenthesizedExpressionNode( const Location &location, const ExpressionNode * const expression ) : PrimaryExpressionNode( location ), expression( expression )
 		{
 		}
@@ -400,8 +415,9 @@ namespace lyrics
 		}
 	};
 
-	struct PostfixExpressionNode: public ExpressionNode
+	class PostfixExpressionNode: public ExpressionNode
 	{
+	public:
 		PostfixExpressionNode( const Location &location, const ExpressionNode * const expression ) : ExpressionNode( location ), expression( expression )
 		{
 		}
@@ -414,8 +430,9 @@ namespace lyrics
 		const ExpressionNode * const expression;
 	};
 
-	struct IndexReferenceNode: public PostfixExpressionNode
+	class IndexReferenceNode: public PostfixExpressionNode
 	{
+	public:
 		IndexReferenceNode( const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index ) : PostfixExpressionNode( location, expression ), index( index )
 		{
 		}
@@ -433,8 +450,9 @@ namespace lyrics
 		}
 	};
 
-	struct FunctionCallNode: public PostfixExpressionNode
+	class FunctionCallNode: public PostfixExpressionNode
 	{
+	public:
 		FunctionCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
 		{
 			last = list.cbefore_begin();
@@ -462,8 +480,9 @@ namespace lyrics
 		}
 	};
 
-	struct MemberReferenceNode: public PostfixExpressionNode
+	class MemberReferenceNode: public PostfixExpressionNode
 	{
+	public:
 		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const member ) : PostfixExpressionNode( location, expression ), member( member )
 		{
 		}
@@ -481,8 +500,9 @@ namespace lyrics
 		}
 	};
 
-	struct UnaryExpressionNode: public ExpressionNode
+	class UnaryExpressionNode: public ExpressionNode
 	{
+	public:
 		UnaryExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const expression ) : ExpressionNode( location ), op( op ), expression( expression )
 		{
 		}
@@ -501,8 +521,9 @@ namespace lyrics
 		}
 	};
 
-	struct MultiplicativeExpressionNode: public ExpressionNode
+	class MultiplicativeExpressionNode: public ExpressionNode
 	{
+	public:
 		MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
@@ -523,8 +544,9 @@ namespace lyrics
 		}
 	};
 
-	struct AdditiveExpressionNode: public ExpressionNode
+	class AdditiveExpressionNode: public ExpressionNode
 	{
+	public:
 		AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
@@ -545,8 +567,9 @@ namespace lyrics
 		}
 	};
 
-	struct ShiftExpressionNode: public ExpressionNode
+	class ShiftExpressionNode: public ExpressionNode
 	{
+	public:
 		ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
@@ -567,8 +590,9 @@ namespace lyrics
 		}
 	};
 
-	struct AndExpressionNode: public ExpressionNode
+	class AndExpressionNode: public ExpressionNode
 	{
+	public:
 		AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
@@ -588,8 +612,9 @@ namespace lyrics
 		}
 	};
 
-	struct OrExpressionNode: public ExpressionNode
+	class OrExpressionNode: public ExpressionNode
 	{
+	public:
 		OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
@@ -610,8 +635,9 @@ namespace lyrics
 		}
 	};
 
-	struct RelationalExpressionNode: public ExpressionNode
+	class RelationalExpressionNode: public ExpressionNode
 	{
+	public:
 		RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
@@ -632,8 +658,9 @@ namespace lyrics
 		}
 	};
 
-	struct EqualityExpressionNode: public ExpressionNode
+	class EqualityExpressionNode: public ExpressionNode
 	{
+	public:
 		EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
 		{
 		}
@@ -654,8 +681,9 @@ namespace lyrics
 		}
 	};
 
-	struct LogicalAndExpressionNode: public ExpressionNode
+	class LogicalAndExpressionNode: public ExpressionNode
 	{
+	public:
 		LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
@@ -675,8 +703,9 @@ namespace lyrics
 		}
 	};
 
-	struct LogicalOrExpressionNode: public ExpressionNode
+	class LogicalOrExpressionNode: public ExpressionNode
 	{
+	public:
 		LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
 		{
 		}
@@ -696,8 +725,9 @@ namespace lyrics
 		}
 	};
 
-	struct AssignmentExpressionNode: public ExpressionNode
+	class AssignmentExpressionNode: public ExpressionNode
 	{
+	public:
 		AssignmentExpressionNode( const Location &location, const ExpressionNode * const lhs, const ExpressionNode * const rhs ) : ExpressionNode( location ), lhs( lhs ), rhs( rhs )
 		{
 		}
@@ -717,8 +747,9 @@ namespace lyrics
 		}
 	};
 
-	struct DeclarationNode: public StatementNode
+	class DeclarationNode: public StatementNode
 	{
+	public:
 		DeclarationNode( const Location &location, const IdentifierNode * const name ) : StatementNode( location ), name( name ), initializer( nullptr )
 		{
 		}
@@ -737,8 +768,9 @@ namespace lyrics
 		const ExpressionNode * const initializer;
 	};
 
-	struct PublicNode: public DeclarationNode
+	class PublicNode: public DeclarationNode
 	{
+	public:
 		PublicNode( const Location &location, const IdentifierNode * const name ) : DeclarationNode( location, name )
 		{
 		}
@@ -753,8 +785,9 @@ namespace lyrics
 		}
 	};
 
-	struct PrivateNode: public DeclarationNode
+	class PrivateNode: public DeclarationNode
 	{
+	public:
 		PrivateNode( const Location &location, const IdentifierNode * const name ) : DeclarationNode( location, name )
 		{
 		}
@@ -769,8 +802,9 @@ namespace lyrics
 		}
 	};
 
-	struct ClassNode: public StatementNode
+	class ClassNode: public StatementNode
 	{
+	public:
 		explicit ClassNode( const Location &location ) : StatementNode( location ), name( nullptr ), base( nullptr ), block( nullptr )
 		{
 		}
@@ -792,8 +826,9 @@ namespace lyrics
 		}
 	};
 
-	struct PackageNode: public StatementNode
+	class PackageNode: public StatementNode
 	{
+	public:
 		PackageNode( const Location &location, const IdentifierNode * const name, const BlockNode * const block ) : StatementNode( location ), name( name ), block( block )
 		{
 		}
@@ -813,8 +848,9 @@ namespace lyrics
 		}
 	};
 
-	struct ImportNode: public StatementNode
+	class ImportNode: public StatementNode
 	{
+	public:
 		ImportNode( const Location &location, const IdentifierNode * const package ) : StatementNode( location ), package( package )
 		{
 		}
@@ -832,8 +868,9 @@ namespace lyrics
 		}
 	};
 
-	struct SelectionNode: public StatementNode
+	class SelectionNode: public StatementNode
 	{
+	public:
 		explicit SelectionNode( const Location &location ) : StatementNode( location )
 		{
 		}
@@ -843,8 +880,9 @@ namespace lyrics
 		}
 	};
 
-	struct ElseIfNode: public Node
+	class ElseIfNode: public Node
 	{
+	public:
 		explicit ElseIfNode( const Location &location ) : Node( location ), condition( nullptr ), block( nullptr )
 		{
 		}
@@ -864,8 +902,9 @@ namespace lyrics
 		}
 	};
 
-	struct IfNode: public SelectionNode
+	class IfNode: public SelectionNode
 	{
+	public:
 		explicit IfNode( const Location &location ) : SelectionNode( location ), block( nullptr )
 		{
 			last = list.cbefore_begin();
@@ -896,8 +935,9 @@ namespace lyrics
 		}
 	};
 
-	struct WhenNode: public Node
+	class WhenNode: public Node
 	{
+	public:
 		explicit WhenNode( const Location &location ) : Node( location ), condition( nullptr ), block( nullptr )
 		{
 		}
@@ -917,8 +957,9 @@ namespace lyrics
 		}
 	};
 
-	struct CaseNode: public SelectionNode
+	class CaseNode: public SelectionNode
 	{
+	public:
 		explicit CaseNode( const Location &location ) : SelectionNode( location ), value( nullptr ), block( nullptr )
 		{
 			last = list.cbefore_begin();
@@ -950,8 +991,9 @@ namespace lyrics
 		}
 	};
 
-	struct IterationNode: public StatementNode
+	class IterationNode: public StatementNode
 	{
+	public:
 		explicit IterationNode( const Location &location ) : StatementNode( location )
 		{
 		}
@@ -961,8 +1003,9 @@ namespace lyrics
 		}
 	};
 
-	struct WhileNode: public IterationNode
+	class WhileNode: public IterationNode
 	{
+	public:
 		explicit WhileNode( const Location &location ) : IterationNode( location ), condition( nullptr ), block( nullptr )
 		{
 		}
@@ -982,8 +1025,9 @@ namespace lyrics
 		}
 	};
 
-	struct ForNode: public IterationNode
+	class ForNode: public IterationNode
 	{
+	public:
 		explicit ForNode( const Location &location ) : IterationNode( location ), initializer( nullptr ), condition( nullptr ), iterator( nullptr ), block( nullptr )
 		{
 		}
@@ -1007,8 +1051,9 @@ namespace lyrics
 		}
 	};
 
-	struct ForEachNode: public IterationNode
+	class ForEachNode: public IterationNode
 	{
+	public:
 		explicit ForEachNode( const Location &location ) : IterationNode( location ), variable( nullptr ), collection( nullptr ), block( nullptr )
 		{
 		}
@@ -1030,8 +1075,9 @@ namespace lyrics
 		}
 	};
 
-	struct JumpNode: public StatementNode
+	class JumpNode: public StatementNode
 	{
+	public:
 		explicit JumpNode( const Location &location ) : StatementNode( location )
 		{
 		}
@@ -1041,8 +1087,9 @@ namespace lyrics
 		}
 	};
 
-	struct RedoNode: public JumpNode
+	class RedoNode: public JumpNode
 	{
+	public:
 		explicit RedoNode( const Location &location ) : JumpNode( location )
 		{
 		}
@@ -1053,8 +1100,9 @@ namespace lyrics
 		}
 	};
 
-	struct BreakNode: public JumpNode
+	class BreakNode: public JumpNode
 	{
+	public:
 		explicit BreakNode( const Location &location ) : JumpNode( location )
 		{
 		}
@@ -1065,8 +1113,9 @@ namespace lyrics
 		}
 	};
 
-	struct ReturnNode: public JumpNode
+	class ReturnNode: public JumpNode
 	{
+	public:
 		explicit ReturnNode( const Location &location ) : JumpNode( location ), value( nullptr )
 		{
 		}
