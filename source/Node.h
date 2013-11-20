@@ -919,7 +919,7 @@ namespace lyrics
 
 	struct CaseNode: public SelectionNode
 	{
-		explicit CaseNode( const Location &location ) : SelectionNode( location ), block( nullptr )
+		explicit CaseNode( const Location &location ) : SelectionNode( location ), value( nullptr ), block( nullptr )
 		{
 			last = list.cbefore_begin();
 		}
