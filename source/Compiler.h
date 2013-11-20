@@ -1,5 +1,4 @@
-#include "Parser.h"
-#include "Node.h"
+#include "SemanticAnalyzer.h"
 
 #ifndef COMPILER
 #define COMPILER
@@ -13,7 +12,7 @@ namespace lyrics
 		{
 			BlockNode *root;
 
-			if ( !Parser().Parse( fileName, root ) )
+			if ( !SemanticAnalyzer().SemanticAnalysis( fileName, root ) )
 			{
 				return false;
 			}
