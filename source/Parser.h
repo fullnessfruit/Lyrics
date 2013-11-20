@@ -255,7 +255,7 @@ namespace lyrics
 
 		FunctionLiteralNode *FunctionLiteral( forward_list<Token>::const_iterator token )
 		{
-			if ( mToken->type != static_cast<Token::Type>( u'(' ) )
+			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 			{
 				FunctionLiteralNode *node = new FunctionLiteralNode( token->location );
 
