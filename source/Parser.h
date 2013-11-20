@@ -52,7 +52,7 @@ namespace lyrics
 		{
 			BlockNode *node = new BlockNode( mToken->location );
 
-			if ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::WHEN && mToken != mLastToken )
+			while ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::WHEN && mToken != mLastToken )
 			{
 				node->AddStatement( Statement() );
 			}
