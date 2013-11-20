@@ -32,7 +32,7 @@ namespace lyrics
 			switch ( warningCode )
 			{
 			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
-				cout << BuildLog::WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ' ' << location << ' ' << "Unknown escape sequence." << endl;
+				cout << location << ' ' << BuildLog::WARNING << ' ' << static_cast<unsigned int>( warningCode ) << ": " << "Unknown escape sequence." << endl;
 				break;
 
 			default:
@@ -46,107 +46,107 @@ namespace lyrics
 			switch ( errorCode )
 			{
 			case ErrorCode::WRONG_CHARACTER:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Wrong character." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Wrong character." << endl;
 				break;
 
 			case ErrorCode::STRING_NOT_TERMINATED:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "String not terminated." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "String not terminated." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_RIGHT_PARENTHESIS:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected )." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected )." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_ARRAY_LITERAL:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete array literal." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete array literal." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_HASH:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected hash." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected hash." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_HASH_LITERAL:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete hash literal." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete hash literal." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PRIMARY_EXPRESSION:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected primary expression." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected primary expression." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_INDEX:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected index." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected index." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_FUNCTION_CALL:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected function call." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected function call." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_MEMBER:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected member." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected member." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_LHS:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected lhs." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected lhs." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_VARIABLE_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected variable name." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected variable name." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PARAMETER_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter name." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter name." << endl;
 				break;
 
 			case ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Output parameter cannot have default argument." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Output parameter cannot have default argument." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_FUNCTION:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete function." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete function." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PARAMETER:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected parameter." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_BASE_CLASS:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected base class." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected base class." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_CLASS_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected class name." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected class name." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PACKAGE_NAME:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected package name." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected package name." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PACKAGE:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected package." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected package." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_END:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected end." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected end." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_END_ELSE_ELSEIF:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected end or else or elseif." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected end or else or elseif." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected when or else or elseif." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected when or else or elseif." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_WHEN:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Expected when." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected when." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_FOR:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete for statement." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete for statement." << endl;
 				break;
 
 			case ErrorCode::INCOMPLETE_FOREACH:
-				cout << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ' ' << location << ' ' << "Incomplete foreach statement." << endl;
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete foreach statement." << endl;
 				break;
 
 			default:
