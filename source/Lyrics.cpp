@@ -59,5 +59,7 @@ int main( int argc, char *argv[] )
 		}
 	}
 
+	lyrics::BuildLog::BuildTerminated();
+
 	return 0;
 }

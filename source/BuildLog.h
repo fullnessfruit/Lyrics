@@ -172,6 +172,11 @@ namespace lyrics
 				break;
 			}
 		}
+
+		static void BuildTerminated()
+		{
+			cout << "Build terminated." << endl;
+		}
 	};
 };
 
