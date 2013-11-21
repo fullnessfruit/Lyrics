@@ -16,9 +16,11 @@ namespace lyrics
 		{
 		}
 
-		bool IsExist( u16string *entity )
+		bool IsExist( const u16string * const entity )
 		{
-			if ( *mEntities.find( *entity ) == *entity )
+			unordered_set<u16string>::const_iterator i = mEntities.find( *entity );
+
+			if ( i != mEntities.cend() && *i == *entity )
 			{
 				return true;
 			}
@@ -28,7 +30,7 @@ namespace lyrics
 			}
 		}
 
-		void AddEntity( u16string *entity )
+		void AddEntity( const u16string * const entity )
 		{
 			mEntities.insert( *entity );
 		}
