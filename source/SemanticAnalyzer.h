@@ -21,13 +21,13 @@ namespace lyrics
 				return false;
 			}
 
-			bool canProgress;
+			bool canProgress = true;
 
-			canProgress = root->Accept( LocalResolver() );
-			canProgress = root->Accept( TypeResolver() );
-			canProgress = root->Accept( TypeTable() );
-			canProgress = root->Accept( DereferenceChecker() );
-			canProgress = root->Accept( TypeChecker() );
+			canProgress &= root->Accept( LocalResolver() );
+			canProgress &= root->Accept( TypeResolver() );
+			canProgress &= root->Accept( TypeTable() );
+			canProgress &= root->Accept( DereferenceChecker() );
+			canProgress &= root->Accept( TypeChecker() );
 
 			return canProgress;
 		}
