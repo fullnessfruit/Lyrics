@@ -49,11 +49,6 @@ namespace lyrics
 		const Location location;
 
 		virtual Node::Type GetType() const = 0;
-
-		virtual const Location &GetLocation() const
-		{
-			return location;
-		}
 	};
 
 	class BlockNode;
