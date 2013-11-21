@@ -1,23 +1,96 @@
+#include <stack>
+
 #include "Visitor.h"
 #include "Node.h"
+#include "Scope.h"
+
+#include "ErrorCode.h"
+#include "BuildLog.h"
 
 #ifndef LOCAL_RESOLVER
 #define LOCAL_RESOLVER
 
 namespace lyrics
 {
+	using std::stack;
+
 	class LocalResolver : public Visitor
 	{
 	public:
+		bool Resolve( const BlockNode * const node, Scope *&scope )
+		{
+			scope = new Scope( nullptr );
+			mScopeStack.push( scope );
+
+			return node->Accept( *this );
+		}
+
 		virtual bool Visit( const BlockNode * const node ) const
 		{
 			bool canProgress = true;
+			Scope *scope = mScopeStack.top();
 
 			for ( auto i : node->list )
 			{
 				if ( i )
 				{
-					canProgress &= i->Accept( *this );
+					switch ( i->GetType() )
+					{
+					case Node::Type::ASSIGNMENT_EXPRESSION:
+						break;
+
+					case Node::Type::PRIVATE:
+						if ( !scope->IsExist( static_cast<PrivateNode *>( i )->name->str ) )
+						{
+							scope->AddEntity( static_cast<PrivateNode *>( i )->name->str );
+							canProgress &= i->Accept( *this );
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, i->location );
+							canProgress &= false;
+						}
+						break;
+
+					case Node::Type::PUBLIC:
+						if ( !scope->IsExist( static_cast<PublicNode *>( i )->name->str ) )
+						{
+							scope->AddEntity( static_cast<PublicNode *>( i )->name->str );
+							canProgress &= i->Accept( *this );
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, i->location );
+							canProgress &= false;
+						}
+						break;
+
+					case Node::Type::CLASS:
+						if ( !scope->IsExist( static_cast<ClassNode *>( i )->name->str ) )
+						{
+							scope->AddEntity( static_cast<ClassNode *>( i )->name->str );
+							canProgress &= i->Accept( *this );
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, i->location );
+							canProgress &= false;
+						}
+						break;
+
+					case Node::Type::PACKAGE:
+						if ( !scope->IsExist( static_cast<PackageNode *>( i )->name->str ) )
+						{
+							scope->AddEntity( static_cast<PackageNode *>( i )->name->str );
+							canProgress &= i->Accept( *this );
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, i->location );
+							canProgress &= false;
+						}
+						break;
+					}
 				}
 				else
 				{
@@ -877,6 +950,9 @@ namespace lyrics
 
 			return canProgress;
 		}
+
+	private:
+		stack<Scope *> mScopeStack;
 	};
 }
 

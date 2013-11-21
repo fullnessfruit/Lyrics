@@ -149,6 +149,10 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete foreach statement." << endl;
 				break;
 
+			case ErrorCode::DUPLICATED_IDENTIFIER:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Duplicated identifier." << endl;
+				break;
+
 			default:
 				cerr << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << endl;
 				break;
