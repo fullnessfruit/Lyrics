@@ -18,7 +18,6 @@ namespace lyrics
 
 		bool IsExist( u16string *entity )
 		{
-			// TODO: hash collision
 			if ( *mEntities.find( *entity ) == *entity )
 			{
 				return true;
