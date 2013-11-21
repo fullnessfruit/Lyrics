@@ -8,6 +8,7 @@ namespace lyrics
 {
 	class LocalResolver : public Visitor
 	{
+	public:
 		virtual bool Visit( const BlockNode * const node ) const
 		{
 			bool canProgress = true;
