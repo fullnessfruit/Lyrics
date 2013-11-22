@@ -441,7 +441,7 @@ namespace lyrics
 	class ParenthesizedExpressionNode: public PrimaryExpressionNode
 	{
 	public:
-		ParenthesizedExpressionNode( const Location &location, const ExpressionNode * const expression ) : PrimaryExpressionNode( location ), expression( expression )
+		ParenthesizedExpressionNode( const Location &location ) : PrimaryExpressionNode( location ), expression( nullptr )
 		{
 		}
 
@@ -450,7 +450,7 @@ namespace lyrics
 			delete expression;
 		}
 
-		const ExpressionNode * const expression;
+		ExpressionNode *expression;
 
 		virtual bool Accept( const Visitor &visitor ) const
 		{

@@ -101,7 +101,7 @@ write( factorial( 9 ) )
 
 def add( a, i = 10 )
 	k = 0
-	for j = a, j <= i
+	for j = a, j <= i, j = j + 1
 		k = k + j
 	end
 	return k

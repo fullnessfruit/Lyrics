@@ -85,6 +85,10 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected member." << endl;
 				break;
 
+			case ErrorCode::INCOMPLETE_EXPRESSION:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete expression." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_LHS:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected lhs." << endl;
 				break;
@@ -109,6 +113,14 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_INITIALIZER:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected initializer." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_CLASS_DEFINITION:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected class definition." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_BASE_CLASS:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected base class." << endl;
 				break;
@@ -129,9 +141,18 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected end." << endl;
 				break;
 
+			case ErrorCode::INCOMPLETE_IF_STATEMENT:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete if statement." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_END_ELSE_ELSEIF:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected end or else or elseif." << endl;
 				break;
+
+			case ErrorCode::INCOMPLETE_CASE_STATEMENT:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete case statement." << endl;
+				break;
+
 
 			case ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected when or else or elseif." << endl;
@@ -141,11 +162,15 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected when." << endl;
 				break;
 
-			case ErrorCode::INCOMPLETE_FOR:
+			case ErrorCode::INCOMPLETE_WHILE_STATEMENT:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete while statement." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_FOR_STATEMENT:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete for statement." << endl;
 				break;
 
-			case ErrorCode::INCOMPLETE_FOREACH:
+			case ErrorCode::INCOMPLETE_FOREACH_STATEMENT:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete foreach statement." << endl;
 				break;
 

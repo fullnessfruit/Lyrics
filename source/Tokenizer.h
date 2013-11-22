@@ -36,6 +36,7 @@ namespace lyrics
 			mLastToken = token.cbefore_begin();
 
 			while ( Scan( token, currentLocation ) );
+			mLastToken = token.emplace_after( mLastToken, Token::Type::END_OF_FILE, currentLocation );
 
 			delete [] mText;
 
@@ -341,8 +342,6 @@ namespace lyrics
 			}
 			else if ( tChar == u'.' )
 			{
-				unsigned int length = 1;
-
 				if ( ++mOffset < mTextLength )
 				{
 					tChar = mText[mOffset];
@@ -350,11 +349,14 @@ namespace lyrics
 					if ( tChar < u'0' || tChar > u'9' )
 					{
 						mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
+						currentLocation.IncreaseColumn();
 					}
 					else	// real
 					{
 						long long valueBelowDecimalPoint = 0;
 						long long tenPowerDecimalPlace = 1;
+
+						unsigned int length = 1;
 
 						do
 						{
@@ -376,9 +378,8 @@ namespace lyrics
 						while ( u'0' <= tChar && tChar <= u'9' );
 
 						mLastToken = token.emplace_after( mLastToken, double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
+						currentLocation.IncreaseColumn( length );
 					}
-
-					currentLocation.IncreaseColumn( length );
 				}
 				else
 				{
@@ -800,11 +801,12 @@ namespace lyrics
 
 				Scan( token, currentLocation );
 			}
-			else if ( tChar == u'{' || tChar == u'}' || tChar == u',' || tChar == u':' || tChar == u'~' || tChar == u'%' || tChar == u'^' || tChar == u'?' )
+			else if ( tChar == u'{' || tChar == u'}' || tChar == u',' || tChar == u':' || tChar == u'~' || tChar == u'%' || tChar == u'^' )
 			{
 				mOffset++;
 
 				mLastToken = token.emplace_after( mLastToken, static_cast<Token::Type>( tChar ), currentLocation );
+				currentLocation.IncreaseColumn();
 			}
 			else if ( tChar == Tokenizer::NO_BREAK_SPACE || tChar == Tokenizer::OGHAM_SPACE_MARK || tChar == Tokenizer::MONGOLIAN_VOWEL_SEPARATOR || ( tChar >= Tokenizer::EN_QUAD && tChar <= Tokenizer::HAIR_SPACE ) || tChar == Tokenizer::NARROW_NO_BREAK_SPACE || tChar == Tokenizer::MEDIUM_MATHEMATICAL_SPACE || tChar == Tokenizer::IDEOGRAPHIC_SPACE )	// Unicode class Zs except space character.
 			{
