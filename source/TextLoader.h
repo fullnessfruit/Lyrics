@@ -17,8 +17,8 @@ namespace lyrics
 	public:
 		static bool LoadText( const char * const fileName, char16_t *&text, unsigned int &length )
 		{
-			unsigned int size;
-			char *data;
+			char *data = nullptr;
+			unsigned int size = 0;
 
 			if ( !Loader::LoadData( fileName, data, size ) )
 			{
