@@ -143,6 +143,8 @@ namespace lyrics
 			default:
 				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
 
+				mToken++;
+
 				return nullptr;
 			}
 		}
@@ -517,7 +519,7 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
-			if ( expression->GetType() != Node::Type::IDENTIFIER )
+			if ( expression == nullptr || expression->GetType() != Node::Type::IDENTIFIER )
 			{
 				return expression;
 			}
@@ -820,7 +822,7 @@ namespace lyrics
 			{
 				ExpressionNode *expression = LogicalOrExpression();
 
-				if ( mToken->type != static_cast<Token::Type>( u'=' ) )
+				if ( expression == nullptr || mToken->type != static_cast<Token::Type>( u'=' ) )
 				{
 					return expression;
 				}

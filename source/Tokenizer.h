@@ -816,14 +816,17 @@ namespace lyrics
 			}
 			else if ( tChar == Tokenizer::NEXT_LINE || tChar == Tokenizer::LINE_SEPARATOR || tChar == Tokenizer::PARAGRAPH_SEPARATOR )	// New line character.
 			{
-				currentLocation.IncreaseLine();
 				mOffset++;
+				currentLocation.IncreaseLine();
 
 				Scan( token, currentLocation );
 			}
 			else
 			{
 				BuildLog::Error( ErrorCode::WRONG_CHARACTER, currentLocation );
+
+				mOffset++;
+				currentLocation.IncreaseColumn();
 			}
 
 			return true;
