@@ -525,11 +525,17 @@ namespace lyrics
 			{
 				if ( node->lhs->GetType() == Node::Type::IDENTIFIER )
 				{
-					Scope *scope = mScopeStack.top();
+					const Scope *scope = mScopeStack.top();
 
-					if ( !scope->IsExist( static_cast<const IdentifierNode * const>( node->lhs )->str ) )
+					while ( !scope->IsExist( static_cast<const IdentifierNode * const>( node->lhs )->str ) )
 					{
-						scope->AddEntity( static_cast<const IdentifierNode * const>( node->lhs )->str );
+						scope = scope->GetParent();
+
+						if ( !scope )
+						{
+							mScopeStack.top()->AddEntity( static_cast<const IdentifierNode * const>( node->lhs )->str );
+							break;
+						}
 					}
 				}
 

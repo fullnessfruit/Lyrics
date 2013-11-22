@@ -16,7 +16,12 @@ namespace lyrics
 		{
 		}
 
-		bool IsExist( const u16string * const entity )
+		const Scope *GetParent() const
+		{
+			return mParent;
+		}
+
+		bool IsExist( const u16string * const entity ) const
 		{
 			unordered_set<u16string>::const_iterator i = mEntities.find( *entity );
 
