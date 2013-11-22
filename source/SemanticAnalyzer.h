@@ -1,8 +1,6 @@
 #include "Parser.h"
 
 #include "LocalResolver.h"
-#include "TypeResolver.h"
-#include "TypeTable.h"
 #include "DereferenceChecker.h"
 #include "TypeChecker.h"
 
@@ -29,8 +27,6 @@ namespace lyrics
 			bool canProgress = true;
 
 			canProgress &= LocalResolver().Resolve( root, top );
-			canProgress &= root->Accept( TypeResolver() );
-			canProgress &= root->Accept( TypeTable() );
 			canProgress &= root->Accept( DereferenceChecker() );
 			canProgress &= root->Accept( TypeChecker() );
 
