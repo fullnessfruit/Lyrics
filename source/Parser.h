@@ -1067,54 +1067,40 @@ namespace lyrics
 		IfNode *If()
 		{
 			IfNode *node = new IfNode( mToken->location );
-			ElseIfNode *elseIfNode = new ElseIfNode( mToken->location );
+			ElseIfNode *elseIfNode;
 
-			mToken++;
-			if ( mToken->type == Token::Type::END_OF_FILE )
+			for (;;)
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
-				delete elseIfNode;
-				delete node;
+				elseIfNode = new ElseIfNode( mToken->location );
 
-				return nullptr;
-			}
-
-			elseIfNode->condition = Expression();
-			if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
-			{
-				mToken++;
-			}
-
-			if ( mToken->type == Token::Type::END_OF_FILE )
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
-				delete elseIfNode;
-				delete node;
-
-				return nullptr;
-			}
-
-			elseIfNode->block = Block();
-			node->AddElseIf( elseIfNode );
-
-			if ( mToken->type == Token::Type::END )
-			{
-				mToken++;
-
-				return node;
-			}
-			else if ( mToken->type == Token::Type::ELSE )
-			{
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
 					BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+					delete elseIfNode;
 					delete node;
 
 					return nullptr;
 				}
 
-				node->block = Block();
+				elseIfNode->condition = Expression();
+
+				if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
+				{
+					mToken++;
+				}
+
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+					delete elseIfNode;
+					delete node;
+
+					return nullptr;
+				}
+
+				elseIfNode->block = Block();
+				node->AddElseIf( elseIfNode );
 
 				if ( mToken->type == Token::Type::END )
 				{
@@ -1122,47 +1108,18 @@ namespace lyrics
 
 					return node;
 				}
-				else
+				else if ( mToken->type == Token::Type::ELSE )
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-					delete node;
-
-					return nullptr;
-				}
-			}
-			else if ( mToken->type == Token::Type::ELSEIF )
-			{
-				for (;;)
-				{
-					elseIfNode = new ElseIfNode( mToken->location );
-
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
 						BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
-						delete elseIfNode;
 						delete node;
 
 						return nullptr;
 					}
 
-					elseIfNode->condition = Expression();
-					if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
-					{
-						mToken++;
-					}
-
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
-						delete elseIfNode;
-						delete node;
-
-						return nullptr;
-					}
-
-					elseIfNode->block = Block();
-					node->AddElseIf( elseIfNode );
+					node->block = Block();
 
 					if ( mToken->type == Token::Type::END )
 					{
@@ -1170,48 +1127,21 @@ namespace lyrics
 
 						return node;
 					}
-					else if ( mToken->type == Token::Type::ELSE )
+					else
 					{
-						mToken++;
-						if ( mToken->type == Token::Type::END_OF_FILE )
-						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
-							delete node;
-
-							return nullptr;
-						}
-
-						node->block = Block();
-
-						if ( mToken->type == Token::Type::END )
-						{
-							mToken++;
-
-							return node;
-						}
-						else
-						{
-							BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-							delete node;
-
-							return nullptr;
-						}
-					}
-					else if ( mToken->type != Token::Type::ELSEIF )
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 						delete node;
 
 						return nullptr;
 					}
 				}
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
-				delete node;
+				else if ( mToken->type != Token::Type::ELSEIF )
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
+					delete node;
 
-				return nullptr;
+					return nullptr;
+				}
 			}
 		}
 
@@ -1232,73 +1162,42 @@ namespace lyrics
 
 			if ( mToken->type == Token::Type::WHEN )
 			{
-				WhenNode *whenNode = new WhenNode( mToken->location );
-
-				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
-					delete whenNode;
-					delete node;
-
-					return nullptr;
-				}
-
-				whenNode->condition = Expression();
-
-				if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
-				{
-					mToken++;
-				}
-
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
-					delete whenNode;
-					delete node;
-
-					return nullptr;
-				}
-
-				whenNode->block = Block();
-				node->AddWhen( whenNode );
+				WhenNode *whenNode;
 
 				for (;;)
 				{
-					if ( mToken->type == Token::Type::WHEN )
+					whenNode = new WhenNode( mToken->location );
+
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						whenNode = new WhenNode( mToken->location );
+						BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+						delete whenNode;
+						delete node;
 
-						mToken++;
-						if ( mToken->type == Token::Type::END_OF_FILE )
-						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
-							delete whenNode;
-							delete node;
-
-							return nullptr;
-						}
-
-						whenNode->condition = Expression();
-
-						if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
-						{
-							mToken++;
-						}
-
-						if ( mToken->type == Token::Type::END_OF_FILE )
-						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
-							delete whenNode;
-							delete node;
-
-							return nullptr;
-						}
-
-						whenNode->block = Block();
-						node->AddWhen( whenNode );
+						return nullptr;
 					}
-					else if ( mToken->type == Token::Type::ELSE )
+
+					whenNode->condition = Expression();
+
+					if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
+					{
+						mToken++;
+					}
+
+					if ( mToken->type == Token::Type::END_OF_FILE )
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+						delete whenNode;
+						delete node;
+
+						return nullptr;
+					}
+
+					whenNode->block = Block();
+					node->AddWhen( whenNode );
+
+					if ( mToken->type == Token::Type::ELSE )
 					{
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
@@ -1331,7 +1230,7 @@ namespace lyrics
 
 						return node;
 					}
-					else
+					else if ( mToken->type != Token::Type::WHEN )
 					{
 						BuildLog::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mToken->location );
 						delete node;
