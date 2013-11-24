@@ -533,7 +533,7 @@ namespace lyrics
 
 						if ( !scope )
 						{
-							mScopeStack.top()->AddEntity( static_cast<const IdentifierNode * const>( node->lhs )->str );
+							mScopeStack.top()->AddPublic( static_cast<const IdentifierNode * const>( node->lhs )->str );
 							break;
 						}
 					}
@@ -568,7 +568,7 @@ namespace lyrics
 
 				if ( !scope->IsExist( node->name->str ) )
 				{
-					scope->AddEntity( node->name->str );
+					scope->AddPublic( node->name->str );
 				}
 				else
 				{
@@ -601,7 +601,7 @@ namespace lyrics
 
 				if ( !scope->IsExist( node->name->str ) )
 				{
-					scope->AddEntity( node->name->str );
+					scope->AddPrivate( node->name->str );
 				}
 				else
 				{
@@ -634,7 +634,7 @@ namespace lyrics
 
 				if ( !scope->IsExist( node->name->str ) )
 				{
-					scope->AddEntity( node->name->str );
+					scope->AddPublic( node->name->str );
 				}
 				else
 				{
@@ -676,7 +676,7 @@ namespace lyrics
 
 				if ( !scope->IsExist( node->name->str ) )
 				{
-					scope->AddEntity( node->name->str );
+					scope->AddPublic( node->name->str );
 				}
 				else
 				{

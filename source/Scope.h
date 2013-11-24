@@ -1,5 +1,5 @@
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 
 #ifndef SCOPE
 #define SCOPE
@@ -7,7 +7,7 @@
 namespace lyrics
 {
 	using std::u16string;
-	using std::unordered_set;
+	using std::unordered_map;
 
 	class Scope
 	{
@@ -21,11 +21,11 @@ namespace lyrics
 			return mParent;
 		}
 
-		bool IsExist( const u16string * const entity ) const
+		bool IsPublicExist( const u16string * const identifier ) const
 		{
-			unordered_set<u16string>::const_iterator i = mEntities.find( *entity );
+			auto iterator = mEntities.find( *identifier );
 
-			if ( i != mEntities.cend() && *i == *entity )
+			if ( iterator != mEntities.cend() && iterator->second == true && iterator->first == *identifier )
 			{
 				return true;
 			}
@@ -35,14 +35,33 @@ namespace lyrics
 			}
 		}
 
-		void AddEntity( const u16string * const entity )
+		bool IsExist( const u16string * const identifier ) const
 		{
-			mEntities.insert( *entity );
+			auto iterator = mEntities.find( *identifier );
+
+			if ( iterator != mEntities.cend() && iterator->first == *identifier )
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		void AddPublic( const u16string * const entity )
+		{
+			mEntities[*entity] = true;
+		}
+
+		void AddPrivate( const u16string * const entity )
+		{
+			mEntities[*entity] = false;
 		}
 
 	private:
 		const Scope * const mParent;
-		unordered_set<u16string> mEntities;
+		unordered_map<u16string, bool> mEntities;
 	};
 }
 
