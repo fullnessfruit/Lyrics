@@ -69,6 +69,7 @@ namespace lyrics
 				class IndexReferenceNode;
 				class FunctionCallNode;
 				class MemberReferenceNode;
+				class ImportNode;
 			class UnaryExpressionNode;
 			class MultiplicativeExpressionNode;
 			class AdditiveExpressionNode;
@@ -80,12 +81,11 @@ namespace lyrics
 			class LogicalAndExpressionNode;
 			class LogicalOrExpressionNode;
 			class AssignmentExpressionNode;
+				class ClassNode;
+				class PackageNode;
 		class DeclarationNode;
 			class PublicNode;
 			class PrivateNode;
-		class ClassNode;
-		class PackageNode;
-		class ImportNode;
 		class SelectionNode;
 			class IfNode;
 				class ElseIfNode;
@@ -563,6 +563,24 @@ namespace lyrics
 		}
 	};
 
+	class ImportNode: public PostfixExpressionNode
+	{
+	public:
+		ImportNode( const Location &location, const IdentifierNode * const package ) : PostfixExpressionNode( location, package )
+		{
+		}
+
+		virtual bool Accept( const Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::IMPORT;
+		}
+	};
+
 	class UnaryExpressionNode: public ExpressionNode
 	{
 	public:
@@ -865,6 +883,58 @@ namespace lyrics
 		}
 	};
 
+	class ClassNode: public PrimaryExpressionNode
+	{
+	public:
+		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), base( nullptr ), block( nullptr )
+		{
+		}
+
+		~ClassNode()
+		{
+			delete base;
+			delete block;
+		}
+
+		IdentifierNode *base;
+		BlockNode *block;
+
+		virtual bool Accept( const Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::CLASS;
+		}
+	};
+
+	class PackageNode: public PrimaryExpressionNode
+	{
+	public:
+		PackageNode( const Location &location, const BlockNode * const block ) : PrimaryExpressionNode( location ), block( block )
+		{
+		}
+
+		~PackageNode()
+		{
+			delete block;
+		}
+
+		const BlockNode * const block;
+
+		virtual bool Accept( const Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::PACKAGE;
+		}
+	};
+
 	class DeclarationNode: public StatementNode
 	{
 	public:
@@ -927,87 +997,6 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PRIVATE;
-		}
-	};
-
-	class ClassNode: public StatementNode
-	{
-	public:
-		explicit ClassNode( const Location &location ) : StatementNode( location ), name( nullptr ), base( nullptr ), block( nullptr )
-		{
-		}
-
-		~ClassNode()
-		{
-			delete name;
-			delete base;
-			delete block;
-		}
-
-		IdentifierNode *name;
-		IdentifierNode *base;
-		BlockNode *block;
-
-		virtual bool Accept( const Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::CLASS;
-		}
-	};
-
-	class PackageNode: public StatementNode
-	{
-	public:
-		PackageNode( const Location &location, const IdentifierNode * const name, const BlockNode * const block ) : StatementNode( location ), name( name ), block( block )
-		{
-		}
-
-		~PackageNode()
-		{
-			delete name;
-			delete block;
-		}
-
-		const IdentifierNode * const name;
-		const BlockNode * const block;
-
-		virtual bool Accept( const Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PACKAGE;
-		}
-	};
-
-	class ImportNode: public StatementNode
-	{
-	public:
-		ImportNode( const Location &location, const IdentifierNode * const package ) : StatementNode( location ), package( package )
-		{
-		}
-
-		~ImportNode()
-		{
-			delete package;
-		}
-
-		const IdentifierNode * const package;
-
-		virtual bool Accept( const Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::IMPORT;
 		}
 	};
 

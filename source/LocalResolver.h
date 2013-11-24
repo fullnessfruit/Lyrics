@@ -276,6 +276,22 @@ namespace lyrics
 			return canProgress;
 		}
 
+		virtual bool Visit( const ImportNode * const node ) const
+		{
+			bool canProgress = true;
+
+			if ( node->expression )
+			{
+				canProgress &= node->expression->Accept( *this );
+			}
+			else
+			{
+				canProgress = false;
+			}
+
+			return canProgress;
+		}
+
 		virtual bool Visit( const UnaryExpressionNode * const node ) const
 		{
 			bool canProgress = true;
@@ -558,6 +574,43 @@ namespace lyrics
 			return canProgress;
 		}
 
+		virtual bool Visit( const ClassNode * const node ) const
+		{
+			bool canProgress = true;
+
+			if ( node->base )
+			{
+				canProgress &= node->base->Accept( *this );
+			}
+
+			if ( node->block )
+			{
+				canProgress &= node->block->Accept( *this );
+			}
+			else
+			{
+				canProgress = false;
+			}
+
+			return canProgress;
+		}
+
+		virtual bool Visit( const PackageNode * const node ) const
+		{
+			bool canProgress = true;
+
+			if ( node->block )
+			{
+				canProgress &= node->block->Accept( *this );
+			}
+			else
+			{
+				canProgress = false;
+			}
+
+			return canProgress;
+		}
+
 		virtual bool Visit( const PublicNode * const node ) const
 		{
 			bool canProgress = true;
@@ -619,101 +672,6 @@ namespace lyrics
 			if ( node->initializer )
 			{
 				canProgress &= node->initializer->Accept( *this );
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const ClassNode * const node ) const
-		{
-			bool canProgress = true;
-
-			if ( node->name )
-			{
-				Scope *scope = mScopeStack.top();
-
-				if ( !scope->IsExist( node->name->str ) )
-				{
-					scope->AddPublic( node->name->str );
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, node->location );
-					canProgress = false;
-				}
-
-//				canProgress &= node->name->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
-			}
-
-			if ( node->base )
-			{
-				canProgress &= node->base->Accept( *this );
-			}
-
-			if ( node->block )
-			{
-				canProgress &= node->block->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const PackageNode * const node ) const
-		{
-			bool canProgress = true;
-
-			if ( node->name )
-			{
-				Scope *scope = mScopeStack.top();
-
-				if ( !scope->IsExist( node->name->str ) )
-				{
-					scope->AddPublic( node->name->str );
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, node->location );
-					canProgress = false;
-				}
-
-//				canProgress &= node->name->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
-			}
-
-			if ( node->block )
-			{
-				canProgress &= node->block->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const ImportNode * const node ) const
-		{
-			bool canProgress = true;
-
-			if ( node->package )
-			{
-				canProgress &= node->package->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
 			}
 
 			return canProgress;

@@ -77,23 +77,14 @@ namespace lyrics
 			case Token::Type::BREAK:
 				return Break();
 
-			case Token::Type::CLASS:
-				return Class();
-
 			case Token::Type::WHILE:
 				return While();
-
-			case Token::Type::IMPORT:
-				return Import();
 
 			case Token::Type::PUBLIC:
 				return Public();
 
 			case Token::Type::FOREACH:
 				return ForEach();
-
-			case Token::Type::PACKAGE:
-				return Package();
 
 			case Token::Type::CASE:
 				return Case();
@@ -516,6 +507,11 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
+			if ( mToken->type == Token::Type::IMPORT )
+			{
+				return Import();
+			}
+
 			forward_list<Token>::const_iterator tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
@@ -642,6 +638,23 @@ namespace lyrics
 				{
 					return expression;
 				}
+			}
+		}
+
+		ImportNode *Import()
+		{
+			forward_list<Token>::const_iterator tToken = mToken;
+
+			mToken++;
+			if ( mToken->type == Token::Type::IDENTIFIER )
+			{
+				return new ImportNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ) );
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
+
+				return nullptr;
 			}
 		}
 
@@ -812,14 +825,74 @@ namespace lyrics
 		{
 			forward_list<Token>::const_iterator tToken = mToken;
 
-			if ( mToken->type == Token::Type::END_OF_FILE )
+			switch ( mToken->type )
 			{
+			case Token::Type::END_OF_FILE:
 				BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 
 				return nullptr;
-			}
-			else if ( mToken->type != Token::Type::DEF )
-			{
+
+			case Token::Type::DEF:
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+
+					return nullptr;
+				}
+
+				if ( mToken->type == Token::Type::IDENTIFIER )
+				{
+					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), FunctionLiteral( tToken ) );
+				}
+				else
+				{
+					mToken = tToken;
+
+					return PrimaryExpression();
+				}
+
+			case Token::Type::CLASS:
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+
+					return nullptr;
+				}
+
+				if ( mToken->type == Token::Type::IDENTIFIER )
+				{
+					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), Class( tToken ) );
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
+
+					return nullptr;
+				}
+
+			case Token::Type::PACKAGE:
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_PACKAGE_DEFINITION, mToken->location );
+
+					return nullptr;
+				}
+
+				if ( mToken->type == Token::Type::IDENTIFIER )
+				{
+					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), Package( tToken ) );
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
+
+					return nullptr;
+				}
+
+			default:
 				ExpressionNode *expression = LogicalOrExpression();
 
 				if ( expression == nullptr || mToken->type != static_cast<Token::Type>( u'=' ) )
@@ -851,26 +924,70 @@ namespace lyrics
 					}
 				}
 			}
-			else
+		}
+
+		ClassNode *Class( forward_list<Token>::const_iterator token )
+		{
+			ClassNode *node = new ClassNode( token->location );
+
+			if ( mToken->type == static_cast<Token::Type>( u':' ) )
 			{
 				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
-
-					return nullptr;
-				}
-
 				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), FunctionLiteral( tToken ) );
+					node->base = new IdentifierNode( mToken->location, mToken->value.identifier );
+
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+						delete node;
+
+						return nullptr;
+					}
 				}
 				else
 				{
-					mToken = tToken;
+					BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
+					delete node;
 
-					return PrimaryExpression();
+					return nullptr;
 				}
+			}
+
+			node->block = Block();
+
+			if ( mToken->type == Token::Type::END )
+			{
+				mToken++;
+
+				return node;
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+				delete node;
+
+				return nullptr;
+			}
+		}
+
+		PackageNode *Package( forward_list<Token>::const_iterator token )
+		{
+			PackageNode *node = new PackageNode( token->location, Block() );
+
+			if ( mToken->type == Token::Type::END )
+			{
+				mToken++;
+
+				return node;
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+				delete node;
+
+				return nullptr;
 			}
 		}
 
@@ -944,123 +1061,6 @@ namespace lyrics
 			else
 			{
 				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mToken->location );
-
-				return nullptr;
-			}
-		}
-
-		ClassNode *Class()
-		{
-			forward_list<Token>::const_iterator tToken = mToken;
-
-			mToken++;
-			if ( mToken->type == Token::Type::IDENTIFIER )
-			{
-				ClassNode *node = new ClassNode( tToken->location );
-
-				node->name = new IdentifierNode( mToken->location, mToken->value.identifier );
-
-				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-					delete node;
-
-					return nullptr;
-				}
-
-				if ( mToken->type == static_cast<Token::Type>( u':' ) )
-				{
-					mToken++;
-					if ( mToken->type == Token::Type::IDENTIFIER )
-					{
-						node->base = new IdentifierNode( mToken->location, mToken->value.identifier );
-
-						mToken++;
-						if ( mToken->type == Token::Type::END_OF_FILE )
-						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-							delete node;
-
-							return nullptr;
-						}
-					}
-					else
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
-						delete node;
-
-						return nullptr;
-					}
-				}
-
-				node->block = Block();
-
-				if ( mToken->type == Token::Type::END )
-				{
-					mToken++;
-
-					return node;
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-					delete node;
-
-					return nullptr;
-				}
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
-
-				return nullptr;
-			}
-		}
-
-		PackageNode *Package()
-		{
-			forward_list<Token>::const_iterator tToken = mToken;
-
-			mToken++;
-			if ( mToken->type == Token::Type::IDENTIFIER )
-			{
-				PackageNode *node = new PackageNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), Block() );
-
-				if ( mToken->type == Token::Type::END )
-				{
-					mToken++;
-
-					return node;
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-					delete node;
-
-					return nullptr;
-				}
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
-
-				return nullptr;
-			}
-		}
-
-		ImportNode *Import()
-		{
-			forward_list<Token>::const_iterator tToken = mToken;
-
-			mToken++;
-			if ( mToken->type == Token::Type::IDENTIFIER )
-			{
-				return new ImportNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ) );
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
 
 				return nullptr;
 			}

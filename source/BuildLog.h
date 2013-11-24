@@ -121,12 +121,16 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected class definition." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_CLASS_NAME:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected class name." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_BASE_CLASS:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected base class." << endl;
 				break;
 
-			case ErrorCode::EXPECTED_CLASS_NAME:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected class name." << endl;
+			case ErrorCode::INCOMPLETE_PACKAGE_DEFINITION:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected package definition." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_PACKAGE_NAME:

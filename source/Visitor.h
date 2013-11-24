@@ -16,6 +16,7 @@ namespace lyrics
 				class IndexReferenceNode;
 				class FunctionCallNode;
 				class MemberReferenceNode;
+				class ImportNode;
 			class UnaryExpressionNode;
 			class MultiplicativeExpressionNode;
 			class AdditiveExpressionNode;
@@ -27,11 +28,10 @@ namespace lyrics
 			class LogicalAndExpressionNode;
 			class LogicalOrExpressionNode;
 			class AssignmentExpressionNode;
+				class ClassNode;
+				class PackageNode;
 			class PublicNode;
 			class PrivateNode;
-		class ClassNode;
-		class PackageNode;
-		class ImportNode;
 			class IfNode;
 				class ElseIfNode;
 			class CaseNode;
@@ -63,6 +63,7 @@ namespace lyrics
 		virtual bool Visit( const IndexReferenceNode * const node ) const = 0;
 		virtual bool Visit( const FunctionCallNode * const node ) const = 0;
 		virtual bool Visit( const MemberReferenceNode * const node ) const = 0;
+		virtual bool Visit( const ImportNode * const node ) const = 0;
 		virtual bool Visit( const UnaryExpressionNode * const node ) const = 0;
 		virtual bool Visit( const MultiplicativeExpressionNode * const node ) const = 0;
 		virtual bool Visit( const AdditiveExpressionNode * const node ) const = 0;
@@ -74,11 +75,10 @@ namespace lyrics
 		virtual bool Visit( const LogicalAndExpressionNode * const node ) const = 0;
 		virtual bool Visit( const LogicalOrExpressionNode * const node ) const = 0;
 		virtual bool Visit( const AssignmentExpressionNode * const node ) const = 0;
-		virtual bool Visit( const PublicNode * const node ) const = 0;
-		virtual bool Visit( const PrivateNode * const node ) const = 0;
 		virtual bool Visit( const ClassNode * const node ) const = 0;
 		virtual bool Visit( const PackageNode * const node ) const = 0;
-		virtual bool Visit( const ImportNode * const node ) const = 0;
+		virtual bool Visit( const PublicNode * const node ) const = 0;
+		virtual bool Visit( const PrivateNode * const node ) const = 0;
 		virtual bool Visit( const IfNode * const node ) const = 0;
 		virtual bool Visit( const ElseIfNode * const node ) const = 0;
 		virtual bool Visit( const CaseNode * const node ) const = 0;
