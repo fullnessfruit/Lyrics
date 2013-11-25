@@ -220,7 +220,7 @@ namespace lyrics
 						return nullptr;
 					}
 
-					forward_list<Token>::const_iterator tToken = mToken;
+					auto tToken = mToken;
 
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
@@ -336,7 +336,7 @@ namespace lyrics
 
 					for (;;)
 					{
-						forward_list<Token>::const_iterator tToken = mToken;
+						auto tToken = mToken;
 
 						if ( mToken->type != Token::Type::OUT )
 						{
@@ -512,7 +512,7 @@ namespace lyrics
 				return Import();
 			}
 
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
 			if ( expression == nullptr || expression->GetType() != Node::Type::IDENTIFIER )
@@ -643,7 +643,7 @@ namespace lyrics
 
 		ImportNode *Import()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 
 			mToken++;
 			if ( mToken->type == Token::Type::IDENTIFIER )
@@ -678,7 +678,7 @@ namespace lyrics
 
 		ExpressionNode *MultiplicativeExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = UnaryExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'*' ) || mToken->type == static_cast<Token::Type>( u'/' ) || mToken->type == static_cast<Token::Type>( u'%' ) )
@@ -691,7 +691,7 @@ namespace lyrics
 
 		ExpressionNode *AdditiveExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = MultiplicativeExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'+' ) || mToken->type == static_cast<Token::Type>( u'-' ) )
@@ -704,7 +704,7 @@ namespace lyrics
 
 		ExpressionNode *ShiftExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = AdditiveExpression();
 
 			while ( mToken->type == Token::Type::SHIFT_LEFT || mToken->type == Token::Type::SHIFT_RIGHT )
@@ -717,7 +717,7 @@ namespace lyrics
 
 		ExpressionNode *AndExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = ShiftExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'&' ) )
@@ -740,7 +740,7 @@ namespace lyrics
 
 		ExpressionNode *OrExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = AndExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'|' ) || mToken->type == static_cast<Token::Type>( u'^' ) )
@@ -753,7 +753,7 @@ namespace lyrics
 
 		ExpressionNode *RelationalExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = OrExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'<' ) || mToken->type == static_cast<Token::Type>( u'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
@@ -766,7 +766,7 @@ namespace lyrics
 
 		ExpressionNode *EqualityExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = RelationalExpression();
 
 			while ( mToken->type == Token::Type::EQUAL || mToken->type == Token::Type::NOT_EQUAL )
@@ -779,7 +779,7 @@ namespace lyrics
 
 		ExpressionNode *LogicalAndExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = EqualityExpression();
 
 			while ( mToken->type == Token::Type::AND )
@@ -801,7 +801,7 @@ namespace lyrics
 
 		ExpressionNode *LogicalOrExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 			ExpressionNode *expression = LogicalAndExpression();
 
 			while ( mToken->type == Token::Type::OR )
@@ -823,7 +823,7 @@ namespace lyrics
 
 		ExpressionNode *AssignmentExpression()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 
 			switch ( mToken->type )
 			{
@@ -998,7 +998,7 @@ namespace lyrics
 
 		PublicNode *Public()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
@@ -1031,7 +1031,7 @@ namespace lyrics
 
 		PrivateNode *Private()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
@@ -1296,15 +1296,47 @@ namespace lyrics
 			ForNode *node = new ForNode( mToken->location );
 
 			mToken++;
-			if ( mToken->type == Token::Type::END_OF_FILE )
+			switch ( mToken->type )
 			{
+			case Token::Type::END_OF_FILE:
 				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
-			}
 
-			node->initializer = Expression();
+			case Token::Type::PUBLIC:
+				node->initializer = Public();
+				break;
+
+			case Token::Type::PRIVATE:
+				node->initializer = Private();
+				break;
+
+			default:
+				auto tToken = mToken;
+				ExpressionNode *expression = Expression();
+
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				if ( expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
+				{
+					node->initializer = new PublicNode( tToken->location, expression );
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+				break;
+			}
 
 			if ( mToken->type == static_cast<Token::Type>( u',' ) )
 			{
@@ -1474,7 +1506,7 @@ namespace lyrics
 
 		ReturnNode *Return()
 		{
-			forward_list<Token>::const_iterator tToken = mToken;
+			auto tToken = mToken;
 
 			mToken++;
 

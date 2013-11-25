@@ -1183,7 +1183,7 @@ namespace lyrics
 			delete block;
 		}
 
-		ExpressionNode *initializer;
+		DeclarationNode *initializer;
 		ExpressionNode *condition;
 		ExpressionNode *iterator;
 		BlockNode *block;
