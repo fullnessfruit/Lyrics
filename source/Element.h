@@ -12,7 +12,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const = 0;
+		virtual bool Accept( Visitor &visitor ) const = 0;
 	};
 }
 

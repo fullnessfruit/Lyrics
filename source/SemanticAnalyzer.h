@@ -27,8 +27,8 @@ namespace lyrics
 			bool canProgress = true;
 
 			canProgress &= LocalResolver().Resolve( root, top );
-			canProgress &= root->Accept( DereferenceChecker() );
-			canProgress &= root->Accept( TypeChecker() );
+			canProgress &= DereferenceChecker().Check( root );
+			canProgress &= TypeChecker().Check( root );
 
 			return canProgress;
 		}

@@ -9,7 +9,12 @@ namespace lyrics
 	class DereferenceChecker : public Visitor
 	{
 	public:
-		virtual bool Visit( const BlockNode * const node ) const
+		bool Check( const BlockNode * const node )
+		{
+			return node->Accept( *this );
+		}
+
+		virtual bool Visit( const BlockNode * const node )
 		{
 			bool canProgress = true;
 
@@ -28,40 +33,21 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const IdentifierNode * const node ) const
+		virtual bool Visit( const IdentifierNode * const node )
 		{
 			bool canProgress = true;
 
 			return canProgress;
 		}
 
-		virtual bool Visit( const LiteralNode * const node ) const
+		virtual bool Visit( const LiteralNode * const node )
 		{
 			bool canProgress = true;
 
 			return canProgress;
 		}
 
-		virtual bool Visit( const ArrayLiteralNode * const node ) const
-		{
-			bool canProgress = true;
-
-			for ( auto i : node->list )
-			{
-				if ( i )
-				{
-					canProgress &= i->Accept( *this );
-				}
-				else
-				{
-					canProgress &= false;
-				}
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const HashLiteralNode * const node ) const
+		virtual bool Visit( const ArrayLiteralNode * const node )
 		{
 			bool canProgress = true;
 
@@ -80,7 +66,26 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const HashNode * const node ) const
+		virtual bool Visit( const HashLiteralNode * const node )
+		{
+			bool canProgress = true;
+
+			for ( auto i : node->list )
+			{
+				if ( i )
+				{
+					canProgress &= i->Accept( *this );
+				}
+				else
+				{
+					canProgress &= false;
+				}
+			}
+
+			return canProgress;
+		}
+
+		virtual bool Visit( const HashNode * const node )
 		{
 			bool canProgress = true;
 
@@ -105,7 +110,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const FunctionLiteralNode * const node ) const
+		virtual bool Visit( const FunctionLiteralNode * const node )
 		{
 			bool canProgress = true;
 
@@ -133,7 +138,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ValueParameterNode * const node ) const
+		virtual bool Visit( const ValueParameterNode * const node )
 		{
 			bool canProgress = true;
 
@@ -154,7 +159,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const OutputParameterNode * const node ) const
+		virtual bool Visit( const OutputParameterNode * const node )
 		{
 			bool canProgress = true;
 
@@ -170,7 +175,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ParenthesizedExpressionNode * const node ) const
+		virtual bool Visit( const ParenthesizedExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -186,7 +191,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const IndexReferenceNode * const node ) const
+		virtual bool Visit( const IndexReferenceNode * const node )
 		{
 			bool canProgress = true;
 
@@ -211,7 +216,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const FunctionCallNode * const node ) const
+		virtual bool Visit( const FunctionCallNode * const node )
 		{
 			bool canProgress = true;
 
@@ -239,7 +244,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const MemberReferenceNode * const node ) const
+		virtual bool Visit( const MemberReferenceNode * const node )
 		{
 			bool canProgress = true;
 
@@ -264,7 +269,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ImportNode * const node ) const
+		virtual bool Visit( const ImportNode * const node )
 		{
 			bool canProgress = true;
 
@@ -280,7 +285,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const UnaryExpressionNode * const node ) const
+		virtual bool Visit( const UnaryExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -296,7 +301,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const MultiplicativeExpressionNode * const node ) const
+		virtual bool Visit( const MultiplicativeExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -321,7 +326,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const AdditiveExpressionNode * const node ) const
+		virtual bool Visit( const AdditiveExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -346,7 +351,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ShiftExpressionNode * const node ) const
+		virtual bool Visit( const ShiftExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -371,7 +376,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const AndExpressionNode * const node ) const
+		virtual bool Visit( const AndExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -396,7 +401,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const OrExpressionNode * const node ) const
+		virtual bool Visit( const OrExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -421,7 +426,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const RelationalExpressionNode * const node ) const
+		virtual bool Visit( const RelationalExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -446,7 +451,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const EqualityExpressionNode * const node ) const
+		virtual bool Visit( const EqualityExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -471,7 +476,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const LogicalAndExpressionNode * const node ) const
+		virtual bool Visit( const LogicalAndExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -496,7 +501,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const LogicalOrExpressionNode * const node ) const
+		virtual bool Visit( const LogicalOrExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -521,7 +526,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const AssignmentExpressionNode * const node ) const
+		virtual bool Visit( const AssignmentExpressionNode * const node )
 		{
 			bool canProgress = true;
 
@@ -546,7 +551,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ClassNode * const node ) const
+		virtual bool Visit( const ClassNode * const node )
 		{
 			bool canProgress = true;
 
@@ -567,7 +572,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const PackageNode * const node ) const
+		virtual bool Visit( const PackageNode * const node )
 		{
 			bool canProgress = true;
 
@@ -583,7 +588,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const PublicNode * const node ) const
+		virtual bool Visit( const PublicNode * const node )
 		{
 			bool canProgress = true;
 
@@ -599,7 +604,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const PrivateNode * const node ) const
+		virtual bool Visit( const PrivateNode * const node )
 		{
 			bool canProgress = true;
 
@@ -615,7 +620,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const IfNode * const node ) const
+		virtual bool Visit( const IfNode * const node )
 		{
 			bool canProgress = true;
 
@@ -639,7 +644,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ElseIfNode * const node ) const
+		virtual bool Visit( const ElseIfNode * const node )
 		{
 			bool canProgress = true;
 
@@ -664,7 +669,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const CaseNode * const node ) const
+		virtual bool Visit( const CaseNode * const node )
 		{
 			bool canProgress = true;
 
@@ -697,7 +702,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const WhenNode * const node ) const
+		virtual bool Visit( const WhenNode * const node )
 		{
 			bool canProgress = true;
 
@@ -722,7 +727,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const WhileNode * const node ) const
+		virtual bool Visit( const WhileNode * const node )
 		{
 			bool canProgress = true;
 
@@ -747,7 +752,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ForNode * const node ) const
+		virtual bool Visit( const ForNode * const node )
 		{
 			bool canProgress = true;
 
@@ -790,7 +795,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ForEachNode * const node ) const
+		virtual bool Visit( const ForEachNode * const node )
 		{
 			bool canProgress = true;
 
@@ -824,21 +829,21 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const RedoNode * const node ) const
+		virtual bool Visit( const RedoNode * const node )
 		{
 			bool canProgress = true;
 
 			return canProgress;
 		}
 
-		virtual bool Visit( const BreakNode * const node ) const
+		virtual bool Visit( const BreakNode * const node )
 		{
 			bool canProgress = true;
 
 			return canProgress;
 		}
 
-		virtual bool Visit( const ReturnNode * const node ) const
+		virtual bool Visit( const ReturnNode * const node )
 		{
 			bool canProgress = true;
 

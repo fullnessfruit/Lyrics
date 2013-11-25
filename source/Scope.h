@@ -1,4 +1,5 @@
 #include <string>
+#include <forward_list>
 #include <unordered_map>
 
 #ifndef SCOPE
@@ -7,18 +8,36 @@
 namespace lyrics
 {
 	using std::u16string;
+	using std::forward_list;
 	using std::unordered_map;
 
 	class Scope
 	{
 	public:
-		Scope( const Scope * const parent ) : mParent( parent )
+		Scope( Scope * const parent ) : mParent( parent ), mLastChild( mChildren.cbefore_begin() )
 		{
+			if ( parent )
+			{
+				parent->AddChlid( this );
+			}
+		}
+
+		~Scope()
+		{
+			for ( auto i : mChildren )
+			{
+				delete i;
+			}
 		}
 
 		const Scope *GetParent() const
 		{
 			return mParent;
+		}
+
+		void AddChlid( Scope * const child )
+		{
+			mLastChild = mChildren.insert_after( mLastChild, child );
 		}
 
 		bool IsPublicExist( const u16string * const identifier ) const
@@ -61,6 +80,8 @@ namespace lyrics
 
 	private:
 		const Scope * const mParent;
+		forward_list<Scope *> mChildren;
+		forward_list<Scope *>::const_iterator mLastChild;
 		unordered_map<u16string, bool> mEntities;
 	};
 }

@@ -115,9 +115,8 @@ namespace lyrics
 	class BlockNode: public Node
 	{
 	public:
-		explicit BlockNode( const Location &location ) : Node( location )
+		explicit BlockNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~BlockNode()
@@ -131,7 +130,7 @@ namespace lyrics
 		forward_list<StatementNode *> list;
 		forward_list<StatementNode *>::const_iterator last;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -185,7 +184,7 @@ namespace lyrics
 
 		const u16string * const identifier;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -230,7 +229,7 @@ namespace lyrics
 
 		Literal literal;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -244,9 +243,8 @@ namespace lyrics
 	class ArrayLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
+		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~ArrayLiteralNode()
@@ -260,7 +258,7 @@ namespace lyrics
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -292,7 +290,7 @@ namespace lyrics
 		const ExpressionNode * const key;
 		const ExpressionNode * const value;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -306,9 +304,8 @@ namespace lyrics
 	class HashLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
+		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~HashLiteralNode()
@@ -322,7 +319,7 @@ namespace lyrics
 		forward_list<HashNode *> list;
 		forward_list<HashNode *>::const_iterator last;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -371,7 +368,7 @@ namespace lyrics
 
 		const ExpressionNode * const defalutArgument;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -389,7 +386,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -403,9 +400,8 @@ namespace lyrics
 	class FunctionLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit FunctionLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), block( nullptr )
+		explicit FunctionLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), block( nullptr )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~FunctionLiteralNode()
@@ -422,7 +418,7 @@ namespace lyrics
 		forward_list<ParameterNode *>::const_iterator last;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -452,7 +448,7 @@ namespace lyrics
 
 		ExpressionNode *expression;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -492,7 +488,7 @@ namespace lyrics
 
 		const ExpressionNode * const index;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -506,9 +502,8 @@ namespace lyrics
 	class FunctionCallNode: public PostfixExpressionNode
 	{
 	public:
-		FunctionCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression )
+		FunctionCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression ), last( list.cbefore_begin() )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~FunctionCallNode()
@@ -522,7 +517,7 @@ namespace lyrics
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -552,7 +547,7 @@ namespace lyrics
 
 		const IdentifierNode * const member;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -570,7 +565,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -596,7 +591,7 @@ namespace lyrics
 		const Token::Type op;
 		const ExpressionNode * const expression;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -624,7 +619,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -652,7 +647,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -680,7 +675,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -707,7 +702,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -735,7 +730,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -763,7 +758,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -791,7 +786,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -818,7 +813,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -845,7 +840,7 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -872,7 +867,7 @@ namespace lyrics
 		const ExpressionNode * const lhs;
 		const ExpressionNode * const rhs;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -899,7 +894,7 @@ namespace lyrics
 		IdentifierNode *base;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -924,7 +919,7 @@ namespace lyrics
 
 		const BlockNode * const block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -957,7 +952,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -975,7 +970,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1014,7 +1009,7 @@ namespace lyrics
 		ExpressionNode *condition;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1028,9 +1023,8 @@ namespace lyrics
 	class IfNode: public SelectionNode
 	{
 	public:
-		explicit IfNode( const Location &location ) : SelectionNode( location ), block( nullptr )
+		explicit IfNode( const Location &location ) : SelectionNode( location ), last( list.cbefore_begin() ), block( nullptr )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~IfNode()
@@ -1047,7 +1041,7 @@ namespace lyrics
 		forward_list<ElseIfNode *>::const_iterator last;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1079,7 +1073,7 @@ namespace lyrics
 		ExpressionNode *condition;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1093,9 +1087,8 @@ namespace lyrics
 	class CaseNode: public SelectionNode
 	{
 	public:
-		explicit CaseNode( const Location &location ) : SelectionNode( location ), value( nullptr ), block( nullptr )
+		explicit CaseNode( const Location &location ) : SelectionNode( location ), value( nullptr ), last( list.cbefore_begin() ), block( nullptr )
 		{
-			last = list.cbefore_begin();
 		}
 
 		~CaseNode()
@@ -1113,7 +1106,7 @@ namespace lyrics
 		forward_list<WhenNode *>::const_iterator last;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1157,7 +1150,7 @@ namespace lyrics
 		ExpressionNode *condition;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1188,7 +1181,7 @@ namespace lyrics
 		ExpressionNode *iterator;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1217,7 +1210,7 @@ namespace lyrics
 		ExpressionNode *collection;
 		BlockNode *block;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1247,7 +1240,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1265,7 +1258,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
@@ -1294,7 +1287,7 @@ namespace lyrics
 
 		const ExpressionNode * const value;
 
-		virtual bool Accept( const Visitor &visitor ) const
+		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
 		}
