@@ -556,8 +556,6 @@ namespace lyrics
 						}
 					}
 				}
-
-				canProgress &= node->lhs->Accept( *this );
 			}
 			else
 			{
