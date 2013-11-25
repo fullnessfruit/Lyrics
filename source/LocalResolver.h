@@ -13,6 +13,7 @@
 
 namespace lyrics
 {
+	using std::u16string;
 	using std::stack;
 
 	class LocalResolver : public Visitor
