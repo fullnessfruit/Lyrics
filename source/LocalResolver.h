@@ -703,7 +703,7 @@ namespace lyrics
 
 				if ( !scope->IsExist( identifier ) )
 				{
-					mScopeStack.top()->AddPublic( identifier );
+					mScopeStack.top()->AddPrivate( identifier );
 				}
 				else
 				{
