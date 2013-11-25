@@ -10,14 +10,14 @@ namespace lyrics
 	struct Location
 	{
 	public:
-		Location( const char * const fileName ) : mFileName( fileName ), mLine( 1 ), mColumn( 0 )
+		Location( const char * const fileName ) : mFileName( fileName ), mLine( 1 ), mColumn( 1 )
 		{
 		}
 
 		void IncreaseLine()
 		{
 			mLine++;
-			mColumn = 0;
+			mColumn = 1;
 		}
 
 		void IncreaseColumn()
