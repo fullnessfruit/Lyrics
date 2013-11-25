@@ -174,16 +174,16 @@ namespace lyrics
 	class IdentifierNode: public PrimaryExpressionNode
 	{
 	public:
-		IdentifierNode( const Location &location, const u16string * const str ) : PrimaryExpressionNode( location ), str( str )
+		IdentifierNode( const Location &location, const u16string * const identifier ) : PrimaryExpressionNode( location ), identifier( identifier )
 		{
 		}
 
 		~IdentifierNode()
 		{
-			delete str;
+			delete identifier;
 		}
 
-		const u16string * const str;
+		const u16string * const identifier;
 
 		virtual bool Accept( const Visitor &visitor ) const
 		{
@@ -938,32 +938,22 @@ namespace lyrics
 	class DeclarationNode: public StatementNode
 	{
 	public:
-		DeclarationNode( const Location &location, const IdentifierNode * const name ) : StatementNode( location ), name( name ), initializer( nullptr )
-		{
-		}
-
-		DeclarationNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : StatementNode( location ), name( name ), initializer( initializer )
+		DeclarationNode( const Location &location, const ExpressionNode * const expression ) : StatementNode( location ), expression( expression )
 		{
 		}
 
 		virtual ~DeclarationNode()
 		{
-			delete name;
-			delete initializer;
+			delete expression;
 		}
 
-		const IdentifierNode * const name;
-		const ExpressionNode * const initializer;
+		const ExpressionNode * const expression;
 	};
 
 	class PublicNode: public DeclarationNode
 	{
 	public:
-		PublicNode( const Location &location, const IdentifierNode * const name ) : DeclarationNode( location, name )
-		{
-		}
-
-		PublicNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : DeclarationNode( location, name, initializer )
+		PublicNode( const Location &location, const ExpressionNode * const expression ) : DeclarationNode( location, expression )
 		{
 		}
 
@@ -981,11 +971,7 @@ namespace lyrics
 	class PrivateNode: public DeclarationNode
 	{
 	public:
-		PrivateNode( const Location &location, const IdentifierNode * const name ) : DeclarationNode( location, name )
-		{
-		}
-
-		PrivateNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const initializer ) : DeclarationNode( location, name, initializer )
+		PrivateNode( const Location &location, const ExpressionNode * const expression ) : DeclarationNode( location, expression )
 		{
 		}
 

@@ -587,18 +587,13 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			if ( node->name )
+			if ( node->expression )
 			{
-				canProgress &= node->name->Accept( *this );
+				canProgress &= node->expression->Accept( *this );
 			}
 			else
 			{
 				canProgress &= false;
-			}
-
-			if ( node->initializer )
-			{
-				canProgress &= node->initializer->Accept( *this );
 			}
 
 			return canProgress;
@@ -608,18 +603,13 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			if ( node->name )
+			if ( node->expression )
 			{
-				canProgress &= node->name->Accept( *this );
+				canProgress &= node->expression->Accept( *this );
 			}
 			else
 			{
 				canProgress &= false;
-			}
-
-			if ( node->initializer )
-			{
-				canProgress &= node->initializer->Accept( *this );
 			}
 
 			return canProgress;

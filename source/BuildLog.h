@@ -69,6 +69,22 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete hash literal." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_PARAMETER_NAME:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter name." << endl;
+				break;
+
+			case ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Output parameter cannot have default argument." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_FUNCTION:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete function." << endl;
+				break;
+
+			case ErrorCode::EXPECTED_PARAMETER:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_PRIMARY_EXPRESSION:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected primary expression." << endl;
 				break;
@@ -93,30 +109,6 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected lhs." << endl;
 				break;
 
-			case ErrorCode::EXPECTED_VARIABLE_NAME:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected variable name." << endl;
-				break;
-
-			case ErrorCode::EXPECTED_PARAMETER_NAME:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter name." << endl;
-				break;
-
-			case ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Output parameter cannot have default argument." << endl;
-				break;
-
-			case ErrorCode::INCOMPLETE_FUNCTION:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete function." << endl;
-				break;
-
-			case ErrorCode::EXPECTED_PARAMETER:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected parameter." << endl;
-				break;
-
-			case ErrorCode::EXPECTED_INITIALIZER:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected initializer." << endl;
-				break;
-
 			case ErrorCode::INCOMPLETE_CLASS_DEFINITION:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected class definition." << endl;
 				break;
@@ -139,6 +131,10 @@ namespace lyrics
 
 			case ErrorCode::EXPECTED_PACKAGE:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected package." << endl;
+				break;
+
+			case ErrorCode::INCOMPLETE_VARIABLE_DEFINITION:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete variable definition." << endl;
 				break;
 
 			case ErrorCode::EXPECTED_END:
@@ -180,6 +176,10 @@ namespace lyrics
 
 			case ErrorCode::DUPLICATED_IDENTIFIER:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Duplicated identifier." << endl;
+				break;
+
+			case ErrorCode::WRONG_DECLARATION:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Wrong declaration." << endl;
 				break;
 
 			default:

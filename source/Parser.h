@@ -1001,31 +1001,29 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 
 			mToken++;
-			if ( mToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
 
-				mToken++;
-				if ( mToken->type != static_cast<Token::Type>( u'=' ) )
-				{
-					return new PublicNode( tToken->location, name );
-				}
-				else
-				{
-					mToken++;
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_INITIALIZER, mToken->location );
+				return nullptr;
+			}
 
-						return nullptr;
-					}
+			ExpressionNode *expression = Expression();
 
-					return new PublicNode( tToken->location, name, Expression() );
-				}
+			if ( mToken->type == Token::Type::END_OF_FILE )
+			{
+				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
+
+				return nullptr;
+			}
+
+			if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
+			{
+				return new PublicNode( tToken->location, expression );
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mToken->location );
+				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
 
 				return nullptr;
 			}
@@ -1036,31 +1034,29 @@ namespace lyrics
 			forward_list<Token>::const_iterator tToken = mToken;
 
 			mToken++;
-			if ( mToken->type == Token::Type::IDENTIFIER )
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
 
-				mToken++;
-				if ( mToken->type != static_cast<Token::Type>( u'=' ) )
-				{
-					return new PrivateNode( tToken->location, name );
-				}
-				else
-				{
-					mToken++;
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_INITIALIZER, mToken->location );
+				return nullptr;
+			}
 
-						return nullptr;
-					}
+			ExpressionNode *expression = Expression();
 
-					return new PrivateNode( tToken->location, name, Expression() );
-				}
+			if ( mToken->type == Token::Type::END_OF_FILE )
+			{
+				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
+
+				return nullptr;
+			}
+
+			if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
+			{
+				return new PrivateNode( tToken->location, expression );
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_VARIABLE_NAME, mToken->location );
+				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
 
 				return nullptr;
 			}

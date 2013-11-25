@@ -1,3 +1,4 @@
+#include <string>
 #include <stack>
 
 #include "Visitor.h"
@@ -542,14 +543,15 @@ namespace lyrics
 				if ( node->lhs->GetType() == Node::Type::IDENTIFIER )
 				{
 					const Scope *scope = mScopeStack.top();
+					const u16string * const identifier = static_cast<const IdentifierNode * const>( node->lhs )->identifier;
 
-					while ( !scope->IsExist( static_cast<const IdentifierNode * const>( node->lhs )->str ) )
+					while ( !scope->IsExist( identifier ) )
 					{
 						scope = scope->GetParent();
 
 						if ( !scope )
 						{
-							mScopeStack.top()->AddPublic( static_cast<const IdentifierNode * const>( node->lhs )->str );
+							mScopeStack.top()->AddPublic( identifier );
 							break;
 						}
 					}
@@ -615,30 +617,58 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			if ( node->name )
+			if ( node->expression )
 			{
-				Scope *scope = mScopeStack.top();
+				const Scope *scope = mScopeStack.top();
+				const u16string *identifier;
 
-				if ( !scope->IsExist( node->name->str ) )
+				switch ( node->expression->GetType() )
 				{
-					scope->AddPublic( node->name->str );
+				case Node::Type::IDENTIFIER:
+					identifier = static_cast<const IdentifierNode * const>( node->expression )->identifier;
+					break;
+
+				case Node::Type::ASSIGNMENT_EXPRESSION:
+					identifier = static_cast<const IdentifierNode * const>( static_cast<const AssignmentExpressionNode * const>( node->expression )->lhs )->identifier;
+					break;
+
+				default:
+					BuildLog::Error( ErrorCode::WRONG_DECLARATION, node->location );
+					canProgress = false;
 				}
-				else
+
+				while ( !scope->IsExist( identifier ) )
+				{
+					scope = scope->GetParent();
+
+					if ( !scope )
+					{
+						mScopeStack.top()->AddPublic( identifier );
+						break;
+					}
+				}
+
+				if ( scope )
 				{
 					BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, node->location );
 					canProgress = false;
 				}
 
-//				canProgress &= node->name->Accept( *this );
+				if ( node->expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
+				{
+					if ( static_cast<const AssignmentExpressionNode * const>( node->expression )->rhs )
+					{
+						canProgress &= static_cast<const AssignmentExpressionNode * const>( node->expression )->rhs->Accept( *this );
+					}
+					else
+					{
+						canProgress = false;
+					}
+				}
 			}
 			else
 			{
 				canProgress = false;
-			}
-
-			if ( node->initializer )
-			{
-				canProgress &= node->initializer->Accept( *this );
 			}
 
 			return canProgress;
@@ -648,30 +678,58 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			if ( node->name )
+			if ( node->expression )
 			{
-				Scope *scope = mScopeStack.top();
+				const Scope *scope = mScopeStack.top();
+				const u16string *identifier;
 
-				if ( !scope->IsExist( node->name->str ) )
+				switch ( node->expression->GetType() )
 				{
-					scope->AddPrivate( node->name->str );
+				case Node::Type::IDENTIFIER:
+					identifier = static_cast<const IdentifierNode * const>( node->expression )->identifier;
+					break;
+
+				case Node::Type::ASSIGNMENT_EXPRESSION:
+					identifier = static_cast<const IdentifierNode * const>( static_cast<const AssignmentExpressionNode * const>( node->expression )->lhs )->identifier;
+					break;
+
+				default:
+					BuildLog::Error( ErrorCode::WRONG_DECLARATION, node->location );
+					canProgress = false;
 				}
-				else
+
+				while ( !scope->IsExist( identifier ) )
+				{
+					scope = scope->GetParent();
+
+					if ( !scope )
+					{
+						mScopeStack.top()->AddPrivate( identifier );
+						break;
+					}
+				}
+
+				if ( scope )
 				{
 					BuildLog::Error( ErrorCode::DUPLICATED_IDENTIFIER, node->location );
 					canProgress = false;
 				}
 
-//				canProgress &= node->name->Accept( *this );
+				if ( node->expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
+				{
+					if ( static_cast<const AssignmentExpressionNode * const>( node->expression )->rhs )
+					{
+						canProgress &= static_cast<const AssignmentExpressionNode * const>( node->expression )->rhs->Accept( *this );
+					}
+					else
+					{
+						canProgress = false;
+					}
+				}
 			}
 			else
 			{
 				canProgress = false;
-			}
-
-			if ( node->initializer )
-			{
-				canProgress &= node->initializer->Accept( *this );
 			}
 
 			return canProgress;
