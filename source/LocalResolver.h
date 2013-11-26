@@ -608,18 +608,18 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 			if ( node->block )
 			{
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
+
 				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
 			}
 			else
 			{
 				canProgress = false;
 			}
-
-			mScopeStack.pop();
 
 			return canProgress;
 		}
@@ -736,8 +736,6 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 			for ( auto i : node->list )
 			{
 				if ( i )
@@ -752,10 +750,12 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				canProgress &= node->block->Accept( *this );
-			}
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
 
-			mScopeStack.pop();
+				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
+			}
 
 			return canProgress;
 		}
@@ -775,7 +775,11 @@ namespace lyrics
 
 			if ( node->block )
 			{
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
+
 				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
 			}
 			else
 			{
@@ -812,7 +816,11 @@ namespace lyrics
 
 			if ( node->block )
 			{
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
+
 				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
 			}
 
 			return canProgress;
@@ -833,7 +841,11 @@ namespace lyrics
 
 			if ( node->block )
 			{
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
+
 				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
 			}
 			else
 			{
@@ -847,8 +859,6 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 			if ( node->condition )
 			{
 				canProgress &= node->condition->Accept( *this );
@@ -860,14 +870,16 @@ namespace lyrics
 
 			if ( node->block )
 			{
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
+
 				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
 			}
 			else
 			{
 				canProgress = false;
 			}
-
-			mScopeStack.pop();
 
 			return canProgress;
 		}
@@ -925,9 +937,9 @@ namespace lyrics
 
 			mScopeStack.push( new Scope( mScopeStack.top() ) );
 
-			if ( node->block )
+			if ( node->variable )
 			{
-				canProgress &= node->block->Accept( *this );
+				canProgress &= node->variable->Accept( *this );
 			}
 			else
 			{

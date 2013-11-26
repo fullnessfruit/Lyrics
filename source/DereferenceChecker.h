@@ -799,9 +799,9 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			if ( node->block )
+			if ( node->variable )
 			{
-				canProgress &= node->block->Accept( *this );
+				canProgress &= node->variable->Accept( *this );
 			}
 			else
 			{
