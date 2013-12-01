@@ -1415,71 +1415,95 @@ namespace lyrics
 			ForEachNode *node = new ForEachNode( mToken->location );
 
 			mToken++;
-			if ( mToken->type == Token::Type::END_OF_FILE )
+			switch ( mToken->type )
 			{
+			case Token::Type::END_OF_FILE:
 				BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
-			}
 
-			node->variable = Expression();
+			case Token::Type::PUBLIC:
+				node->variable = Public();
+				break;
 
-			if ( node->variable ->GetType() == Node::Type::IDENTIFIER || node->variable ->GetType() == Node::Type::MEMBER_REFERENCE || node->variable ->GetType() == Node::Type::INDEX_REFERENCE )
-			{
-				if ( mToken->type == Token::Type::IN )
+			case Token::Type::PRIVATE:
+				node->variable = Private();
+				break;
+
+			default:
+				auto tToken = mToken;
+				ExpressionNode *expression = Expression();
+
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					mToken++;
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
-						delete node;
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+					delete expression;
+					delete node;
 
-						return nullptr;
-					}
+					return nullptr;
+				}
 
-					node->collection = Expression();
-
-					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
-						delete node;
-
-						return nullptr;
-					}
-
-					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
-					{
-						mToken++;
-					}
-
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
-						delete node;
-
-						return nullptr;
-					}
-
-					node->block = Block();
-
-					if ( mToken->type == Token::Type::END )
-					{
-						mToken++;
-
-						return node;
-					}
-					else
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-						delete node;
-
-						return nullptr;
-					}
+				if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
+				{
+					node->variable = new PublicNode( tToken->location, expression );
 				}
 				else
 				{
+					BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+					delete expression;
+					delete node;
+
+					return nullptr;
+				}
+				break;
+			}
+
+			if ( mToken->type == Token::Type::IN )
+			{
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
 					BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				node->collection = Expression();
+
+				if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
+				{
+					mToken++;
+				}
+
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				node->block = Block();
+
+				if ( mToken->type == Token::Type::END )
+				{
+					mToken++;
+
+					return node;
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1487,7 +1511,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+				BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
