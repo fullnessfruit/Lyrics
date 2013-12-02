@@ -1176,7 +1176,7 @@ namespace lyrics
 			delete block;
 		}
 
-		DeclarationNode *initializer;
+		ExpressionNode *initializer;
 		ExpressionNode *condition;
 		ExpressionNode *iterator;
 		BlockNode *block;
