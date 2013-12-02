@@ -1319,7 +1319,6 @@ namespace lyrics
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
 					BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
-					delete expression;
 					delete node;
 
 					return nullptr;
@@ -1332,7 +1331,6 @@ namespace lyrics
 				else
 				{
 					BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
-					delete expression;
 					delete node;
 
 					return nullptr;
