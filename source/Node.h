@@ -1206,7 +1206,7 @@ namespace lyrics
 			delete block;
 		}
 
-		DeclarationNode *variable;
+		ExpressionNode *variable;
 		ExpressionNode *collection;
 		BlockNode *block;
 
