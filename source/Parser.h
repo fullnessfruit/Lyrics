@@ -971,12 +971,7 @@ namespace lyrics
 					return nullptr;
 				}
 			}
-			while ( mToken->type == static_cast<Token::Type>( u',' ) || mToken->type == Token::Type::INCLUDE );
-
-			if ( mToken->type != Token::Type::END_OF_FILE )
-			{
-				mToken++;
-			}
+			while ( mToken->type == static_cast<Token::Type>( u',' ) );
 
 			return node;
 		}
