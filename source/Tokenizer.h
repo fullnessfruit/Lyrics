@@ -61,8 +61,9 @@ namespace lyrics
 		static const u16string INCLUDE;
 		static const u16string NIL;
 		static const u16string OUT;
-		static const u16string PRIVATE;
 		static const u16string PACKAGE;
+		static const u16string PRIVATE;
+		static const u16string PROTECTED;
 		static const u16string PUBLIC;
 		static const u16string REDO;
 		static const u16string RETURN;
@@ -148,7 +149,7 @@ namespace lyrics
 				}
 				else
 				{
-					if ( 2 > length || 7 < length )	// If the token is shorter than 2 or longer than 7, then the token is identifier.
+					if ( ( 2u > length || 7u < length ) && length != 9u )	// If the token is shorter than 2 or longer than 7 and not equal to 9, then the token is identifier.
 					{
 						mLastToken = token.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 					}
@@ -156,7 +157,7 @@ namespace lyrics
 					{
 						switch ( tStr->length() )
 						{
-						case 2:
+						case 2u:
 							if ( *tStr == Tokenizer::IF )
 							{
 								delete tStr;
@@ -178,7 +179,7 @@ namespace lyrics
 							}
 							break;
 
-						case 3:
+						case 3u:
 							if ( *tStr == Tokenizer::END )
 							{
 								delete tStr;
@@ -210,7 +211,7 @@ namespace lyrics
 							}
 							break;
 
-						case 4:
+						case 4u:
 							if ( *tStr == Tokenizer::ELSE )
 							{
 								delete tStr;
@@ -252,7 +253,7 @@ namespace lyrics
 							}
 							break;
 
-						case 5:
+						case 5u:
 							if ( *tStr == Tokenizer::WHILE )
 							{
 								delete tStr;
@@ -279,7 +280,7 @@ namespace lyrics
 							}
 							break;
 
-						case 6:
+						case 6u:
 							if ( *tStr == Tokenizer::ELSEIF )
 							{
 								delete tStr;
@@ -306,7 +307,7 @@ namespace lyrics
 							}
 							break;
 
-						case 7:
+						case 7u:
 							if ( *tStr == Tokenizer::PRIVATE )
 							{
 								delete tStr;
@@ -326,6 +327,18 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::INCLUDE, currentLocation );
+							}
+							else
+							{
+								mLastToken = token.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+							}
+							break;
+
+						case 9u:
+							if ( *tStr == Tokenizer::PROTECTED )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::PROTECTED, currentLocation );
 							}
 							else
 							{
