@@ -125,6 +125,9 @@ namespace lyrics
 			case static_cast<Token::Type>( u'{' ):
 				return HashLiteral();
 			
+			case Token::Type::SELF:
+				return new SelfNode( mToken->location );
+
 			default:
 				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
 

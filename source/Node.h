@@ -22,7 +22,7 @@ namespace lyrics
 		enum struct Type
 		{
 			BLOCK,
-						IDENTIFIER, LITERAL, ARRAY_LITERAL, HASH_LITERAL, FUNCTION_LITERAL, PARENTHESIZED_EXPRESSION,
+						IDENTIFIER, SELF, LITERAL, ARRAY_LITERAL, HASH_LITERAL, FUNCTION_LITERAL, PARENTHESIZED_EXPRESSION,
 							HASH, VALUE_PARAMETER, OUTPUT_PARAMETER,
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
@@ -55,6 +55,7 @@ namespace lyrics
 		class ExpressionNode;
 			class PrimaryExpressionNode;
 				class IdentifierNode;
+				class SelfNode;
 				class LiteralNode;
 				class ArrayLiteralNode;
 				class HashLiteralNode;
@@ -188,6 +189,24 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::IDENTIFIER;
+		}
+	};
+
+	class SelfNode: public PrimaryExpressionNode
+	{
+	public:
+		explicit SelfNode( const Location &location ) : PrimaryExpressionNode( location )
+		{
+		}
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::SELF;
 		}
 	};
 

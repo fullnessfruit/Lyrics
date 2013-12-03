@@ -51,6 +51,11 @@ namespace lyrics
 			return true;
 		}
 
+		virtual bool Visit( const SelfNode * const node )
+		{
+			return true;
+		}
+
 		virtual bool Visit( const LiteralNode * const node )
 		{
 			return true;

@@ -5,6 +5,7 @@ namespace lyrics
 {
 	class BlockNode;
 				class IdentifierNode;
+				class SelfNode;
 				class LiteralNode;
 				class ArrayLiteralNode;
 				class HashLiteralNode;
@@ -50,6 +51,7 @@ namespace lyrics
 
 		virtual bool Visit( const BlockNode * const node ) = 0;
 		virtual bool Visit( const IdentifierNode * const node ) = 0;
+		virtual bool Visit( const SelfNode * const node ) = 0;
 		virtual bool Visit( const LiteralNode * const node ) = 0;
 		virtual bool Visit( const ArrayLiteralNode * const node ) = 0;
 		virtual bool Visit( const HashLiteralNode * const node ) = 0;
