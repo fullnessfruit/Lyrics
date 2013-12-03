@@ -58,6 +58,7 @@ namespace lyrics
 		static const u16string IF;
 		static const u16string IMPORT;
 		static const u16string IN;
+		static const u16string INCLUDE;
 		static const u16string NIL;
 		static const u16string OUT;
 		static const u16string PRIVATE;
@@ -311,15 +312,20 @@ namespace lyrics
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::PRIVATE, currentLocation );
 							}
+							else if ( *tStr == Tokenizer::PACKAGE )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
+							}
 							else if ( *tStr == Tokenizer::FOREACH )
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::FOREACH, currentLocation );
 							}
-							else if ( *tStr == Tokenizer::PACKAGE )
+							else if ( *tStr == Tokenizer::INCLUDE )
 							{
 								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
+								mLastToken = token.emplace_after( mLastToken, Token::Type::INCLUDE, currentLocation );
 							}
 							else
 							{

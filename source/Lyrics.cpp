@@ -23,6 +23,7 @@ namespace lyrics
 	const u16string Tokenizer::IF = u"if";
 	const u16string Tokenizer::IMPORT = u"import";
 	const u16string Tokenizer::IN = u"in";
+	const u16string Tokenizer::INCLUDE = u"include";
 	const u16string Tokenizer::NIL = u"nil";
 	const u16string Tokenizer::OUT = u"out";
 	const u16string Tokenizer::PACKAGE = u"package";
