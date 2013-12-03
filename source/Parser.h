@@ -504,9 +504,9 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
-			if ( mToken->type == Token::Type::IMPORT )
+			if ( mToken->type == Token::Type::INCLUDE )
 			{
-				return Import();
+				return Include();
 			}
 
 			auto tToken = mToken;
@@ -638,14 +638,14 @@ namespace lyrics
 			}
 		}
 
-		ImportNode *Import()
+		IncludeNode *Include()
 		{
 			auto tToken = mToken;
 
 			mToken++;
 			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				return new ImportNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ) );
+				return new IncludeNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ) );
 			}
 			else
 			{

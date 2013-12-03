@@ -17,7 +17,7 @@ namespace lyrics
 				class IndexReferenceNode;
 				class FunctionCallNode;
 				class MemberReferenceNode;
-				class ImportNode;
+				class IncludeNode;
 			class UnaryExpressionNode;
 			class MultiplicativeExpressionNode;
 			class AdditiveExpressionNode;
@@ -63,7 +63,7 @@ namespace lyrics
 		virtual bool Visit( const IndexReferenceNode * const node ) = 0;
 		virtual bool Visit( const FunctionCallNode * const node ) = 0;
 		virtual bool Visit( const MemberReferenceNode * const node ) = 0;
-		virtual bool Visit( const ImportNode * const node ) = 0;
+		virtual bool Visit( const IncludeNode * const node ) = 0;
 		virtual bool Visit( const UnaryExpressionNode * const node ) = 0;
 		virtual bool Visit( const MultiplicativeExpressionNode * const node ) = 0;
 		virtual bool Visit( const AdditiveExpressionNode * const node ) = 0;

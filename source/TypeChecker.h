@@ -270,7 +270,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const ImportNode * const node )
+		virtual bool Visit( const IncludeNode * const node )
 		{
 			bool canProgress = true;
 

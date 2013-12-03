@@ -28,7 +28,7 @@ namespace lyrics
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				CLASS,
 				PACKAGE,
-				IMPORT,
+				INCLUDE,
 					IF,
 						ELSEIF,
 					CASE,
@@ -69,7 +69,7 @@ namespace lyrics
 				class IndexReferenceNode;
 				class FunctionCallNode;
 				class MemberReferenceNode;
-				class ImportNode;
+				class IncludeNode;
 			class UnaryExpressionNode;
 			class MultiplicativeExpressionNode;
 			class AdditiveExpressionNode;
@@ -573,10 +573,10 @@ namespace lyrics
 		}
 	};
 
-	class ImportNode: public PostfixExpressionNode
+	class IncludeNode: public PostfixExpressionNode
 	{
 	public:
-		ImportNode( const Location &location, const IdentifierNode * const package ) : PostfixExpressionNode( location, package )
+		IncludeNode( const Location &location, const IdentifierNode * const package ) : PostfixExpressionNode( location, package )
 		{
 		}
 
@@ -587,7 +587,7 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::IMPORT;
+			return Node::Type::INCLUDE;
 		}
 	};
 
