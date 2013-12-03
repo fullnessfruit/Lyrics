@@ -33,7 +33,7 @@ namespace lyrics
 						ELSEIF,
 					CASE,
 						WHEN,
-					WHILE, FOR, FOR_EACH,
+					WHILE, FOR, FOREACH,
 					REDO, BREAK, RETURN
 		};
 
@@ -1181,7 +1181,7 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::FOR_EACH;
+			return Node::Type::FOREACH;
 		}
 	};
 
