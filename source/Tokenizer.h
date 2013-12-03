@@ -65,6 +65,7 @@ namespace lyrics
 		static const u16string PUBLIC;
 		static const u16string REDO;
 		static const u16string RETURN;
+		static const u16string SELF;
 		static const u16string THEN;
 		static const u16string TRUE;
 		static const u16string WHEN;
@@ -228,6 +229,11 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::WHEN, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::SELF )
+							{
+								delete tStr;
+								mLastToken = token.emplace_after( mLastToken, Token::Type::SELF, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::REDO )
 							{
