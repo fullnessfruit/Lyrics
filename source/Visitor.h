@@ -30,8 +30,6 @@ namespace lyrics
 			class AssignmentExpressionNode;
 				class ClassNode;
 				class PackageNode;
-			class PublicNode;
-			class PrivateNode;
 			class IfNode;
 				class ElseIfNode;
 			class CaseNode;
@@ -77,8 +75,6 @@ namespace lyrics
 		virtual bool Visit( const AssignmentExpressionNode * const node ) = 0;
 		virtual bool Visit( const ClassNode * const node ) = 0;
 		virtual bool Visit( const PackageNode * const node ) = 0;
-		virtual bool Visit( const PublicNode * const node ) = 0;
-		virtual bool Visit( const PrivateNode * const node ) = 0;
 		virtual bool Visit( const IfNode * const node ) = 0;
 		virtual bool Visit( const ElseIfNode * const node ) = 0;
 		virtual bool Visit( const CaseNode * const node ) = 0;

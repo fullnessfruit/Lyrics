@@ -133,10 +133,6 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected package." << endl;
 				break;
 
-			case ErrorCode::INCOMPLETE_VARIABLE_DEFINITION:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete variable definition." << endl;
-				break;
-
 			case ErrorCode::EXPECTED_END:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected end." << endl;
 				break;
@@ -176,10 +172,6 @@ namespace lyrics
 
 			case ErrorCode::DUPLICATED_IDENTIFIER:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Duplicated identifier." << endl;
-				break;
-
-			case ErrorCode::WRONG_DECLARATION:
-				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Wrong declaration." << endl;
 				break;
 
 			default:

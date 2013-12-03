@@ -68,9 +68,6 @@ namespace lyrics
 			case Token::Type::FOR:
 				return For();
 
-			case Token::Type::PRIVATE:
-				return Private();
-
 			case Token::Type::RETURN:
 				return Return();
 
@@ -79,9 +76,6 @@ namespace lyrics
 
 			case Token::Type::WHILE:
 				return While();
-
-			case Token::Type::PUBLIC:
-				return Public();
 
 			case Token::Type::FOREACH:
 				return ForEach();
@@ -994,72 +988,6 @@ namespace lyrics
 		ExpressionNode *Expression()
 		{
 			return AssignmentExpression();
-		}
-
-		PublicNode *Public()
-		{
-			auto tToken = mToken;
-
-			mToken++;
-			if ( mToken->type == Token::Type::END_OF_FILE )
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
-
-				return nullptr;
-			}
-
-			ExpressionNode *expression = Expression();
-
-			if ( mToken->type == Token::Type::END_OF_FILE )
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
-
-				return nullptr;
-			}
-
-			if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
-			{
-				return new PublicNode( tToken->location, expression );
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
-
-				return nullptr;
-			}
-		}
-
-		PrivateNode *Private()
-		{
-			auto tToken = mToken;
-
-			mToken++;
-			if ( mToken->type == Token::Type::END_OF_FILE )
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
-
-				return nullptr;
-			}
-
-			ExpressionNode *expression = Expression();
-
-			if ( mToken->type == Token::Type::END_OF_FILE )
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
-
-				return nullptr;
-			}
-
-			if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::ASSIGNMENT_EXPRESSION )
-			{
-				return new PrivateNode( tToken->location, expression );
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_VARIABLE_DEFINITION, mToken->location );
-
-				return nullptr;
-			}
 		}
 
 		IfNode *If()

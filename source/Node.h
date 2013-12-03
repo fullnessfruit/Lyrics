@@ -26,7 +26,6 @@ namespace lyrics
 							HASH, VALUE_PARAMETER, OUTPUT_PARAMETER,
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
-					PUBLIC, PRIVATE,
 				CLASS,
 				PACKAGE,
 				IMPORT,
@@ -83,9 +82,6 @@ namespace lyrics
 			class AssignmentExpressionNode;
 				class ClassNode;
 				class PackageNode;
-		class DeclarationNode;
-			class PublicNode;
-			class PrivateNode;
 		class SelectionNode;
 			class IfNode;
 				class ElseIfNode;
@@ -927,57 +923,6 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PACKAGE;
-		}
-	};
-
-	class DeclarationNode: public StatementNode
-	{
-	public:
-		DeclarationNode( const Location &location, const ExpressionNode * const expression ) : StatementNode( location ), expression( expression )
-		{
-		}
-
-		virtual ~DeclarationNode()
-		{
-			delete expression;
-		}
-
-		const ExpressionNode * const expression;
-	};
-
-	class PublicNode: public DeclarationNode
-	{
-	public:
-		PublicNode( const Location &location, const ExpressionNode * const expression ) : DeclarationNode( location, expression )
-		{
-		}
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PUBLIC;
-		}
-	};
-
-	class PrivateNode: public DeclarationNode
-	{
-	public:
-		PrivateNode( const Location &location, const ExpressionNode * const expression ) : DeclarationNode( location, expression )
-		{
-		}
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PRIVATE;
 		}
 	};
 

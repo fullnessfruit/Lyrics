@@ -588,38 +588,6 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const PublicNode * const node )
-		{
-			bool canProgress = true;
-
-			if ( node->expression )
-			{
-				canProgress &= node->expression->Accept( *this );
-			}
-			else
-			{
-				canProgress &= false;
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const PrivateNode * const node )
-		{
-			bool canProgress = true;
-
-			if ( node->expression )
-			{
-				canProgress &= node->expression->Accept( *this );
-			}
-			else
-			{
-				canProgress &= false;
-			}
-
-			return canProgress;
-		}
-
 		virtual bool Visit( const IfNode * const node )
 		{
 			bool canProgress = true;
