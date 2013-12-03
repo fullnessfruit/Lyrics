@@ -270,22 +270,6 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const IncludeNode * const node )
-		{
-			bool canProgress = true;
-
-			if ( node->expression )
-			{
-				canProgress &= node->expression->Accept( *this );
-			}
-			else
-			{
-				canProgress &= false;
-			}
-
-			return canProgress;
-		}
-
 		virtual bool Visit( const UnaryExpressionNode * const node )
 		{
 			bool canProgress = true;
@@ -561,6 +545,11 @@ namespace lyrics
 				canProgress &= node->base->Accept( *this );
 			}
 
+			if ( node->include )
+			{
+				canProgress &= node->base->Accept( *this );
+			}
+
 			if ( node->block )
 			{
 				canProgress &= node->block->Accept( *this );
@@ -568,6 +557,25 @@ namespace lyrics
 			else
 			{
 				canProgress &= false;
+			}
+
+			return canProgress;
+		}
+
+		virtual bool Visit( const IncludeNode * const node )
+		{
+			bool canProgress = true;
+
+			for ( auto i : node->list )
+			{
+				if ( i )
+				{
+					canProgress &= i->Accept( *this );
+				}
+				else
+				{
+					canProgress &= false;
+				}
 			}
 
 			return canProgress;

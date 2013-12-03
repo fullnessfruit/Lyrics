@@ -27,8 +27,8 @@ namespace lyrics
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				CLASS,
+					INCLUDE,
 				PACKAGE,
-				INCLUDE,
 					IF,
 						ELSEIF,
 					CASE,
@@ -69,7 +69,6 @@ namespace lyrics
 				class IndexReferenceNode;
 				class FunctionCallNode;
 				class MemberReferenceNode;
-				class IncludeNode;
 			class UnaryExpressionNode;
 			class MultiplicativeExpressionNode;
 			class AdditiveExpressionNode;
@@ -82,6 +81,7 @@ namespace lyrics
 			class LogicalOrExpressionNode;
 			class AssignmentExpressionNode;
 				class ClassNode;
+					class IncludeNode;
 				class PackageNode;
 		class SelectionNode;
 			class IfNode;
@@ -573,24 +573,6 @@ namespace lyrics
 		}
 	};
 
-	class IncludeNode: public PostfixExpressionNode
-	{
-	public:
-		IncludeNode( const Location &location, const IdentifierNode * const package ) : PostfixExpressionNode( location, package )
-		{
-		}
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::INCLUDE;
-		}
-	};
-
 	class UnaryExpressionNode: public ExpressionNode
 	{
 	public:
@@ -896,7 +878,7 @@ namespace lyrics
 	class ClassNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), base( nullptr ), block( nullptr )
+		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), base( nullptr ), include( nullptr ), block( nullptr )
 		{
 		}
 
@@ -907,6 +889,7 @@ namespace lyrics
 		}
 
 		IdentifierNode *base;
+		IncludeNode *include;
 		BlockNode *block;
 
 		virtual bool Accept( Visitor &visitor ) const
@@ -917,6 +900,40 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::CLASS;
+		}
+	};
+
+	class IncludeNode: public Node
+	{
+	public:
+		explicit IncludeNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
+		{
+		}
+
+		~IncludeNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+		}
+
+		forward_list<ExpressionNode *> list;
+		forward_list<ExpressionNode *>::const_iterator last;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::INCLUDE;
+		}
+
+		void AddPackage( ExpressionNode * const node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 

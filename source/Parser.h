@@ -504,11 +504,6 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
-			if ( mToken->type == Token::Type::INCLUDE )
-			{
-				return Include();
-			}
-
 			auto tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
@@ -635,23 +630,6 @@ namespace lyrics
 				{
 					return expression;
 				}
-			}
-		}
-
-		IncludeNode *Include()
-		{
-			auto tToken = mToken;
-
-			mToken++;
-			if ( mToken->type == Token::Type::IDENTIFIER )
-			{
-				return new IncludeNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ) );
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
-
-				return nullptr;
 			}
 		}
 
@@ -952,6 +930,11 @@ namespace lyrics
 				}
 			}
 
+			if ( mToken->type == Token::Type::INCLUDE )
+			{
+				node->include = Include();
+			}
+
 			node->block = Block();
 
 			if ( mToken->type == Token::Type::END )
@@ -967,6 +950,35 @@ namespace lyrics
 
 				return nullptr;
 			}
+		}
+
+		IncludeNode *Include()
+		{
+			IncludeNode *node = new IncludeNode( mToken->location );
+
+			do
+			{
+				mToken++;
+				if ( mToken->type == Token::Type::IDENTIFIER )
+				{
+					node->AddPackage( new IdentifierNode( mToken->location, mToken++->value.identifier ) );
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+			}
+			while ( mToken->type == static_cast<Token::Type>( u',' ) || mToken->type == Token::Type::INCLUDE );
+
+			if ( mToken->type != Token::Type::END_OF_FILE )
+			{
+				mToken++;
+			}
+
+			return node;
 		}
 
 		PackageNode *Package( forward_list<Token>::const_iterator token )
