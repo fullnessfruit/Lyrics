@@ -976,16 +976,20 @@ namespace lyrics
 	class PackageNode: public PrimaryExpressionNode
 	{
 	public:
-		PackageNode( const Location &location, const BlockNode * const block ) : PrimaryExpressionNode( location ), block( block )
+		explicit PackageNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() )
 		{
 		}
 
 		~PackageNode()
 		{
-			delete block;
+			for ( auto i : list )
+			{
+				delete i;
+			}
 		}
 
-		const BlockNode * const block;
+		forward_list<AccessSpecifiedBlockNode *> list;
+		forward_list<AccessSpecifiedBlockNode *>::const_iterator last;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
@@ -995,6 +999,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::PACKAGE;
+		}
+
+		void AddAccessSpecifiedBlock( AccessSpecifiedBlockNode * const node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 

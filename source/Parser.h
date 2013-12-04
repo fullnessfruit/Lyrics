@@ -1013,20 +1013,56 @@ namespace lyrics
 
 		PackageNode *Package( forward_list<Token>::const_iterator token )
 		{
-			PackageNode *node = new PackageNode( token->location, Block() );
+			PackageNode *node = new PackageNode( token->location );
+			Token::Type accessSpecifier;
+			auto tToken = mToken;
 
-			if ( mToken->type == Token::Type::END )
+			switch ( mToken->type )
 			{
+			case Token::Type::PRIVATE:
+			case Token::Type::PUBLIC:
+			case Token::Type::PROTECTED:
+				accessSpecifier = mToken->type;
 				mToken++;
+				break;
 
-				return node;
+			default:
+				accessSpecifier = Token::Type::PUBLIC;
+				break;
 			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-				delete node;
 
-				return nullptr;
+			for (;;)
+			{
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_PACKAGE_DEFINITION, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				node->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
+
+				switch ( mToken->type )
+				{
+				case Token::Type::PRIVATE:
+				case Token::Type::PUBLIC:
+				case Token::Type::PROTECTED:
+					accessSpecifier = mToken->type;
+					tToken = mToken++;
+					break;
+
+				case Token::Type::END:
+					mToken++;
+
+					return node;
+
+				default:
+					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
 			}
 		}
 
