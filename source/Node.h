@@ -1072,11 +1072,11 @@ namespace lyrics
 
 		~CaseNode()
 		{
+			delete value;
 			for ( auto i : list )
 			{
 				delete i;
 			}
-
 			delete block;
 		}
 
