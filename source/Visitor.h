@@ -30,6 +30,7 @@ namespace lyrics
 			class AssignmentExpressionNode;
 				class ClassNode;
 					class IncludeNode;
+					class AccessSpecifiedBlockNode;
 				class PackageNode;
 			class IfNode;
 				class ElseIfNode;
@@ -76,6 +77,7 @@ namespace lyrics
 		virtual bool Visit( const AssignmentExpressionNode * const node ) = 0;
 		virtual bool Visit( const ClassNode * const node ) = 0;
 		virtual bool Visit( const IncludeNode * const node ) = 0;
+		virtual bool Visit( const AccessSpecifiedBlockNode * const node ) = 0;
 		virtual bool Visit( const PackageNode * const node ) = 0;
 		virtual bool Visit( const IfNode * const node ) = 0;
 		virtual bool Visit( const ElseIfNode * const node ) = 0;

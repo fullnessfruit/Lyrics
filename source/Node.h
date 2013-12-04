@@ -27,7 +27,7 @@ namespace lyrics
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				CLASS,
-					INCLUDE,
+					INCLUDE, ACCESS_SPECIFIED_BLOCK,
 				PACKAGE,
 					IF,
 						ELSEIF,
@@ -82,6 +82,7 @@ namespace lyrics
 			class AssignmentExpressionNode;
 				class ClassNode;
 					class IncludeNode;
+					class AccessSpecifiedBlockNode;
 				class PackageNode;
 		class SelectionNode;
 			class IfNode;
@@ -874,22 +875,53 @@ namespace lyrics
 		}
 	};
 
+	class AccessSpecifiedBlockNode: public Node
+	{
+	public:
+		AccessSpecifiedBlockNode( const Location &location, const Token::Type accessSpecifier, const BlockNode * const block ) : Node( location ), accessSpecifier( accessSpecifier ), block( block )
+		{
+		}
+
+		~AccessSpecifiedBlockNode()
+		{
+			delete block;
+		}
+
+		const Token::Type accessSpecifier;
+		const BlockNode * const block;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ACCESS_SPECIFIED_BLOCK;
+		}
+	};
+
 	class ClassNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), base( nullptr ), include( nullptr ), block( nullptr )
+		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), base( nullptr ), include( nullptr ), last( list.cbefore_begin() )
 		{
 		}
 
 		~ClassNode()
 		{
 			delete base;
-			delete block;
+			delete include;
+			for ( auto i : list )
+			{
+				delete i;
+			}
 		}
 
 		IdentifierNode *base;
 		IncludeNode *include;
-		BlockNode *block;
+		forward_list<AccessSpecifiedBlockNode *> list;
+		forward_list<AccessSpecifiedBlockNode *>::const_iterator last;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
@@ -899,6 +931,11 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::CLASS;
+		}
+
+		void AddAccessSpecifiedBlock( AccessSpecifiedBlockNode * const node )
+		{
+			last = list.insert_after( last, node );
 		}
 	};
 
@@ -917,8 +954,8 @@ namespace lyrics
 			}
 		}
 
-		forward_list<ExpressionNode *> list;
-		forward_list<ExpressionNode *>::const_iterator last;
+		forward_list<IdentifierNode *> list;
+		forward_list<IdentifierNode *>::const_iterator last;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
@@ -930,7 +967,7 @@ namespace lyrics
 			return Node::Type::INCLUDE;
 		}
 
-		void AddPackage( ExpressionNode * const node )
+		void AddPackage( IdentifierNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}

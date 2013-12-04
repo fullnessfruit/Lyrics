@@ -50,7 +50,7 @@ namespace lyrics
 		{
 			BlockNode *node = new BlockNode( mToken->location );
 
-			while ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::WHEN && mToken->type != Token::Type::END_OF_FILE )
+			while ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::PRIVATE && mToken->type != Token::Type::PUBLIC && mToken->type != Token::Type::PROTECTED && mToken->type != Token::Type::WHEN && mToken->type != Token::Type::END_OF_FILE )
 			{
 				node->AddStatement( Statement() );
 			}
@@ -935,20 +935,55 @@ namespace lyrics
 				node->include = Include();
 			}
 
-			node->block = Block();
+			Token::Type accessSpecifier;
+			auto tToken = mToken;
 
-			if ( mToken->type == Token::Type::END )
+			switch ( mToken->type )
 			{
+			case Token::Type::PRIVATE:
+			case Token::Type::PUBLIC:
+			case Token::Type::PROTECTED:
+				accessSpecifier = mToken->type;
 				mToken++;
+				break;
 
-				return node;
+			default:
+				accessSpecifier = Token::Type::PUBLIC;
+				break;
 			}
-			else
-			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-				delete node;
 
-				return nullptr;
+			for (;;)
+			{
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				node->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
+
+				switch ( mToken->type )
+				{
+				case Token::Type::PRIVATE:
+				case Token::Type::PUBLIC:
+				case Token::Type::PROTECTED:
+					accessSpecifier = mToken->type;
+					tToken = mToken++;
+					break;
+
+				case Token::Type::END:
+					mToken++;
+
+					return node;
+
+				default:
+					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
 			}
 		}
 
@@ -1416,7 +1451,7 @@ namespace lyrics
 
 			mToken++;
 
-			if ( mToken->type == Token::Type::END || mToken->type == Token::Type::ELSE || mToken->type == Token::Type::ELSEIF || mToken->type == Token::Type::WHEN || mToken->type == Token::Type::END_OF_FILE )
+			if ( mToken->type == Token::Type::END || mToken->type == Token::Type::ELSE || mToken->type == Token::Type::ELSEIF || mToken->type == Token::Type::PRIVATE || mToken->type == Token::Type::PUBLIC || mToken->type == Token::Type::PROTECTED || mToken->type == Token::Type::WHEN || mToken->type == Token::Type::END_OF_FILE )
 			{
 				return new ReturnNode( tToken->location );
 			}

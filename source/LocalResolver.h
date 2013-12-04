@@ -584,13 +584,16 @@ namespace lyrics
 				canProgress &= node->base->Accept( *this );
 			}
 
-			if ( node->block )
+			for ( auto i : node->list )
 			{
-				canProgress &= node->block->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
+				if ( i )
+				{
+					canProgress &= i->Accept( *this );
+				}
+				else
+				{
+					canProgress &= false;
+				}
 			}
 
 			mScopeStack.pop();
@@ -612,6 +615,22 @@ namespace lyrics
 				{
 					canProgress &= false;
 				}
+			}
+
+			return canProgress;
+		}
+
+		virtual bool Visit( const AccessSpecifiedBlockNode * const node )
+		{
+			bool canProgress = true;
+
+			if ( node->block )
+			{
+				canProgress &= node->block->Accept( *this );
+			}
+			else
+			{
+				canProgress = false;
 			}
 
 			return canProgress;
