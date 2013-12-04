@@ -149,7 +149,6 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Incomplete case statement." << endl;
 				break;
 
-
 			case ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected when or else or elseif." << endl;
 				break;
