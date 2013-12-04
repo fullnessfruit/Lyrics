@@ -32,16 +32,16 @@ namespace lyrics
 					class IncludeNode;
 					class AccessSpecifiedBlockNode;
 				class PackageNode;
-			class IfNode;
-				class ElseIfNode;
-			class CaseNode;
-				class WhenNode;
-			class WhileNode;
-			class ForNode;
-			class ForEachNode;
-			class RedoNode;
-			class BreakNode;
-			class ReturnNode;
+		class IfNode;
+			class ElseIfNode;
+		class CaseNode;
+			class WhenNode;
+		class WhileNode;
+		class ForNode;
+		class ForEachNode;
+		class RedoNode;
+		class BreakNode;
+		class ReturnNode;
 
 	class Visitor
 	{
