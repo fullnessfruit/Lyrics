@@ -2,7 +2,7 @@
 
 #include "LocalResolver.h"
 #include "DereferenceChecker.h"
-#include "TypeChecker.h"
+#include "StaticTypeChecker.h"
 
 #include "Node.h"
 #include "Scope.h"
@@ -28,7 +28,7 @@ namespace lyrics
 
 			canProgress &= LocalResolver().Resolve( root, top );
 			canProgress &= DereferenceChecker().Check( root );
-			canProgress &= TypeChecker().Check( root );
+			canProgress &= StaticTypeChecker().Check( root );
 
 			return canProgress;
 		}

@@ -1,12 +1,12 @@
 #include "Visitor.h"
 #include "Node.h"
 
-#ifndef TYPE_CHECKER
-#define TYPE_CHECKER
+#ifndef STATIC_TYPE_CHECKER
+#define STATIC_TYPE_CHECKER
 
 namespace lyrics
 {
-	class TypeChecker : public Visitor
+	class StaticTypeChecker : public Visitor
 	{
 	public:
 		bool Check( const BlockNode * const node )
