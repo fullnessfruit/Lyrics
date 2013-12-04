@@ -425,7 +425,6 @@ namespace lyrics
 			{
 				delete i;
 			}
-
 			delete block;
 		}
 
