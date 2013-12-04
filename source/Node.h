@@ -29,6 +29,7 @@ namespace lyrics
 				CLASS,
 					INCLUDE, ACCESS_SPECIFIED_BLOCK,
 				PACKAGE,
+				IMPORT,
 					IF,
 						ELSEIF,
 					CASE,
@@ -84,6 +85,7 @@ namespace lyrics
 					class IncludeNode;
 					class AccessSpecifiedBlockNode;
 				class PackageNode;
+		class ImportNode;
 		class SelectionNode;
 			class IfNode;
 				class ElseIfNode;
@@ -875,6 +877,40 @@ namespace lyrics
 		}
 	};
 
+	class IncludeNode: public Node
+	{
+	public:
+		explicit IncludeNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
+		{
+		}
+
+		~IncludeNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+		}
+
+		forward_list<IdentifierNode *> list;
+		forward_list<IdentifierNode *>::const_iterator last;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::INCLUDE;
+		}
+
+		void AddPackage( IdentifierNode * const node )
+		{
+			last = list.insert_after( last, node );
+		}
+	};
+
 	class AccessSpecifiedBlockNode: public Node
 	{
 	public:
@@ -939,40 +975,6 @@ namespace lyrics
 		}
 	};
 
-	class IncludeNode: public Node
-	{
-	public:
-		explicit IncludeNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
-		{
-		}
-
-		~IncludeNode()
-		{
-			for ( auto i : list )
-			{
-				delete i;
-			}
-		}
-
-		forward_list<IdentifierNode *> list;
-		forward_list<IdentifierNode *>::const_iterator last;
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::INCLUDE;
-		}
-
-		void AddPackage( IdentifierNode * const node )
-		{
-			last = list.insert_after( last, node );
-		}
-	};
-
 	class PackageNode: public PrimaryExpressionNode
 	{
 	public:
@@ -1002,6 +1004,40 @@ namespace lyrics
 		}
 
 		void AddAccessSpecifiedBlock( AccessSpecifiedBlockNode * const node )
+		{
+			last = list.insert_after( last, node );
+		}
+	};
+
+	class ImportNode: public StatementNode
+	{
+	public:
+		explicit ImportNode( const Location &location ) : StatementNode( location ), last( list.cbefore_begin() )
+		{
+		}
+
+		~ImportNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+		}
+
+		forward_list<IdentifierNode *> list;
+		forward_list<IdentifierNode *>::const_iterator last;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::IMPORT;
+		}
+
+		void AddIdentifier( IdentifierNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}

@@ -77,11 +77,14 @@ namespace lyrics
 			case Token::Type::WHILE:
 				return While();
 
-			case Token::Type::FOREACH:
-				return ForEach();
-
 			case Token::Type::CASE:
 				return Case();
+
+			case Token::Type::IMPORT:
+				return Import();
+
+			case Token::Type::FOREACH:
+				return ForEach();
 
 			case Token::Type::REDO:
 				return Redo();
@@ -1069,6 +1072,30 @@ namespace lyrics
 		ExpressionNode *Expression()
 		{
 			return AssignmentExpression();
+		}
+
+		ImportNode *Import()
+		{
+			ImportNode *node = new ImportNode( mToken->location );
+
+			do
+			{
+				mToken++;
+				if ( mToken->type == Token::Type::IDENTIFIER )
+				{
+					node->AddIdentifier( new IdentifierNode( mToken->location, mToken++->value.identifier ) );
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_IDENTIFIER, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+			}
+			while ( mToken->type == static_cast<Token::Type>( u'.' ) );
+
+			return node;
 		}
 
 		IfNode *If()

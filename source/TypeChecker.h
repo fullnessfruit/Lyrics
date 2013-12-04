@@ -619,6 +619,25 @@ namespace lyrics
 			return canProgress;
 		}
 
+		virtual bool Visit( const ImportNode * const node )
+		{
+			bool canProgress = true;
+
+			for ( auto i : node->list )
+			{
+				if ( i )
+				{
+					canProgress &= i->Accept( *this );
+				}
+				else
+				{
+					canProgress &= false;
+				}
+			}
+
+			return canProgress;
+		}
+
 		virtual bool Visit( const IfNode * const node )
 		{
 			bool canProgress = true;

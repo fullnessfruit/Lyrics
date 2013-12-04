@@ -133,6 +133,10 @@ namespace lyrics
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected package." << endl;
 				break;
 
+			case ErrorCode::EXPECTED_IDENTIFIER:
+				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected identifier." << endl;
+				break;
+
 			case ErrorCode::EXPECTED_END:
 				cout << location << ' ' << BuildLog::ERROR << ' ' << static_cast<unsigned int>( errorCode ) << ": " << "Expected end." << endl;
 				break;
