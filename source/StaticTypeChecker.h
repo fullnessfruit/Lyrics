@@ -604,16 +604,13 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			for ( auto i : node->list )
+			if ( node->block )
 			{
-				if ( i )
-				{
-					canProgress &= i->Accept( *this );
-				}
-				else
-				{
-					canProgress &= false;
-				}
+				canProgress &= node->block->Accept( *this );
+			}
+			else
+			{
+				canProgress &= false;
 			}
 
 			return canProgress;

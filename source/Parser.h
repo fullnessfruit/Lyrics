@@ -309,13 +309,6 @@ namespace lyrics
 
 		FunctionLiteralNode *FunctionLiteral( forward_list<Token>::const_iterator token )
 		{
-			if ( mToken->type == Token::Type::END_OF_FILE )
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
-
-				return nullptr;
-			}
-
 			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 			{
 				mToken++;
@@ -1016,56 +1009,20 @@ namespace lyrics
 
 		PackageNode *Package( forward_list<Token>::const_iterator token )
 		{
-			PackageNode *node = new PackageNode( token->location );
-			Token::Type accessSpecifier;
-			auto tToken = mToken;
+			PackageNode *node = new PackageNode( token->location, Block() );
 
-			switch ( mToken->type )
+			if ( mToken->type == Token::Type::END )
 			{
-			case Token::Type::PRIVATE:
-			case Token::Type::PUBLIC:
-			case Token::Type::PROTECTED:
-				accessSpecifier = mToken->type;
 				mToken++;
-				break;
 
-			default:
-				accessSpecifier = Token::Type::PUBLIC;
-				break;
+				return node;
 			}
-
-			for (;;)
+			else
 			{
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_PACKAGE_DEFINITION, mToken->location );
-					delete node;
+				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+				delete node;
 
-					return nullptr;
-				}
-
-				node->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
-
-				switch ( mToken->type )
-				{
-				case Token::Type::PRIVATE:
-				case Token::Type::PUBLIC:
-				case Token::Type::PROTECTED:
-					accessSpecifier = mToken->type;
-					tToken = mToken++;
-					break;
-
-				case Token::Type::END:
-					mToken++;
-
-					return node;
-
-				default:
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-					delete node;
-
-					return nullptr;
-				}
+				return nullptr;
 			}
 		}
 

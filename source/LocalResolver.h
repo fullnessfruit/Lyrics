@@ -640,18 +640,17 @@ namespace lyrics
 		{
 			bool canProgress = true;
 
-			mScopeStack.push( new Scope( mScopeStack.top() ) );
-
-			for ( auto i : node->list )
+			if ( node->block )
 			{
-				if ( i )
-				{
-					canProgress &= i->Accept( *this );
-				}
-				else
-				{
-					canProgress &= false;
-				}
+				mScopeStack.push( new Scope( mScopeStack.top() ) );
+
+				canProgress &= node->block->Accept( *this );
+
+				mScopeStack.pop();
+			}
+			else
+			{
+				canProgress &= false;
 			}
 
 			mScopeStack.pop();
