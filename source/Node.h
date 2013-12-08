@@ -27,7 +27,7 @@ namespace lyrics
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				CLASS,
-					INCLUDE, ACCESS_SPECIFIED_BLOCK,
+					BASE_CLASS_CONSTRUCTOR_CALL, INCLUDE, ACCESS_SPECIFIED_BLOCK_LIST, ACCESS_SPECIFIED_BLOCK,
 				PACKAGE,
 				IMPORT,
 					IF,
@@ -82,7 +82,9 @@ namespace lyrics
 			class LogicalOrExpressionNode;
 			class AssignmentExpressionNode;
 				class ClassNode;
+					class BaseClassConstructorCallNode;
 					class IncludeNode;
+					class AccessSpecifiedBlockListNode;
 					class AccessSpecifiedBlockNode;
 				class PackageNode;
 		class ImportNode;
@@ -877,6 +879,42 @@ namespace lyrics
 		}
 	};
 
+	class BaseClassConstructorCallNode: public Node
+	{
+	public:
+		explicit BaseClassConstructorCallNode( const Location &location ) : Node( location ), baseClass( nullptr ), last( list.cbefore_begin() )
+		{
+		}
+
+		~BaseClassConstructorCallNode()
+		{
+			delete baseClass;
+			for ( auto i : list )
+			{
+				delete i;
+			}
+		}
+
+		IdentifierNode *baseClass;
+		forward_list<ExpressionNode *> list;
+		forward_list<ExpressionNode *>::const_iterator last;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::BASE_CLASS_CONSTRUCTOR_CALL;
+		}
+
+		void AddArgument( ExpressionNode * const node )
+		{
+			last = list.insert_after( last, node );
+		}
+	};
+
 	class IncludeNode: public Node
 	{
 	public:
@@ -937,27 +975,63 @@ namespace lyrics
 		}
 	};
 
-	class ClassNode: public PrimaryExpressionNode
+	class AccessSpecifiedBlockListNode: public Node
 	{
 	public:
-		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), base( nullptr ), include( nullptr ), last( list.cbefore_begin() )
+		explicit AccessSpecifiedBlockListNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
 		{
 		}
 
-		~ClassNode()
+		~AccessSpecifiedBlockListNode()
 		{
-			delete base;
-			delete include;
 			for ( auto i : list )
 			{
 				delete i;
 			}
 		}
 
-		IdentifierNode *base;
-		IncludeNode *include;
 		forward_list<AccessSpecifiedBlockNode *> list;
 		forward_list<AccessSpecifiedBlockNode *>::const_iterator last;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit( this );
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::ACCESS_SPECIFIED_BLOCK_LIST;
+		}
+
+		void AddAccessSpecifiedBlock( AccessSpecifiedBlockNode * const node )
+		{
+			last = list.insert_after( last, node );
+		}
+	};
+
+	class ClassNode: public PrimaryExpressionNode
+	{
+	public:
+		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), baseClassConstructorCall( nullptr ), include( nullptr ), accessSpecifiedBlockList( nullptr )
+		{
+		}
+
+		~ClassNode()
+		{
+			for ( auto i : list )
+			{
+				delete i;
+			}
+			delete baseClassConstructorCall;
+			delete include;
+			delete accessSpecifiedBlockList;
+		}
+
+		forward_list<ExpressionNode *> list;
+		forward_list<ExpressionNode *>::const_iterator last;
+		BaseClassConstructorCallNode *baseClassConstructorCall;
+		IncludeNode *include;
+		AccessSpecifiedBlockListNode *accessSpecifiedBlockList;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
@@ -969,7 +1043,7 @@ namespace lyrics
 			return Node::Type::CLASS;
 		}
 
-		void AddAccessSpecifiedBlock( AccessSpecifiedBlockNode * const node )
+		void AddArgument( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
 		}

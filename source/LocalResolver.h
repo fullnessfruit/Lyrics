@@ -574,14 +574,53 @@ namespace lyrics
 
 			mScopeStack.push( new Scope( mScopeStack.top() ) );
 
-			if ( node->base )
+			for ( auto i : node->list )
 			{
-				canProgress &= node->base->Accept( *this );
+				if ( i )
+				{
+					canProgress &= i->Accept( *this );
+				}
+				else
+				{
+					canProgress &= false;
+				}
+			}
+
+			if ( node->baseClassConstructorCall )
+			{
+				canProgress &= node->baseClassConstructorCall->Accept( *this );
 			}
 
 			if ( node->include )
 			{
-				canProgress &= node->base->Accept( *this );
+				canProgress &= node->include->Accept( *this );
+			}
+
+			if ( node->accessSpecifiedBlockList )
+			{
+				canProgress &= node->accessSpecifiedBlockList->Accept( *this );
+			}
+			else
+			{
+				canProgress = false;
+			}
+
+			mScopeStack.pop();
+
+			return canProgress;
+		}
+
+		virtual bool Visit( const BaseClassConstructorCallNode * const node )
+		{
+			bool canProgress = true;
+
+			if ( node->baseClass )
+			{
+				canProgress &= node->baseClass->Accept( *this );
+			}
+			else
+			{
+				canProgress = false;
 			}
 
 			for ( auto i : node->list )
@@ -596,12 +635,29 @@ namespace lyrics
 				}
 			}
 
-			mScopeStack.pop();
-
 			return canProgress;
 		}
 
 		virtual bool Visit( const IncludeNode * const node )
+		{
+			bool canProgress = true;
+
+			for ( auto i : node->list )
+			{
+				if ( i )
+				{
+					canProgress &= i->Accept( *this );
+				}
+				else
+				{
+					canProgress &= false;
+				}
+			}
+
+			return canProgress;
+		}
+
+		virtual bool Visit( const AccessSpecifiedBlockListNode * const node )
 		{
 			bool canProgress = true;
 

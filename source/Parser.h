@@ -901,15 +901,110 @@ namespace lyrics
 		{
 			ClassNode *node = new ClassNode( token->location );
 
+			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+			{
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+					delete node;
+
+					return nullptr;
+				}
+
+				if ( mToken->type != static_cast<Token::Type>( u')' ) )
+				{
+					for (;;)
+					{
+						node->AddArgument( Expression() );
+
+						if ( mToken->type == static_cast<Token::Type>( u',' ) )
+						{
+							mToken++;
+							if ( mToken->type == Token::Type::END_OF_FILE )
+							{
+								BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+								delete node;
+
+								return nullptr;
+							}
+						}
+						else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+						{
+							break;
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+							delete node;
+
+							return nullptr;
+						}
+					}
+				}
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+				delete node;
+
+				return nullptr;
+			}
+
+			mToken++;
 			if ( mToken->type == static_cast<Token::Type>( u':' ) )
 			{
+				node->baseClassConstructorCall = new BaseClassConstructorCallNode( mToken->location );
+
 				mToken++;
 				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					node->base = new IdentifierNode( mToken->location, mToken->value.identifier );
+					node->baseClassConstructorCall->baseClass = new IdentifierNode( mToken->location, mToken->value.identifier );
 
 					mToken++;
-					if ( mToken->type == Token::Type::END_OF_FILE )
+					if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+					{
+						mToken++;
+						if ( mToken->type == Token::Type::END_OF_FILE )
+						{
+							BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+							delete node;
+
+							return nullptr;
+						}
+
+						if ( mToken->type != static_cast<Token::Type>( u')' ) )
+						{
+							for (;;)
+							{
+								node->baseClassConstructorCall->AddArgument( Expression() );
+
+								if ( mToken->type == static_cast<Token::Type>( u',' ) )
+								{
+									mToken++;
+									if ( mToken->type == Token::Type::END_OF_FILE )
+									{
+										BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+										delete node;
+
+										return nullptr;
+									}
+								}
+								else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+								{
+									break;
+								}
+								else
+								{
+									BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+									delete node;
+
+									return nullptr;
+								}
+							}
+						}
+					}
+					else
 					{
 						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 						delete node;
@@ -926,6 +1021,7 @@ namespace lyrics
 				}
 			}
 
+			mToken++;
 			if ( mToken->type == Token::Type::INCLUDE )
 			{
 				node->include = Include();
@@ -933,6 +1029,8 @@ namespace lyrics
 
 			Token::Type accessSpecifier;
 			auto tToken = mToken;
+
+			node->accessSpecifiedBlockList = new AccessSpecifiedBlockListNode( mToken->location );
 
 			switch ( mToken->type )
 			{
@@ -958,7 +1056,7 @@ namespace lyrics
 					return nullptr;
 				}
 
-				node->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
+				node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
 
 				switch ( mToken->type )
 				{
