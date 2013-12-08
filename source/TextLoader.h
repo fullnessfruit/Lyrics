@@ -158,8 +158,7 @@ namespace lyrics
 				{
 					tStr[j++] = str[i];
 				}
-				// Do not have to check about lower byte starts with bit 10. ( str[i + 1] & 192u ) == 128u
-				else if ( str[i] < 224u )
+				else if ( str[i] < 224u )	// && ( str[i + 1] & 192u ) == 128u
 				{
 					tStr[j++] = ( str[i] & 31u ) << 6 | ( str[i + 1] & 63u );
 					i++;
