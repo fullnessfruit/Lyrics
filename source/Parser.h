@@ -814,7 +814,91 @@ namespace lyrics
 
 				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), FunctionLiteral( tToken ) );
+					IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
+
+					mToken++;
+					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
+					{
+						mToken++;
+						if ( mToken->type == Token::Type::IDENTIFIER )
+						{
+							IdentifierNode *member = new IdentifierNode( mToken->location, mToken->value.identifier );
+
+							mToken++;
+							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+							{
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), FunctionLiteral( tToken ) );
+							}
+							else
+							{
+								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								delete identifier;
+								delete member;
+
+								return nullptr;
+							}
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+							delete identifier;
+
+							return nullptr;
+						}
+					}
+					else if ( mToken->type == Token::Type::END_OF_FILE )
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+						delete identifier;
+
+						return nullptr;
+					}
+					else
+					{
+						return new AssignmentExpressionNode( tToken->location, identifier, FunctionLiteral( tToken ) );
+					}
+				}
+				else if ( mToken->type == Token::Type::SELF )
+				{
+					SelfNode *self = new SelfNode( mToken->location );
+
+					mToken++;
+					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
+					{
+						mToken++;
+						if ( mToken->type == Token::Type::IDENTIFIER )
+						{
+							IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
+
+							mToken++;
+							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+							{
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( self->location, self, identifier ), FunctionLiteral( tToken ) );
+							}
+							else
+							{
+								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								delete self;
+								delete identifier;
+
+								return nullptr;
+							}
+						}
+						else
+						{
+							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+							delete self;
+
+							return nullptr;
+						}
+					}
+					else
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+						delete self;
+
+						return nullptr;
+					}
 				}
 				else
 				{
