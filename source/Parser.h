@@ -503,7 +503,7 @@ namespace lyrics
 			auto tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
-			if ( expression == nullptr || expression->GetType() != Node::Type::IDENTIFIER )
+			if ( expression == nullptr || ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::SELF ) )
 			{
 				return expression;
 			}
