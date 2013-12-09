@@ -545,7 +545,7 @@ namespace lyrics
 
 						if ( !scope )
 						{
-							mScopeStack.top()->AddPublic( identifier );
+							mScopeStack.top()->AddVariable( identifier );
 							break;
 						}
 					}
