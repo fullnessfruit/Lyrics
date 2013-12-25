@@ -3,10 +3,7 @@
 #include "Tokenizer.h"
 #include "Token.h"
 #include "Node.h"
-#include "Literal.h"
-#include "Location.h"
 
-#include "WarningCode.h"
 #include "ErrorCode.h"
 #include "BuildLog.h"
 
