@@ -798,20 +798,8 @@ namespace lyrics
 
 			switch ( mToken->type )
 			{
-			case Token::Type::END_OF_FILE:
-				BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
-
-				return nullptr;
-
 			case Token::Type::DEF:
 				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
-
-					return nullptr;
-				}
-
 				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
 					IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
@@ -900,6 +888,12 @@ namespace lyrics
 						return nullptr;
 					}
 				}
+				else if ( mToken->type == Token::Type::END_OF_FILE )
+				{
+					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+
+					return nullptr;
+				}
 				else
 				{
 					mToken = tToken;
@@ -912,6 +906,11 @@ namespace lyrics
 
 			case Token::Type::PACKAGE:
 				return Package();
+
+			case Token::Type::END_OF_FILE:
+				BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+
+				return nullptr;
 
 			default:
 				ExpressionNode *expression = LogicalOrExpression();
