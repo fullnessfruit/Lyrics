@@ -908,44 +908,10 @@ namespace lyrics
 				}
 
 			case Token::Type::CLASS:
-				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-
-					return nullptr;
-				}
-
-				if ( mToken->type == Token::Type::IDENTIFIER )
-				{
-					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), Class( tToken ) );
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
-
-					return nullptr;
-				}
+				return Class();
 
 			case Token::Type::PACKAGE:
-				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
-				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_PACKAGE_DEFINITION, mToken->location );
-
-					return nullptr;
-				}
-
-				if ( mToken->type == Token::Type::IDENTIFIER )
-				{
-					return new AssignmentExpressionNode( tToken->location, new IdentifierNode( mToken->location, mToken++->value.identifier ), Package( tToken ) );
-				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
-
-					return nullptr;
-				}
+				return Package();
 
 			default:
 				ExpressionNode *expression = LogicalOrExpression();
@@ -981,166 +947,156 @@ namespace lyrics
 			}
 		}
 
-		ClassNode *Class( forward_list<Token>::const_iterator token )
+		AssignmentExpressionNode *Class()
 		{
-			ClassNode *node = new ClassNode( token->location );
+			auto tToken = mToken;
 
-			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+			mToken++;
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
+				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				ClassNode *node = new ClassNode( tToken->location );
+
 				mToken++;
-				if ( mToken->type == Token::Type::END_OF_FILE )
+				if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+				{
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+						delete node;
+						delete name;
+
+						return nullptr;
+					}
+
+					if ( mToken->type != static_cast<Token::Type>( u')' ) )
+					{
+						for (;;)
+						{
+							node->AddArgument( Expression() );
+
+							if ( mToken->type == static_cast<Token::Type>( u',' ) )
+							{
+								mToken++;
+								if ( mToken->type == Token::Type::END_OF_FILE )
+								{
+									BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+									delete node;
+									delete name;
+
+									return nullptr;
+								}
+							}
+							else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+							{
+								break;
+							}
+							else
+							{
+								BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+								delete node;
+								delete name;
+
+								return nullptr;
+							}
+						}
+					}
+				}
+				else
 				{
 					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 					delete node;
+					delete name;
 
 					return nullptr;
 				}
 
-				if ( mToken->type != static_cast<Token::Type>( u')' ) )
+				mToken++;
+				if ( mToken->type == static_cast<Token::Type>( u':' ) )
 				{
-					for (;;)
-					{
-						node->AddArgument( Expression() );
+					node->baseClassConstructorCall = new BaseClassConstructorCallNode( mToken->location );
 
-						if ( mToken->type == static_cast<Token::Type>( u',' ) )
+					mToken++;
+					if ( mToken->type == Token::Type::IDENTIFIER )
+					{
+						node->baseClassConstructorCall->baseClass = new IdentifierNode( mToken->location, mToken->value.identifier );
+
+						mToken++;
+						if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 						{
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
 								BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 								delete node;
+								delete name;
 
 								return nullptr;
 							}
-						}
-						else if ( mToken->type == static_cast<Token::Type>( u')' ) )
-						{
-							break;
+
+							if ( mToken->type != static_cast<Token::Type>( u')' ) )
+							{
+								for (;;)
+								{
+									node->baseClassConstructorCall->AddArgument( Expression() );
+
+									if ( mToken->type == static_cast<Token::Type>( u',' ) )
+									{
+										mToken++;
+										if ( mToken->type == Token::Type::END_OF_FILE )
+										{
+											BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+											delete node;
+											delete name;
+
+											return nullptr;
+										}
+									}
+									else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+									{
+										break;
+									}
+									else
+									{
+										BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+										delete node;
+										delete name;
+
+										return nullptr;
+									}
+								}
+							}
 						}
 						else
 						{
 							BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 							delete node;
+							delete name;
 
 							return nullptr;
-						}
-					}
-				}
-			}
-			else
-			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-				delete node;
-
-				return nullptr;
-			}
-
-			mToken++;
-			if ( mToken->type == static_cast<Token::Type>( u':' ) )
-			{
-				node->baseClassConstructorCall = new BaseClassConstructorCallNode( mToken->location );
-
-				mToken++;
-				if ( mToken->type == Token::Type::IDENTIFIER )
-				{
-					node->baseClassConstructorCall->baseClass = new IdentifierNode( mToken->location, mToken->value.identifier );
-
-					mToken++;
-					if ( mToken->type == static_cast<Token::Type>( u'(' ) )
-					{
-						mToken++;
-						if ( mToken->type == Token::Type::END_OF_FILE )
-						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-							delete node;
-
-							return nullptr;
-						}
-
-						if ( mToken->type != static_cast<Token::Type>( u')' ) )
-						{
-							for (;;)
-							{
-								node->baseClassConstructorCall->AddArgument( Expression() );
-
-								if ( mToken->type == static_cast<Token::Type>( u',' ) )
-								{
-									mToken++;
-									if ( mToken->type == Token::Type::END_OF_FILE )
-									{
-										BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-										delete node;
-
-										return nullptr;
-									}
-								}
-								else if ( mToken->type == static_cast<Token::Type>( u')' ) )
-								{
-									break;
-								}
-								else
-								{
-									BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-									delete node;
-
-									return nullptr;
-								}
-							}
 						}
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+						BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
 						delete node;
+						delete name;
 
 						return nullptr;
 					}
 				}
-				else
-				{
-					BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
-					delete node;
 
-					return nullptr;
-				}
-			}
-
-			mToken++;
-			if ( mToken->type == Token::Type::INCLUDE )
-			{
-				node->include = Include();
-			}
-
-			Token::Type accessSpecifier;
-			auto tToken = mToken;
-
-			node->accessSpecifiedBlockList = new AccessSpecifiedBlockListNode( mToken->location );
-
-			switch ( mToken->type )
-			{
-			case Token::Type::PRIVATE:
-			case Token::Type::PUBLIC:
-			case Token::Type::PROTECTED:
-				accessSpecifier = mToken->type;
 				mToken++;
-				break;
-
-			default:
-				accessSpecifier = Token::Type::PUBLIC;
-				break;
-			}
-
-			for (;;)
-			{
-				if ( mToken->type == Token::Type::END_OF_FILE )
+				if ( mToken->type == Token::Type::INCLUDE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
-					delete node;
-
-					return nullptr;
+					node->include = Include();
 				}
 
-				node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
+				Token::Type accessSpecifier;
+				auto tToken = mToken;
+
+				node->accessSpecifiedBlockList = new AccessSpecifiedBlockListNode( mToken->location );
 
 				switch ( mToken->type )
 				{
@@ -1148,20 +1104,55 @@ namespace lyrics
 				case Token::Type::PUBLIC:
 				case Token::Type::PROTECTED:
 					accessSpecifier = mToken->type;
-					tToken = mToken++;
+					mToken++;
 					break;
 
-				case Token::Type::END:
-					mToken++;
-
-					return node;
-
 				default:
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-					delete node;
-
-					return nullptr;
+					accessSpecifier = Token::Type::PUBLIC;
+					break;
 				}
+
+				for (;;)
+				{
+					if ( mToken->type == Token::Type::END_OF_FILE )
+					{
+						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+						delete node;
+						delete name;
+
+						return nullptr;
+					}
+
+					node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
+
+					switch ( mToken->type )
+					{
+					case Token::Type::PRIVATE:
+					case Token::Type::PUBLIC:
+					case Token::Type::PROTECTED:
+						accessSpecifier = mToken->type;
+						tToken = mToken++;
+						break;
+
+					case Token::Type::END:
+						mToken++;
+
+						return new AssignmentExpressionNode( tToken->location, name, node );
+
+					default:
+						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+						delete node;
+						delete name;
+
+						return nullptr;
+					}
+				}
+			}
+			else
+			{
+				BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
+
+				return nullptr;
 			}
 		}
 
@@ -1189,20 +1180,35 @@ namespace lyrics
 			return node;
 		}
 
-		PackageNode *Package( forward_list<Token>::const_iterator token )
+		AssignmentExpressionNode *Package()
 		{
-			PackageNode *node = new PackageNode( token->location, Block() );
+			auto tToken = mToken;
 
-			if ( mToken->type == Token::Type::END )
+			mToken++;
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				mToken++;
+				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				PackageNode *node = new PackageNode( tToken->location, Block() );
 
-				return node;
+				mToken++;
+				if ( mToken->type == Token::Type::END )
+				{
+					mToken++;
+
+					return new AssignmentExpressionNode( tToken->location, name, node );
+				}
+				else
+				{
+					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+					delete node;
+					delete name;
+
+					return nullptr;
+				}
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
-				delete node;
+				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
 
 				return nullptr;
 			}
