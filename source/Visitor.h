@@ -4,9 +4,6 @@
 namespace lyrics
 {
 	class BlockNode;
-				class IdentifierNode;
-				class SelfNode;
-				class LiteralNode;
 				class ArrayLiteralNode;
 				class HashLiteralNode;
 					class HashNode;
@@ -42,8 +39,6 @@ namespace lyrics
 		class WhileNode;
 		class ForNode;
 		class ForEachNode;
-		class RedoNode;
-		class BreakNode;
 		class ReturnNode;
 
 	class Visitor
@@ -54,9 +49,6 @@ namespace lyrics
 		}
 
 		virtual bool Visit( const BlockNode * const node ) = 0;
-		virtual bool Visit( const IdentifierNode * const node ) = 0;
-		virtual bool Visit( const SelfNode * const node ) = 0;
-		virtual bool Visit( const LiteralNode * const node ) = 0;
 		virtual bool Visit( const ArrayLiteralNode * const node ) = 0;
 		virtual bool Visit( const HashLiteralNode * const node ) = 0;
 		virtual bool Visit( const HashNode * const node ) = 0;
@@ -92,9 +84,12 @@ namespace lyrics
 		virtual bool Visit( const WhileNode * const node ) = 0;
 		virtual bool Visit( const ForNode * const node ) = 0;
 		virtual bool Visit( const ForEachNode * const node ) = 0;
-		virtual bool Visit( const RedoNode * const node ) = 0;
-		virtual bool Visit( const BreakNode * const node ) = 0;
 		virtual bool Visit( const ReturnNode * const node ) = 0;
+
+		bool Visit()
+		{
+			return true;
+		}
 	};
 }
 

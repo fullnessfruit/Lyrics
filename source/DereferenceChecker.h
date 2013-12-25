@@ -33,21 +33,6 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const IdentifierNode * const node )
-		{
-			return true;
-		}
-
-		virtual bool Visit( const SelfNode * const node )
-		{
-			return true;
-		}
-
-		virtual bool Visit( const LiteralNode * const node )
-		{
-			return true;
-		}
-
 		virtual bool Visit( const ArrayLiteralNode * const node )
 		{
 			bool canProgress = true;
@@ -898,16 +883,6 @@ namespace lyrics
 			}
 
 			return canProgress;
-		}
-
-		virtual bool Visit( const RedoNode * const node )
-		{
-			return true;
-		}
-
-		virtual bool Visit( const BreakNode * const node )
-		{
-			return true;
 		}
 
 		virtual bool Visit( const ReturnNode * const node )

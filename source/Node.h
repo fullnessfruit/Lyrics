@@ -188,7 +188,7 @@ namespace lyrics
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit();
 		}
 
 		virtual Node::Type GetType() const
@@ -206,7 +206,7 @@ namespace lyrics
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit();
 		}
 
 		virtual Node::Type GetType() const
@@ -251,7 +251,7 @@ namespace lyrics
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit();
 		}
 
 		virtual Node::Type GetType() const
@@ -1368,7 +1368,7 @@ namespace lyrics
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit();
 		}
 
 		virtual Node::Type GetType() const
@@ -1386,7 +1386,7 @@ namespace lyrics
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit();
 		}
 
 		virtual Node::Type GetType() const
