@@ -99,19 +99,19 @@ namespace lyrics
 				return new IdentifierNode( mToken->location, mToken++->value.identifier );
 
 			case Token::Type::INTEGER_LITERAL:
-				return new LiteralNode( mToken->location, mToken++->value.integer );
+				return new IntegerLiteralNode( mToken->location, mToken++->value.integer );
 
 			case Token::Type::STRING_LITERAL:
-				return new LiteralNode( mToken->location, mToken++->value.string );
+				return new StringLiteralNode( mToken->location, mToken++->value.string );
 
 			case Token::Type::BOOLEAN_LITERAL:
-				return new LiteralNode( mToken->location, mToken++->value.boolean );
+				return new BooleanLiteralNode( mToken->location, mToken++->value.boolean );
 
 			case Token::Type::NIL_LITERAL:
-				return new LiteralNode( mToken++->location );
+				return new NilLiteralNode( mToken++->location );
 
 			case Token::Type::REAL_LITERAL:
-				return new LiteralNode( mToken->location, mToken++->value.real );
+				return new RealLiteralNode( mToken->location, mToken++->value.real );
 
 			case Token::Type::DEF:
 				return FunctionLiteral( mToken++ );

@@ -22,7 +22,7 @@ namespace lyrics
 		enum struct Type
 		{
 			BLOCK,
-						IDENTIFIER, SELF, LITERAL, ARRAY_LITERAL, HASH_LITERAL, FUNCTION_LITERAL, PARENTHESIZED_EXPRESSION,
+						IDENTIFIER, SELF, NIL_LITERAL, BOOLEAN_LITERAL, INTEGER_LITERAL, REAL_LITERAL, STRING_LITERAL, ARRAY_LITERAL, HASH_LITERAL, FUNCTION_LITERAL, PARENTHESIZED_EXPRESSION,
 							HASH, VALUE_PARAMETER, OUTPUT_PARAMETER,
 						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
@@ -215,39 +215,12 @@ namespace lyrics
 		}
 	};
 
-	class LiteralNode: public PrimaryExpressionNode
+	class NilLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit LiteralNode( const Location &location ) : PrimaryExpressionNode( location )
+		explicit NilLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
 		{
-			literal.type = Literal::Type::NIL;
 		}
-
-		LiteralNode( const Location &location, const bool boolean ) : PrimaryExpressionNode( location )
-		{
-			literal.type = Literal::Type::BOOLEAN;
-			literal.value.integer = boolean;
-		}
-
-		LiteralNode( const Location &location, const long long integer ) : PrimaryExpressionNode( location )
-		{
-			literal.type = Literal::Type::INTEGER;
-			literal.value.integer = integer;
-		}
-
-		LiteralNode( const Location &location, const double real ) : PrimaryExpressionNode( location )
-		{
-			literal.type = Literal::Type::REAL;
-			literal.value.integer = real;
-		}
-
-		LiteralNode( const Location &location, u16string * const string ) : PrimaryExpressionNode( location )
-		{
-			literal.type = Literal::Type::STRING;
-			literal.value.string = string;
-		}
-
-		Literal literal;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
@@ -256,7 +229,87 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::LITERAL;
+			return Node::Type::NIL_LITERAL;
+		}
+	};
+
+	class BooleanLiteralNode: public PrimaryExpressionNode
+	{
+	public:
+		BooleanLiteralNode( const Location &location, const bool boolean ) : PrimaryExpressionNode( location ), boolean( boolean )
+		{
+		}
+
+		const bool boolean;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit();
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::BOOLEAN_LITERAL;
+		}
+	};
+
+	class IntegerLiteralNode: public PrimaryExpressionNode
+	{
+	public:
+		IntegerLiteralNode( const Location &location, const long long integer ) : PrimaryExpressionNode( location ), integer( integer )
+		{
+		}
+
+		const int integer;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit();
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::INTEGER_LITERAL;
+		}
+	};
+
+	class RealLiteralNode: public PrimaryExpressionNode
+	{
+	public:
+		RealLiteralNode( const Location &location, const double real ) : PrimaryExpressionNode( location ), real( real )
+		{
+		}
+
+		const double real;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit();
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::REAL_LITERAL;
+		}
+	};
+
+	class StringLiteralNode: public PrimaryExpressionNode
+	{
+	public:
+		StringLiteralNode( const Location &location, u16string * const string ) : PrimaryExpressionNode( location ), string( string )
+		{
+		}
+
+		u16string * const string;
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit();
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::STRING_LITERAL;
 		}
 	};
 
