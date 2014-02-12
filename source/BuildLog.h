@@ -18,9 +18,7 @@ namespace lyrics
 	class BuildLog
 	{
 	private:
-		BuildLog()
-		{
-		}
+		BuildLog() = delete;
 
 		static constexpr char WARNING[] = "warning";
 		static constexpr char ERROR[] = "error";
