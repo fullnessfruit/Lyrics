@@ -10,7 +10,7 @@ namespace lyrics
 	struct Location
 	{
 	public:
-		Location( const char * const fileName ) : mFileName( fileName ), mLine( 1 ), mColumn( 1 )
+		explicit Location( const char * const fileName ) : mFileName( fileName ), mLine( 1 ), mColumn( 1 )
 		{
 		}
 
