@@ -9,6 +9,7 @@ namespace lyrics
 	{
 	private:
 		Loader() = delete;
+		Loader( Loader & ) = delete;
 
 	public:
 		static bool LoadData( const char * const fileName, char *&data, unsigned int &size )
