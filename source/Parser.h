@@ -209,47 +209,11 @@ namespace lyrics
 
 				for (;;)
 				{
-					if ( mToken->type != static_cast<Token::Type>( u'[' ) )
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
-						delete node;
-
-						return nullptr;
-					}
-
 					auto tToken = mToken;
-
-					mToken++;
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
-						delete node;
-
-						return nullptr;
-					}
 
 					expression = Expression();
 
-					if ( mToken->type != static_cast<Token::Type>( u']' ) )
-					{
-						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
-						delete expression;
-						delete node;
-
-						return nullptr;
-					}
-
-					mToken++;
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
-						delete expression;
-						delete node;
-
-						return nullptr;
-					}
-
-					if ( mToken->type != static_cast<Token::Type>( u'=' ) )
+					if ( mToken->type != static_cast<Token::Type>( u':' ) )
 					{
 						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
 						delete expression;
