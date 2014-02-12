@@ -14,7 +14,7 @@ namespace lyrics
 	class Scope
 	{
 	public:
-		Scope( Scope * const parent ) : mParent( parent ), mLastChild( mChildren.cbefore_begin() )
+		explicit Scope( Scope * const parent ) : mParent( parent ), mLastChild( mChildren.cbefore_begin() )
 		{
 			if ( parent )
 			{
