@@ -1,8 +1,12 @@
+#include <cstddef>
+
 #ifndef VISITOR
 #define VISITOR
 
 namespace lyrics
 {
+	using std::size_t;
+
 	class BlockNode;
 				class ArrayLiteralNode;
 				class HashLiteralNode;
@@ -44,9 +48,8 @@ namespace lyrics
 	class Visitor
 	{
 	public:
-		virtual ~Visitor()
-		{
-		}
+		static void *operator new( size_t ) = delete;
+		static void *operator new []( size_t ) = delete;
 
 		virtual bool Visit( const BlockNode * const node ) = 0;
 		virtual bool Visit( const ArrayLiteralNode * const node ) = 0;
@@ -86,7 +89,7 @@ namespace lyrics
 		virtual bool Visit( const ForEachNode * const node ) = 0;
 		virtual bool Visit( const ReturnNode * const node ) = 0;
 
-		bool Visit()
+		constexpr bool Visit() const
 		{
 			return true;
 		}
