@@ -19,7 +19,6 @@ namespace lyrics
 	{
 	private:
 		BuildLog() = delete;
-		BuildLog( BuildLog & ) = delete;
 
 		static constexpr char WARNING[] = "warning";
 		static constexpr char ERROR[] = "error";

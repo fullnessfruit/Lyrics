@@ -11,7 +11,6 @@ namespace lyrics
 	{
 	private:
 		TextLoader() = delete;
-		TextLoader( TextLoader & ) = delete;
 
 	public:
 		static bool LoadText( const char * const fileName, char16_t *&text, unsigned int &length )
