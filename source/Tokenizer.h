@@ -678,6 +678,7 @@ namespace lyrics
 						else
 						{
 							BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+							delete tStr;
 
 							return false;
 						}
@@ -752,6 +753,7 @@ namespace lyrics
 							else
 							{
 								BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+								delete tStr;
 
 								return false;
 							}
@@ -777,6 +779,7 @@ namespace lyrics
 					else if ( tChar == '\r' || tChar == '\n' )
 					{
 						BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						delete tStr;
 
 						return true;
 					}
@@ -793,6 +796,7 @@ namespace lyrics
 					else
 					{
 						BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						delete tStr;
 
 						return false;
 					}
