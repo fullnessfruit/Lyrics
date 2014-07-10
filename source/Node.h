@@ -35,7 +35,7 @@ namespace lyrics
 					CASE,
 						WHEN,
 					WHILE, FOR, FOREACH,
-					REDO, BREAK, RETURN
+					BREAK, NEXT, RETURN
 		};
 
 		explicit Node( const Location &location ) : location( location )
@@ -98,8 +98,8 @@ namespace lyrics
 			class ForNode;
 			class ForEachNode;
 		class JumpNode;
-			class RedoNode;
 			class BreakNode;
+			class NextNode;
 			class ReturnNode;
 
 	class StatementNode: public Node
@@ -1412,24 +1412,6 @@ namespace lyrics
 		}
 	};
 
-	class RedoNode: public JumpNode
-	{
-	public:
-		explicit RedoNode( const Location &location ) : JumpNode( location )
-		{
-		}
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit();
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::REDO;
-		}
-	};
-
 	class BreakNode: public JumpNode
 	{
 	public:
@@ -1445,6 +1427,24 @@ namespace lyrics
 		virtual Node::Type GetType() const
 		{
 			return Node::Type::BREAK;
+		}
+	};
+
+	class NextNode: public JumpNode
+	{
+	public:
+		explicit NextNode( const Location &location ) : JumpNode( location )
+		{
+		}
+
+		virtual bool Accept( Visitor &visitor ) const
+		{
+			return visitor.Visit();
+		}
+
+		virtual Node::Type GetType() const
+		{
+			return Node::Type::NEXT;
 		}
 	};
 

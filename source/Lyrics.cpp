@@ -24,13 +24,13 @@ namespace lyrics
 	const u16string Tokenizer::IMPORT = u"import";
 	const u16string Tokenizer::IN = u"in";
 	const u16string Tokenizer::INCLUDE = u"include";
+	const u16string Tokenizer::NEXT = u"next";
 	const u16string Tokenizer::NIL = u"nil";
 	const u16string Tokenizer::OUT = u"out";
 	const u16string Tokenizer::PACKAGE = u"package";
 	const u16string Tokenizer::PRIVATE = u"private";
 	const u16string Tokenizer::PROTECTED = u"protected";
 	const u16string Tokenizer::PUBLIC = u"public";
-	const u16string Tokenizer::REDO = u"redo";
 	const u16string Tokenizer::RETURN = u"return";
 	const u16string Tokenizer::SELF = u"self";
 	const u16string Tokenizer::THEN = u"then";

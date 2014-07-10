@@ -83,8 +83,8 @@ namespace lyrics
 			case Token::Type::FOREACH:
 				return ForEach();
 
-			case Token::Type::REDO:
-				return Redo();
+			case Token::Type::NEXT:
+				return Next();
 			
 			default:
 				return Expression();
@@ -1603,14 +1603,14 @@ namespace lyrics
 			}
 		}
 
-		RedoNode *Redo()
-		{
-			return new RedoNode( mToken++->location );
-		}
-
 		BreakNode *Break()
 		{
 			return new BreakNode( mToken++->location );
+		}
+
+		NextNode *Next()
+		{
+			return new NextNode( mToken++->location );
 		}
 
 		ReturnNode *Return()

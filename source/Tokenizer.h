@@ -59,13 +59,13 @@ namespace lyrics
 		static const u16string IMPORT;
 		static const u16string IN;
 		static const u16string INCLUDE;
+		static const u16string NEXT;
 		static const u16string NIL;
 		static const u16string OUT;
 		static const u16string PACKAGE;
 		static const u16string PRIVATE;
 		static const u16string PROTECTED;
 		static const u16string PUBLIC;
-		static const u16string REDO;
 		static const u16string RETURN;
 		static const u16string SELF;
 		static const u16string THEN;
@@ -237,10 +237,10 @@ namespace lyrics
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::SELF, currentLocation );
 							}
-							else if ( *tStr == Tokenizer::REDO )
+							else if ( *tStr == Tokenizer::NEXT )
 							{
 								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::REDO, currentLocation );
+								mLastToken = token.emplace_after( mLastToken, Token::Type::NEXT, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::THEN )
 							{
