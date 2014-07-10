@@ -107,8 +107,8 @@ namespace lyrics
 			case Token::Type::BOOLEAN_LITERAL:
 				return new BooleanLiteralNode( mToken->location, mToken++->value.boolean );
 
-			case Token::Type::NIL_LITERAL:
-				return new NilLiteralNode( mToken++->location );
+			case Token::Type::NULL_LITERAL:
+				return new NullLiteralNode( mToken++->location );
 
 			case Token::Type::REAL_LITERAL:
 				return new RealLiteralNode( mToken->location, mToken++->value.real );

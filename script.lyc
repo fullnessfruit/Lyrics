@@ -137,4 +137,4 @@ else
 	i = i >> 9
 end
 
-video = nil
+video = null
