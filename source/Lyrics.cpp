@@ -32,8 +32,8 @@ namespace lyrics
 	const u16string Tokenizer::PROTECTED = u"protected";
 	const u16string Tokenizer::PUBLIC = u"public";
 	const u16string Tokenizer::RETURN = u"return";
-	const u16string Tokenizer::SELF = u"self";
 	const u16string Tokenizer::THEN = u"then";
+	const u16string Tokenizer::THIS = u"this";
 	const u16string Tokenizer::TRUE = u"true";
 	const u16string Tokenizer::WHEN = u"when";
 	const u16string Tokenizer::WHILE = u"while";

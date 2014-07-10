@@ -67,8 +67,8 @@ namespace lyrics
 		static const u16string PROTECTED;
 		static const u16string PUBLIC;
 		static const u16string RETURN;
-		static const u16string SELF;
 		static const u16string THEN;
+		static const u16string THIS;
 		static const u16string TRUE;
 		static const u16string WHEN;
 		static const u16string WHILE;
@@ -232,10 +232,10 @@ namespace lyrics
 								delete tStr;
 								mLastToken = token.emplace_after( mLastToken, Token::Type::WHEN, currentLocation );
 							}
-							else if ( *tStr == Tokenizer::SELF )
+							else if ( *tStr == Tokenizer::THIS )
 							{
 								delete tStr;
-								mLastToken = token.emplace_after( mLastToken, Token::Type::SELF, currentLocation );
+								mLastToken = token.emplace_after( mLastToken, Token::Type::THIS, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::NEXT )
 							{

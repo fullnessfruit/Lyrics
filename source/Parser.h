@@ -125,8 +125,8 @@ namespace lyrics
 			case static_cast<Token::Type>( u'{' ):
 				return HashLiteral();
 			
-			case Token::Type::SELF:
-				return new SelfNode( mToken->location );
+			case Token::Type::THIS:
+				return new ThisNode( mToken->location );
 
 			default:
 				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
@@ -464,7 +464,7 @@ namespace lyrics
 			auto tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
-			if ( expression == nullptr || ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::SELF ) )
+			if ( expression == nullptr || ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::THIS ) )
 			{
 				return expression;
 			}
@@ -807,9 +807,9 @@ namespace lyrics
 						return new AssignmentExpressionNode( tToken->location, identifier, FunctionLiteral( tToken ) );
 					}
 				}
-				else if ( mToken->type == Token::Type::SELF )
+				else if ( mToken->type == Token::Type::THIS )
 				{
-					SelfNode *self = new SelfNode( mToken->location );
+					ThisNode *thisNode = new ThisNode( mToken->location );
 
 					mToken++;
 					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
@@ -822,12 +822,12 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 							{
-								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( self->location, self, identifier ), FunctionLiteral( tToken ) );
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), FunctionLiteral( tToken ) );
 							}
 							else
 							{
 								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
-								delete self;
+								delete thisNode;
 								delete identifier;
 
 								return nullptr;
@@ -836,7 +836,7 @@ namespace lyrics
 						else
 						{
 							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
-							delete self;
+							delete thisNode;
 
 							return nullptr;
 						}
@@ -844,7 +844,7 @@ namespace lyrics
 					else
 					{
 						BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
-						delete self;
+						delete thisNode;
 
 						return nullptr;
 					}
