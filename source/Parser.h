@@ -21,14 +21,14 @@ namespace lyrics
 	public:
 		bool Parse( const string fileName, BlockNode *&root )
 		{
-			forward_list<Token> token;
+			forward_list<Token> tokenList;
 
-			if ( !Tokenizer().Tokenize( fileName, token ) )
+			if ( !Tokenizer().Tokenize( fileName, tokenList ) )
 			{
 				return false;
 			}
 
-			mToken = token.cbegin();
+			mToken = tokenList.cbegin();
 
 			root = Block();
 
