@@ -8,11 +8,11 @@ namespace lyrics
 	class Compiler
 	{
 	public:
-		bool Compile( const char * const fileName )
+		bool Compile( const char * const sourceFileName )
 		{
 			BlockNode *root = nullptr;
 
-			if ( !SemanticAnalyzer().SemanticAnalysis( fileName, root ) )
+			if ( !SemanticAnalyzer().SemanticAnalysis( sourceFileName, root ) )
 			{
 				delete root;
 
