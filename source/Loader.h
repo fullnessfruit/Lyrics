@@ -1,3 +1,5 @@
+#include <string>
+
 #include <fstream>
 
 #ifndef LOADER
@@ -5,13 +7,15 @@
 
 namespace lyrics
 {
+	using std::string;
+
 	class Loader
 	{
 	private:
 		Loader() = delete;
 
 	public:
-		static bool LoadData( const char * const fileName, char *&data, unsigned int &size )
+		static bool LoadData( const string fileName, char *&data, unsigned int &size )
 		{
 			using std::ifstream;
 			using std::ios;

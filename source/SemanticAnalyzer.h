@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Parser.h"
 
 #include "LocalResolver.h"
@@ -12,10 +14,12 @@
 
 namespace lyrics
 {
+	using std::string;
+
 	class SemanticAnalyzer
 	{
 	public:
-		bool SemanticAnalysis( const char * const fileName, BlockNode *&root )
+		bool SemanticAnalysis( const string fileName, BlockNode *&root )
 		{
 			Scope *top;
 

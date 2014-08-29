@@ -1,3 +1,4 @@
+#include <string>
 #include <forward_list>
 
 #include "Tokenizer.h"
@@ -12,12 +13,13 @@
 
 namespace lyrics
 {
+	using std::string;
 	using std::forward_list;
 
 	class Parser
 	{
 	public:
-		bool Parse( const char * const fileName, BlockNode *&root )
+		bool Parse( const string fileName, BlockNode *&root )
 		{
 			forward_list<Token> token;
 

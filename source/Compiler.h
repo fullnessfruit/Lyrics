@@ -1,3 +1,5 @@
+#include <string>
+
 #include "SemanticAnalyzer.h"
 
 #ifndef COMPILER
@@ -5,10 +7,12 @@
 
 namespace lyrics
 {
+	using std::string;
+
 	class Compiler
 	{
 	public:
-		bool Compile( const char * const sourceFileName )
+		bool Compile( const string sourceFileName )
 		{
 			BlockNode *root = nullptr;
 

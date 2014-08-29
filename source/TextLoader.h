@@ -1,4 +1,5 @@
 #include <cstring>
+#include <string>
 
 #include "Loader.h"
 
@@ -7,13 +8,15 @@
 
 namespace lyrics
 {
+	using std::string;
+
 	class TextLoader
 	{
 	private:
 		TextLoader() = delete;
 
 	public:
-		static bool LoadText( const char * const fileName, char16_t *&text, unsigned int &length )
+		static bool LoadText( const string fileName, char16_t *&text, unsigned int &length )
 		{
 			char *data = nullptr;
 			unsigned int size = 0;

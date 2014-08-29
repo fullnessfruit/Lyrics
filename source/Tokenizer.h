@@ -15,13 +15,14 @@
 
 namespace lyrics
 {
+	using std::string;
 	using std::u16string;
 	using std::forward_list;
 
 	class Tokenizer
 	{
 	public:
-		bool Tokenize( const char * const fileName, forward_list<Token> &token )
+		bool Tokenize( const string fileName, forward_list<Token> &token )
 		{
 			if ( !TextLoader::LoadText( fileName, mText, mTextLength ) )
 			{
