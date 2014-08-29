@@ -2,6 +2,7 @@
 
 #include "Option.h"
 
+#include "Interpreter.h"
 #include "Compiler.h"
 
 #include "FatalErrorCode.h"
@@ -55,15 +56,28 @@ int main( int argc, char *argv[] )
 		return 0;
 	}
 
-	lyrics::Compiler compiler;
-
-	if ( !compiler.Compile( option.GetSourceFileName() ) )
+	if ( option.GetFlagInterprete() )
 	{
-		// TODO:
-		return 0;
-	}
+		lyrics::Interpreter interpreter;
 
-	lyrics::BuildLog::BuildTerminated();
+		if ( !interpreter.Interpret( option.GetSourceFileName() ) )
+		{
+			// TODO:
+			return 0;
+		}
+	}
+	else
+	{
+		lyrics::Compiler compiler;
+
+		if ( !compiler.Compile( option.GetSourceFileName() ) )
+		{
+			// TODO:
+			return 0;
+		}
+
+		lyrics::BuildLog::BuildTerminated();
+	}
 
 	return 0;
 }
