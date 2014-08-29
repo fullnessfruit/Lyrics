@@ -1,6 +1,5 @@
 #include <string>
 
-#include "Option.h"
 #include "Compiler.h"
 
 #include "FatalErrorCode.h"
@@ -46,9 +45,7 @@ namespace lyrics
 
 int main( int argc, char *argv[] )
 {
-	const lyrics::Option option = lyrics::Option( argc, argv );
-
-	if ( option.GetSourceFileName().empty() )
+	if ( argc < 2 )
 	{
 		lyrics::BuildLog::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
 		return 0;
