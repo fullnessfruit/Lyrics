@@ -10,17 +10,13 @@ namespace lyrics
 	class Option
 	{
 	public:
-		Option( const int argc, const char * const argv[] ) : mFlagInterprete( false )
+		Option( const int argc, const char * const argv[] )
 		{
 			for ( int i = 1; i < argc; i++ )
 			{
 				if ( argv[i][0] == '-' )
 				{
-					if ( argv[i][1] == 'i' && argv[i][2] == '\0' )
-					{
-						mFlagInterprete = true;
-					}
-					else if ( argv[i][1] == 's' && argv[i][2] == '\0' )
+					if ( argv[i][1] == 's' && argv[i][2] == '\0' )
 					{
 						mSourceFileName = argv[++i];
 					}
@@ -37,14 +33,8 @@ namespace lyrics
 			return mSourceFileName;
 		}
 
-		bool GetFlagInterprete() const
-		{
-			return mFlagInterprete;
-		}
-
 	private:
 		string mSourceFileName;
-		bool mFlagInterprete;
 	};
 }
 
