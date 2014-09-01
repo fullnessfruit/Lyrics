@@ -38,7 +38,7 @@ namespace lyrics
 
 	private:
 		forward_list<Token>::const_iterator mToken;
-		unordered_map<u16string, Literal> *mSymbolTable;
+		unordered_map<u16string, Literal> mSymbolTable;
 
 		Literal Block()
 		{
