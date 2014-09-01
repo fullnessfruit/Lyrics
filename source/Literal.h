@@ -43,11 +43,6 @@ namespace lyrics
 			value.real = real;
 		}
 
-		Literal( u16string * const string ) : type( Type::STRING )
-		{
-			value.string = string;
-		}
-
 		Literal( vector<Literal> * const array ) : type( Type::ARRAY )
 		{
 			value.array = array;
@@ -58,19 +53,14 @@ namespace lyrics
 			value.hash = hash;
 		}
 
-		Literal( char * const function ) : type( Type::DEF )
+		Literal( const Type type, u16string * const literal ) : type( type )
 		{
-			value.function = function;
+			value.string = literal;
 		}
 
-		Literal( char * const object ) : type( Type::OBJECT )
+		Literal( const Type type, char * const literal ) : type( type )
 		{
-			value.object = object;
-		}
-
-		Literal( char * const reference ) : type( Type::REFERENCE )
-		{
-			value.reference = reference;
+			value.function = literal;
 		}
 
 		const Type type;
