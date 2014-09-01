@@ -196,11 +196,6 @@ namespace lyrics
 								delete tStr;
 								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::DEF, currentLocation );
 							}
-							else if ( *tStr == Tokenizer::NULL_TOKEN )
-							{
-								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::NULL_LITERAL, currentLocation );
-							}
 							else if ( *tStr == Tokenizer::OUT )
 							{
 								delete tStr;
@@ -217,6 +212,11 @@ namespace lyrics
 							{
 								delete tStr;
 								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::ELSE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::NULL_TOKEN )
+							{
+								delete tStr;
+								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::NULL_LITERAL, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::TRUE )
 							{
