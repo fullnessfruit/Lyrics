@@ -25,6 +25,7 @@ namespace lyrics
 			vector<Literal> *array;
 			unordered_map<u16string, Literal> *hash;
 			char *object;
+			u16string *reference;
 		} value;
 	};
 }
