@@ -8,7 +8,7 @@
 #include "WarningCode.h"
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
-#include "BuildLog.h"
+#include "Logger.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER
@@ -26,7 +26,7 @@ namespace lyrics
 		{
 			if ( !TextLoader::LoadText( fileName, mText, mTextLength ) )
 			{
-				BuildLog::FatalError( FatalErrorCode::NO_SUCH_FILE );
+				Logger::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;
 			}
 
@@ -660,7 +660,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+					Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 
 					return false;
 				}
@@ -678,7 +678,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+							Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 							delete tStr;
 
 							return false;
@@ -753,7 +753,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+								Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 								delete tStr;
 
 								return false;
@@ -766,20 +766,20 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
+								Logger::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
 								tStr->push_back( tChar );
 								length += 3;
 							}
 							break;
 						
 						default:
-							BuildLog::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
+							Logger::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
 							break;
 						}
 					}
 					else if ( tChar == '\r' || tChar == '\n' )
 					{
-						BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 						delete tStr;
 
 						return true;
@@ -796,7 +796,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
 						delete tStr;
 
 						return false;
@@ -853,7 +853,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::WRONG_CHARACTER, currentLocation );
+				Logger::Error( ErrorCode::WRONG_CHARACTER, currentLocation );
 
 				mOffset++;
 				currentLocation.IncreaseColumn();

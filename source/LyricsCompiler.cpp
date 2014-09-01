@@ -5,7 +5,7 @@
 #include "Compiler.h"
 
 #include "FatalErrorCode.h"
-#include "BuildLog.h"
+#include "Logger.h"
 
 namespace lyrics
 {
@@ -40,9 +40,9 @@ namespace lyrics
 	const u16string Tokenizer::WHEN = u"when";
 	const u16string Tokenizer::WHILE = u"while";
 
-	constexpr char BuildLog::WARNING[];
-	constexpr char BuildLog::ERROR[];
-	constexpr char BuildLog::FATAL_ERROR[];
+	constexpr char Logger::WARNING[];
+	constexpr char Logger::ERROR[];
+	constexpr char Logger::FATAL_ERROR[];
 }
 
 int main( int argc, char *argv[] )
@@ -51,7 +51,7 @@ int main( int argc, char *argv[] )
 
 	if ( option.GetSourceFileName().empty() )
 	{
-		lyrics::BuildLog::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
+		lyrics::Logger::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
 		return 0;
 	}
 
@@ -63,7 +63,7 @@ int main( int argc, char *argv[] )
 		return 0;
 	}
 
-	lyrics::BuildLog::BuildTerminated();
+	lyrics::Logger::BuildTerminated();
 
 	return 0;
 }

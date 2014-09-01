@@ -6,7 +6,7 @@
 #include "Node.h"
 
 #include "ErrorCode.h"
-#include "BuildLog.h"
+#include "Logger.h"
 
 #ifndef PARSER
 #define PARSER
@@ -131,7 +131,7 @@ namespace lyrics
 				return new ThisNode( mToken->location );
 
 			default:
-				BuildLog::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
 
 				mToken++;
 
@@ -146,7 +146,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -163,7 +163,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
 							delete node;
 
 							return nullptr;
@@ -179,7 +179,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -199,7 +199,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -217,7 +217,7 @@ namespace lyrics
 
 					if ( mToken->type != static_cast<Token::Type>( u':' ) )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_HASH, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_HASH, mToken->location );
 						delete expression;
 						delete node;
 
@@ -227,7 +227,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
 						delete expression;
 						delete node;
 
@@ -241,7 +241,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
 							delete node;
 
 							return nullptr;
@@ -257,7 +257,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -277,7 +277,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 
 					return nullptr;
 				}
@@ -303,7 +303,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 								delete node;
 
 								return nullptr;
@@ -319,7 +319,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 								delete name;
 								delete node;
 
@@ -328,7 +328,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mToken->location );
+							Logger::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mToken->location );
 							delete node;
 
 							return nullptr;
@@ -350,7 +350,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 								delete name;
 								delete node;
 
@@ -363,7 +363,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mToken->location );
+								Logger::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mToken->location );
 								delete name;
 								delete node;
 
@@ -378,7 +378,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 								delete node;
 
 								return nullptr;
@@ -390,7 +390,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 							delete node;
 
 							return nullptr;
@@ -401,7 +401,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -417,7 +417,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+					Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -425,7 +425,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PARAMETER, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_PARAMETER, mToken->location );
 
 				return nullptr;
 			}
@@ -438,7 +438,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -454,7 +454,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -478,7 +478,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -491,7 +491,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
+							Logger::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
 							delete expression;
 
 							return nullptr;
@@ -499,7 +499,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -510,7 +510,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -529,7 +529,7 @@ namespace lyrics
 								mToken++;
 								if ( mToken->type == Token::Type::END_OF_FILE )
 								{
-									BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
+									Logger::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
 									delete node;
 
 									return nullptr;
@@ -541,7 +541,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
+								Logger::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
 								delete node;
 
 								return nullptr;
@@ -558,7 +558,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -571,7 +571,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
+							Logger::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
 							delete expression;
 
 							return nullptr;
@@ -579,7 +579,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -596,7 +596,7 @@ namespace lyrics
 		{
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 
 				return nullptr;
 			}
@@ -660,7 +660,7 @@ namespace lyrics
 
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 					delete expression;
 
 					return nullptr;
@@ -721,7 +721,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 					delete expression;
 
 					return nullptr;
@@ -743,7 +743,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 					delete expression;
 
 					return nullptr;
@@ -782,7 +782,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 								delete identifier;
 								delete member;
 
@@ -791,7 +791,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 							delete identifier;
 
 							return nullptr;
@@ -799,7 +799,7 @@ namespace lyrics
 					}
 					else if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 						delete identifier;
 
 						return nullptr;
@@ -828,7 +828,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 								delete thisNode;
 								delete identifier;
 
@@ -837,7 +837,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 							delete thisNode;
 
 							return nullptr;
@@ -845,7 +845,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 						delete thisNode;
 
 						return nullptr;
@@ -853,7 +853,7 @@ namespace lyrics
 				}
 				else if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
 
 					return nullptr;
 				}
@@ -871,7 +871,7 @@ namespace lyrics
 				return Package();
 
 			case Token::Type::END_OF_FILE:
-				BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 
 				return nullptr;
 
@@ -890,7 +890,7 @@ namespace lyrics
 
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
 							delete expression;
 
 							return nullptr;
@@ -900,7 +900,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_LHS, mToken->location );
 						delete expression;
 
 						return nullptr;
@@ -925,7 +925,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 						delete node;
 						delete name;
 
@@ -943,7 +943,7 @@ namespace lyrics
 								mToken++;
 								if ( mToken->type == Token::Type::END_OF_FILE )
 								{
-									BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+									Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 									delete node;
 									delete name;
 
@@ -956,7 +956,7 @@ namespace lyrics
 							}
 							else
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 								delete node;
 								delete name;
 
@@ -967,7 +967,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 					delete node;
 					delete name;
 
@@ -990,7 +990,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+								Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 								delete node;
 								delete name;
 
@@ -1008,7 +1008,7 @@ namespace lyrics
 										mToken++;
 										if ( mToken->type == Token::Type::END_OF_FILE )
 										{
-											BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+											Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 											delete node;
 											delete name;
 
@@ -1021,7 +1021,7 @@ namespace lyrics
 									}
 									else
 									{
-										BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+										Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 										delete node;
 										delete name;
 
@@ -1032,7 +1032,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 							delete node;
 							delete name;
 
@@ -1041,7 +1041,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
 						delete node;
 						delete name;
 
@@ -1078,7 +1078,7 @@ namespace lyrics
 				{
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
 						delete node;
 						delete name;
 
@@ -1102,7 +1102,7 @@ namespace lyrics
 						return new AssignmentExpressionNode( tToken->location, name, node );
 
 					default:
-						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 						delete node;
 						delete name;
 
@@ -1112,7 +1112,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
 
 				return nullptr;
 			}
@@ -1131,7 +1131,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
+					Logger::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1161,7 +1161,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+					Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 					delete node;
 					delete name;
 
@@ -1170,7 +1170,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
 
 				return nullptr;
 			}
@@ -1194,7 +1194,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_IDENTIFIER, mToken->location );
+					Logger::Error( ErrorCode::EXPECTED_IDENTIFIER, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1217,7 +1217,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
 					delete elseIfNode;
 					delete node;
 
@@ -1233,7 +1233,7 @@ namespace lyrics
 
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
 					delete elseIfNode;
 					delete node;
 
@@ -1254,7 +1254,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1270,7 +1270,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1278,7 +1278,7 @@ namespace lyrics
 				}
 				else if ( mToken->type != Token::Type::ELSEIF )
 				{
-					BuildLog::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
+					Logger::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1293,7 +1293,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1312,7 +1312,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
 						delete whenNode;
 						delete node;
 
@@ -1328,7 +1328,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
 						delete whenNode;
 						delete node;
 
@@ -1343,7 +1343,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							BuildLog::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+							Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
 							delete node;
 
 							return nullptr;
@@ -1359,7 +1359,7 @@ namespace lyrics
 						}
 						else
 						{
-							BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+							Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 							delete node;
 
 							return nullptr;
@@ -1373,7 +1373,7 @@ namespace lyrics
 					}
 					else if ( mToken->type != Token::Type::WHEN )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1382,7 +1382,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_WHEN, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_WHEN, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1396,7 +1396,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_WHILE_STATEMENT, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_WHILE_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1411,7 +1411,7 @@ namespace lyrics
 
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_WHILE_STATEMENT, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_WHILE_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1427,7 +1427,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1441,7 +1441,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1454,7 +1454,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1467,7 +1467,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1482,7 +1482,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1498,7 +1498,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1506,7 +1506,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1514,7 +1514,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1528,7 +1528,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+				Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
 				delete node;
 
 				return nullptr;
@@ -1543,7 +1543,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1553,7 +1553,7 @@ namespace lyrics
 
 					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_LHS, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1566,7 +1566,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+						Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1582,7 +1582,7 @@ namespace lyrics
 					}
 					else
 					{
-						BuildLog::Error( ErrorCode::EXPECTED_END, mToken->location );
+						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
 						delete node;
 
 						return nullptr;
@@ -1590,7 +1590,7 @@ namespace lyrics
 				}
 				else
 				{
-					BuildLog::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+					Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
 					delete node;
 
 					return nullptr;
@@ -1598,7 +1598,7 @@ namespace lyrics
 			}
 			else
 			{
-				BuildLog::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+				Logger::Error( ErrorCode::EXPECTED_LHS, mToken->location );
 				delete node;
 
 				return nullptr;

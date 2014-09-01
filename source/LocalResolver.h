@@ -6,7 +6,7 @@
 #include "Scope.h"
 
 #include "ErrorCode.h"
-#include "BuildLog.h"
+#include "Logger.h"
 
 #ifndef LOCAL_RESOLVER
 #define LOCAL_RESOLVER
