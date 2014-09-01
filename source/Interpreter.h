@@ -1,5 +1,6 @@
 #include <string>
 #include <forward_list>
+#include <unordered_map>
 
 #include "Tokenizer.h"
 #include "Token.h"
@@ -37,6 +38,7 @@ namespace lyrics
 
 	private:
 		forward_list<Token>::const_iterator mToken;
+		unordered_map<u16string, Literal> *mSymbolTable;
 
 		Literal Block()
 		{
