@@ -57,14 +57,14 @@ namespace lyrics
 			value.hash = hash;
 		}
 
-		Literal( const Type type, u16string * const literal ) : type( type )
+		Literal( const Type type, u16string * const value ) : type( type )
 		{
-			value.string = literal;
+			value.string = value;
 		}
 
-		Literal( const Type type, char * const literal ) : type( type )
+		Literal( const Type type, char * const value ) : type( type )
 		{
-			value.function = literal;
+			value.function = value;
 		}
 
 		const Type type;
