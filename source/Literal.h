@@ -28,6 +28,10 @@ namespace lyrics
 			u16string *reference;
 		};
 
+		Literal() : type( Type::NULL_LITERAL )
+		{
+		}
+
 		Literal( const bool boolean ) : type( Type::BOOLEAN )
 		{
 			value.boolean = boolean;
