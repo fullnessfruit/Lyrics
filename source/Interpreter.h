@@ -16,6 +16,7 @@ namespace lyrics
 {
 	using std::string;
 	using std::forward_list;
+	using std::unordered_map;
 
 	class Interpreter
 	{
