@@ -1,7 +1,9 @@
 #include <string>
+#include <forward_list>
 
 #include "Option.h"
 
+#include "Token.h"
 #include "Compiler.h"
 
 #include "FatalErrorCode.h"
@@ -10,6 +12,7 @@
 namespace lyrics
 {
 	using std::u16string;
+	using std::forward_list;
 
 	const u16string Tokenizer::BREAK = u"break";
 	const u16string Tokenizer::CASE = u"case";

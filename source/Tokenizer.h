@@ -1,9 +1,9 @@
 #include <string>
 #include <forward_list>
 
-#include "TextLoader.h"
 #include "Token.h"
 #include "Location.h"
+#include "TextLoader.h"
 
 #include "WarningCode.h"
 #include "ErrorCode.h"

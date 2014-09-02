@@ -1,9 +1,9 @@
 #include <string>
 #include <forward_list>
 
-#include "Tokenizer.h"
 #include "Token.h"
 #include "Node.h"
+#include "Tokenizer.h"
 
 #include "ErrorCode.h"
 #include "ErrorHandler.h"

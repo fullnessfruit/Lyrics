@@ -1,13 +1,11 @@
 #include <string>
 
+#include "Node.h"
+#include "Scope.h"
 #include "Parser.h"
-
 #include "LocalResolver.h"
 #include "DereferenceChecker.h"
 #include "StaticTypeChecker.h"
-
-#include "Node.h"
-#include "Scope.h"
 
 #ifndef SEMANTIC_ANALYZER
 #define SEMANTIC_ANALYZER

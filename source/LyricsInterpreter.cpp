@@ -1,7 +1,11 @@
 #include <string>
+#include <forward_list>
+#include <unordered_map>
 
 #include "Option.h"
 
+#include "Token.h"
+#include "Literal.h"
 #include "Interpreter.h"
 
 #include "FatalErrorCode.h"
@@ -10,6 +14,8 @@
 namespace lyrics
 {
 	using std::u16string;
+	using std::forward_list;
+	using std::unordered_map;
 
 	const u16string Tokenizer::BREAK = u"break";
 	const u16string Tokenizer::CASE = u"case";
