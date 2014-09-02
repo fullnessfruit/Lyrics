@@ -40,6 +40,9 @@ namespace lyrics
 	const u16string Tokenizer::WHEN = u"when";
 	const u16string Tokenizer::WHILE = u"while";
 
+	forward_list<Token>::const_iterator Interpreter::mToken;
+	unordered_map<u16string, Literal> Interpreter::mSymbolTable;
+
 	constexpr char Logger::WARNING[];
 	constexpr char Logger::ERROR[];
 	constexpr char Logger::FATAL_ERROR[];
@@ -55,9 +58,7 @@ int main( int argc, char *argv[] )
 		return 0;
 	}
 
-	lyrics::Interpreter interpreter;
-
-	if ( !interpreter.Interpret( option.GetSourceFileName() ) )
+	if ( !lyrics::Interpreter::Interpret( option.GetSourceFileName() ) )
 	{
 		// TODO:
 		return 0;

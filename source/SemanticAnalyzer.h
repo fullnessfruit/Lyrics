@@ -18,12 +18,15 @@ namespace lyrics
 
 	class SemanticAnalyzer
 	{
+	private:
+		SemanticAnalyzer() = delete;
+
 	public:
-		bool SemanticAnalysis( const string fileName, BlockNode *&root )
+		static bool SemanticAnalysis( const string fileName, BlockNode *&root )
 		{
 			Scope *top;
 
-			if ( !Parser().Parse( fileName, root ) )
+			if ( !Parser::Parse( fileName, root ) )
 			{
 				return false;
 			}

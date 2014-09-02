@@ -21,10 +21,13 @@ namespace lyrics
 
 	class Tokenizer
 	{
+	private:
+		Tokenizer() = delete;
+
 	public:
-		bool Tokenize( const string fileName, forward_list<Token> &tokenList )
+		static bool Tokenize( const string fileName, forward_list<Token> &tokenList )
 		{
-			if ( !TextLoader::LoadText( fileName, mText, mTextLength ) )
+			if ( !TextLoader::LoadText( fileName, Tokenizer::mText, Tokenizer::mTextLength ) )
 			{
 				Logger::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;
@@ -32,14 +35,14 @@ namespace lyrics
 
 			Location currentLocation( fileName );
 
-			mOffset = 0;
+			Tokenizer::mOffset = 0;
 
-			mLastToken = tokenList.cbefore_begin();
+			Tokenizer::mLastToken = tokenList.cbefore_begin();
 
-			while ( Scan( tokenList, currentLocation ) );
-			mLastToken = tokenList.emplace_after( mLastToken, Token::Type::END_OF_FILE, currentLocation );
+			while ( Tokenizer::Scan( tokenList, currentLocation ) );
+			Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::END_OF_FILE, currentLocation );
 
-			delete [] mText;
+			delete [] Tokenizer::mText;
 
 			return true;
 		}
@@ -101,20 +104,20 @@ namespace lyrics
 		static constexpr char16_t LINE_SEPARATOR = 0x2028u;
 		static constexpr char16_t PARAGRAPH_SEPARATOR = 0x2029u;
 
-		char16_t *mText;
-		unsigned int mTextLength;
-		unsigned int mOffset;
+		static char16_t *mText;
+		static unsigned int mTextLength;
+		static unsigned int mOffset;
 
-		forward_list<Token>::const_iterator mLastToken;
+		static forward_list<Token>::const_iterator mLastToken;
 
-		// TODO: mTextLength is byte of mText, not number of characters.
-		bool Scan( forward_list<Token> &tokenList, Location &currentLocation )
+		// TODO: Tokenizer::mTextLength is byte of Tokenizer::mText, not number of characters.
+		static bool Scan( forward_list<Token> &tokenList, Location &currentLocation )
 		{
 			char16_t tChar;
 
-			if ( mOffset < mTextLength )
+			if ( Tokenizer::mOffset < Tokenizer::mTextLength )
 			{
-				tChar = mText[mOffset];
+				tChar = Tokenizer::mText[Tokenizer::mOffset];
 			}
 			else
 			{
@@ -131,9 +134,9 @@ namespace lyrics
 				{
 					tStr->push_back( tChar );
 					
-					if ( ++mOffset < mTextLength )
+					if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 					{
-						tChar = mText[mOffset];
+						tChar = Tokenizer::mText[Tokenizer::mOffset];
 					}
 					else
 					{
@@ -146,13 +149,13 @@ namespace lyrics
 
 				if ( isIdentifier )
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 				}
 				else
 				{
 					if ( ( 2u > length || 7u < length ) && length != 9u )	// If the token is shorter than 2 or longer than 7 and not equal to 9, then the token is identifier.
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 					}
 					else
 					{
@@ -162,21 +165,21 @@ namespace lyrics
 							if ( *tStr == Tokenizer::IF )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IF, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IF, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::DO )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::DO, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::DO, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::IN )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IN, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IN, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 
@@ -184,26 +187,26 @@ namespace lyrics
 							if ( *tStr == Tokenizer::END )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::END, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::END, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::FOR )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::FOR, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::FOR, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::DEF )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::DEF, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::DEF, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::OUT )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::OUT, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::OUT, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 
@@ -211,46 +214,46 @@ namespace lyrics
 							if ( *tStr == Tokenizer::ELSE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::ELSE, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::ELSE, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::NULL_TOKEN )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::NULL_LITERAL, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::NULL_LITERAL, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::TRUE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, true, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, true, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::CASE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::CASE, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::CASE, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::WHEN )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::WHEN, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::WHEN, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::THIS )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::THIS, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::THIS, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::NEXT )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::NEXT, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::NEXT, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::THEN )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::THEN, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::THEN, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 
@@ -258,26 +261,26 @@ namespace lyrics
 							if ( *tStr == Tokenizer::WHILE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::WHILE, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::WHILE, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::BREAK )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::BREAK, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::BREAK, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::FALSE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, false, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, false, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::CLASS )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::CLASS, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::CLASS, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 
@@ -285,26 +288,26 @@ namespace lyrics
 							if ( *tStr == Tokenizer::ELSEIF )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::ELSEIF, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::ELSEIF, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::IMPORT )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IMPORT, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IMPORT, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::RETURN )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::RETURN, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::RETURN, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::PUBLIC )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::PUBLIC, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::PUBLIC, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 
@@ -312,26 +315,26 @@ namespace lyrics
 							if ( *tStr == Tokenizer::PRIVATE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::PRIVATE, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::PRIVATE, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::PACKAGE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::PACKAGE, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::PACKAGE, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::FOREACH )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::FOREACH, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::FOREACH, currentLocation );
 							}
 							else if ( *tStr == Tokenizer::INCLUDE )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::INCLUDE, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::INCLUDE, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 
@@ -339,11 +342,11 @@ namespace lyrics
 							if ( *tStr == Tokenizer::PROTECTED )
 							{
 								delete tStr;
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::PROTECTED, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::PROTECTED, currentLocation );
 							}
 							else
 							{
-								mLastToken = tokenList.emplace_after( mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 							}
 							break;
 						}
@@ -355,26 +358,26 @@ namespace lyrics
 			else if ( tChar == u' ' || tChar == u'\t' || tChar == u'\r' || tChar == u'\v' || tChar == u'\f' )
 			{
 				currentLocation.IncreaseColumn();
-				mOffset++;
+				Tokenizer::mOffset++;
 
 				Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == u'\n' )
 			{
 				currentLocation.IncreaseLine();
-				mOffset++;
+				Tokenizer::mOffset++;
 
 				Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == u'.' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					tChar = mText[mOffset];
+					tChar = Tokenizer::mText[Tokenizer::mOffset];
 
 					if ( tChar < u'0' || tChar > u'9' )
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 					else	// real
@@ -392,9 +395,9 @@ namespace lyrics
 
 							length++;
 							
-							if ( ++mOffset < mTextLength )
+							if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 							{
-								tChar = mText[mOffset];
+								tChar = Tokenizer::mText[Tokenizer::mOffset];
 							}
 							else
 							{
@@ -403,13 +406,13 @@ namespace lyrics
 						}
 						while ( u'0' <= tChar && tChar <= u'9' );
 
-						mLastToken = tokenList.emplace_after( mLastToken, double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
 						currentLocation.IncreaseColumn( length );
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -417,37 +420,37 @@ namespace lyrics
 			}
 			else if ( tChar == u'(' || tChar == u')' || tChar == u'+' || tChar == u'-' || tChar == u'*' || tChar == u'/' || tChar == u'[' || tChar == u']' )
 			{
-				mOffset++;
-				mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( tChar ), currentLocation );
+				Tokenizer::mOffset++;
+				Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( tChar ), currentLocation );
 				currentLocation.IncreaseColumn();
 			}
 			else if ( tChar == u'<' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					switch ( mText[mOffset] )
+					switch ( Tokenizer::mText[Tokenizer::mOffset] )
 					{
 					case u'<':
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::SHIFT_LEFT, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::SHIFT_LEFT, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 						break;
 
 					case u'=':
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::LESS_THAN_OR_EQUAL, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::LESS_THAN_OR_EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 						break;
 					
 					default:
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
 						currentLocation.IncreaseColumn();
 						break;
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -455,31 +458,31 @@ namespace lyrics
 			}
 			else if ( tChar == u'>' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					switch ( mText[mOffset] )
+					switch ( Tokenizer::mText[Tokenizer::mOffset] )
 					{
 					case u'>':
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::SHIFT_RIGHT, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::SHIFT_RIGHT, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 						break;
 
 					case u'=':
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::GREATER_THAN_OR_EQUAL, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::GREATER_THAN_OR_EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 						break;
 					
 					default:
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
 						currentLocation.IncreaseColumn();
 						break;
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -487,23 +490,23 @@ namespace lyrics
 			}
 			else if ( tChar == u'=' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					if ( mText[mOffset] == u'=' )
+					if ( Tokenizer::mText[Tokenizer::mOffset] == u'=' )
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::EQUAL, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -511,23 +514,23 @@ namespace lyrics
 			}
 			else if ( tChar == u'!' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					if ( mText[mOffset] == u'=' )
+					if ( Tokenizer::mText[Tokenizer::mOffset] == u'=' )
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::NOT_EQUAL, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::NOT_EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -535,23 +538,23 @@ namespace lyrics
 			}
 			else if ( tChar == u'&' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					if ( mText[mOffset] == u'&' )
+					if ( Tokenizer::mText[Tokenizer::mOffset] == u'&' )
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::AND, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::AND, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -559,23 +562,23 @@ namespace lyrics
 			}
 			else if ( tChar == u'|' )
 			{
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					if ( mText[mOffset] == u'|' )
+					if ( Tokenizer::mText[Tokenizer::mOffset] == u'|' )
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::OR, currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::OR, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
-						mOffset++;
+						Tokenizer::mOffset++;
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
+						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
@@ -596,9 +599,9 @@ namespace lyrics
 
 					length++;
 					
-					if ( ++mOffset < mTextLength )
+					if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 					{
-						tChar = mText[mOffset];
+						tChar = Tokenizer::mText[Tokenizer::mOffset];
 					}
 					else
 					{
@@ -607,18 +610,18 @@ namespace lyrics
 				}
 				while ( u'0' <= tChar && tChar <= u'9' );
 
-				if ( mOffset >= mTextLength || tChar != u'.' )
+				if ( Tokenizer::mOffset >= Tokenizer::mTextLength || tChar != u'.' )
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, integer, currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, integer, currentLocation );
 					currentLocation.IncreaseColumn( length );
 				}
 				else
 				{
 					length++;
 
-					if ( ++mOffset < mTextLength )
+					if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 					{
-						tChar = mText[mOffset];
+						tChar = Tokenizer::mText[Tokenizer::mOffset];
 
 						if ( u'0' <= tChar && tChar <= u'9' )
 						{
@@ -630,9 +633,9 @@ namespace lyrics
 
 								length++;
 								
-								if ( ++mOffset < mTextLength )
+								if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 								{
-									tChar = mText[mOffset];
+									tChar = Tokenizer::mText[Tokenizer::mOffset];
 								}
 								else
 								{
@@ -643,7 +646,7 @@ namespace lyrics
 						}
 					}
 
-					mLastToken = tokenList.emplace_after( mLastToken, integer + double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
+					Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, integer + double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
 					currentLocation.IncreaseColumn( length );
 				}
 			}
@@ -654,9 +657,9 @@ namespace lyrics
 				unsigned int lineFeed = 0;
 				unsigned int length = 0;
 
-				if ( ++mOffset < mTextLength )
+				if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 				{
-					tChar = mText[mOffset];
+					tChar = Tokenizer::mText[Tokenizer::mOffset];
 				}
 				else
 				{
@@ -672,9 +675,9 @@ namespace lyrics
 				{
 					if ( tChar == '\\' )
 					{
-						if ( ++mOffset < mTextLength )
+						if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 						{
-							tChar = mText[mOffset];
+							tChar = Tokenizer::mText[Tokenizer::mOffset];
 						}
 						else
 						{
@@ -747,9 +750,9 @@ namespace lyrics
 							break;
 
 						case u'\r':
-							if ( ++mOffset < mTextLength )
+							if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 							{
-								tChar = mText[mOffset];
+								tChar = Tokenizer::mText[Tokenizer::mOffset];
 							}
 							else
 							{
@@ -790,9 +793,9 @@ namespace lyrics
 						length++;
 					}
 					
-					if ( ++mOffset < mTextLength )
+					if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 					{
-						tChar = mText[mOffset];
+						tChar = Tokenizer::mText[Tokenizer::mOffset];
 					}
 					else
 					{
@@ -803,10 +806,10 @@ namespace lyrics
 					}
 				}
 				while ( tChar != '\"' );
-				mOffset++;
+				Tokenizer::mOffset++;
 				length++;
 
-				mLastToken = tokenList.emplace_after( mLastToken, tStr, currentLocation );
+				Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, tStr, currentLocation );
 
 				while ( lineFeed-- )
 				{
@@ -818,9 +821,9 @@ namespace lyrics
 			{
 				do
 				{
-					if ( ++mOffset < mTextLength )
+					if ( ++Tokenizer::mOffset < Tokenizer::mTextLength )
 					{
-						tChar = mText[mOffset];
+						tChar = Tokenizer::mText[Tokenizer::mOffset];
 					}
 					else
 					{
@@ -833,20 +836,20 @@ namespace lyrics
 			}
 			else if ( tChar == u'{' || tChar == u'}' || tChar == u',' || tChar == u':' || tChar == u'~' || tChar == u'%' || tChar == u'^' )
 			{
-				mOffset++;
+				Tokenizer::mOffset++;
 
-				mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( tChar ), currentLocation );
+				Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, static_cast<Token::Type>( tChar ), currentLocation );
 				currentLocation.IncreaseColumn();
 			}
 			else if ( tChar == Tokenizer::NO_BREAK_SPACE || tChar == Tokenizer::OGHAM_SPACE_MARK || tChar == Tokenizer::MONGOLIAN_VOWEL_SEPARATOR || ( tChar >= Tokenizer::EN_QUAD && tChar <= Tokenizer::HAIR_SPACE ) || tChar == Tokenizer::NARROW_NO_BREAK_SPACE || tChar == Tokenizer::MEDIUM_MATHEMATICAL_SPACE || tChar == Tokenizer::IDEOGRAPHIC_SPACE )	// Unicode class Zs except space character.
 			{
-				mOffset++;
+				Tokenizer::mOffset++;
 
 				Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == Tokenizer::NEXT_LINE || tChar == Tokenizer::LINE_SEPARATOR || tChar == Tokenizer::PARAGRAPH_SEPARATOR )	// New line character.
 			{
-				mOffset++;
+				Tokenizer::mOffset++;
 				currentLocation.IncreaseLine();
 
 				Scan( tokenList, currentLocation );
@@ -855,7 +858,7 @@ namespace lyrics
 			{
 				Logger::Error( ErrorCode::WRONG_CHARACTER, currentLocation );
 
-				mOffset++;
+				Tokenizer::mOffset++;
 				currentLocation.IncreaseColumn();
 			}
 
