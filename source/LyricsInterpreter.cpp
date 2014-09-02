@@ -5,7 +5,7 @@
 #include "Interpreter.h"
 
 #include "FatalErrorCode.h"
-#include "Logger.h"
+#include "ErrorHandler.h"
 
 namespace lyrics
 {
@@ -43,9 +43,9 @@ namespace lyrics
 	forward_list<Token>::const_iterator Interpreter::mToken;
 	unordered_map<u16string, Literal> Interpreter::mSymbolTable;
 
-	constexpr char Logger::WARNING[];
-	constexpr char Logger::ERROR[];
-	constexpr char Logger::FATAL_ERROR[];
+	constexpr char ErrorHandler::WARNING[];
+	constexpr char ErrorHandler::ERROR[];
+	constexpr char ErrorHandler::FATAL_ERROR[];
 }
 
 int main( int argc, char *argv[] )
@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
 
 	if ( option.GetSourceFileName().empty() )
 	{
-		lyrics::Logger::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
+		lyrics::Logger::ErrorHandler( lyrics::FatalErrorCode::NO_INPUT_FILES );
 		return 0;
 	}
 

@@ -8,7 +8,7 @@
 #include "WarningCode.h"
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
-#include "Logger.h"
+#include "ErrorHandler.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER
@@ -29,7 +29,7 @@ namespace lyrics
 		{
 			if ( !TextLoader::LoadText( fileName, Tokenizer::mText, Tokenizer::mTextLength ) )
 			{
-				Logger::FatalError( FatalErrorCode::NO_SUCH_FILE );
+				ErrorHandler::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;
 			}
 
@@ -663,7 +663,7 @@ namespace lyrics
 				}
 				else
 				{
-					Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+					ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 
 					return false;
 				}
@@ -681,7 +681,7 @@ namespace lyrics
 						}
 						else
 						{
-							Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+							ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 							delete tStr;
 
 							return false;
@@ -756,7 +756,7 @@ namespace lyrics
 							}
 							else
 							{
-								Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+								ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 								delete tStr;
 
 								return false;
@@ -769,20 +769,20 @@ namespace lyrics
 							}
 							else
 							{
-								Logger::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
+								ErrorHandler::Warning( currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE );
 								tStr->push_back( tChar );
 								length += 3;
 							}
 							break;
 						
 						default:
-							Logger::Warning( WarningCode::UNKNOWN_ESCAPE_SEQUENCE, currentLocation );
+							ErrorHandler::Warning( currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE );
 							break;
 						}
 					}
 					else if ( tChar == '\r' || tChar == '\n' )
 					{
-						Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 						delete tStr;
 
 						return true;
@@ -799,7 +799,7 @@ namespace lyrics
 					}
 					else
 					{
-						Logger::Error( ErrorCode::STRING_NOT_TERMINATED, currentLocation );
+						ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 						delete tStr;
 
 						return false;
@@ -856,7 +856,7 @@ namespace lyrics
 			}
 			else
 			{
-				Logger::Error( ErrorCode::WRONG_CHARACTER, currentLocation );
+				ErrorHandler::Error( currentLocation, ErrorCode::WRONG_CHARACTER );
 
 				Tokenizer::mOffset++;
 				currentLocation.IncreaseColumn();
