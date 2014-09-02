@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
 
 	if ( option.GetSourceFileName().empty() )
 	{
-		lyrics::Logger::ErrorHandler( lyrics::FatalErrorCode::NO_INPUT_FILES );
+		lyrics::ErrorHandler::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
 		return 0;
 	}
 
