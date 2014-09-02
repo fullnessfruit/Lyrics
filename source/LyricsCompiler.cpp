@@ -55,9 +55,12 @@ namespace lyrics
 
 int main( int argc, char *argv[] )
 {
-	const lyrics::Option option = lyrics::Option( argc, argv );
+	using lyrics::Option;
+	using lyrics::Compiler;
 
-	if ( !lyrics::Compiler::Compile( option ) )
+	const Option option = Option( argc, argv );
+
+	if ( !Compiler::Compile( option ) )
 	{
 		// TODO:
 		return 0;
