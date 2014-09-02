@@ -6,9 +6,6 @@
 #include "Token.h"
 #include "Compiler.h"
 
-#include "FatalErrorCode.h"
-#include "ErrorHandler.h"
-
 namespace lyrics
 {
 	using std::u16string;
@@ -60,19 +57,11 @@ int main( int argc, char *argv[] )
 {
 	const lyrics::Option option = lyrics::Option( argc, argv );
 
-	if ( option.GetSourceFileName().empty() )
-	{
-		lyrics::ErrorHandler::FatalError( lyrics::FatalErrorCode::NO_INPUT_FILES );
-		return 0;
-	}
-
-	if ( !lyrics::Compiler::Compile( option.GetSourceFileName() ) )
+	if ( !lyrics::Compiler::Compile( option ) )
 	{
 		// TODO:
 		return 0;
 	}
-
-	lyrics::Logger::BuildTerminated();
 
 	return 0;
 }
