@@ -32,6 +32,10 @@ namespace lyrics
 			u16string *identifier;
 		};
 
+		Token( const Type type, const Location &location ) : type( type ), location( location )
+		{
+		}
+
 		Token( const bool boolean, const Location &location ) : type( Type::BOOLEAN_LITERAL ), location( location )
 		{
 			value.boolean = boolean;
@@ -55,10 +59,6 @@ namespace lyrics
 		Token( const Type type, u16string * const identifier, const Location &location ) : type( type ), location( location )
 		{
 			value.identifier = identifier;
-		}
-
-		Token( const Type type, const Location &location ) : type( type ), location( location )
-		{
 		}
 
 		const Type type;
