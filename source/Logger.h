@@ -27,19 +27,19 @@ namespace lyrics
 			cout << logType << ' ' << code << ": " << message << endl;
 		}
 
-		static void StandardErrorLog( const Location location, const char logType[], const unsigned int code )
+		static void BuildTerminated()
+		{
+			cout << "Build terminated." << endl;
+		}
+
+		static void StandardError( const Location location, const char logType[], const unsigned int code )
 		{
 			cerr << location << ' ' << logType << ' ' << code << endl;
 		}
 
-		static void StandardErrorLog( const char logType[], const unsigned int code )
+		static void StandardError( const char logType[], const unsigned int code )
 		{
 			cerr << logType << ' ' << code << endl;
-		}
-
-		static void BuildTerminated()
-		{
-			cout << "Build terminated." << endl;
 		}
 	};
 }
