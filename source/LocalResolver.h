@@ -736,11 +736,7 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 				canProgress &= node->block->Accept( *this );
-
-				mScopeStack.pop();
 			}
 
 			return canProgress;
@@ -761,11 +757,7 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 				canProgress &= node->block->Accept( *this );
-
-				mScopeStack.pop();
 			}
 			else
 			{
@@ -802,11 +794,7 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 				canProgress &= node->block->Accept( *this );
-
-				mScopeStack.pop();
 			}
 
 			return canProgress;
@@ -827,11 +815,7 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 				canProgress &= node->block->Accept( *this );
-
-				mScopeStack.pop();
 			}
 			else
 			{
@@ -856,11 +840,7 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 				canProgress &= node->block->Accept( *this );
-
-				mScopeStack.pop();
 			}
 			else
 			{
@@ -873,8 +853,6 @@ namespace lyrics
 		virtual bool Visit( const ForNode * const node )
 		{
 			bool canProgress = true;
-
-			mScopeStack.push( new Scope( mScopeStack.top() ) );
 
 			if ( node->initializer )
 			{
@@ -912,16 +890,12 @@ namespace lyrics
 				canProgress = false;
 			}
 
-			mScopeStack.pop();
-
 			return canProgress;
 		}
 
 		virtual bool Visit( const ForEachNode * const node )
 		{
 			bool canProgress = true;
-
-			mScopeStack.push( new Scope( mScopeStack.top() ) );
 
 			if ( node->variable )
 			{
@@ -949,8 +923,6 @@ namespace lyrics
 			{
 				canProgress = false;
 			}
-
-			mScopeStack.pop();
 
 			return canProgress;
 		}
