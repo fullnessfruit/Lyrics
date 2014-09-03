@@ -29,7 +29,7 @@ namespace lyrics
 
 			text = TextLoader::ConvertToUTF16( ( unsigned char * )data, size, length );
 			delete [] data;
-			if ( text == nullptr )
+			if ( !text )
 			{
 				// TODO:
 				return false;
