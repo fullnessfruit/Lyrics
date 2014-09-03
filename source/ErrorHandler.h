@@ -202,29 +202,14 @@ namespace lyrics
 			return ErrorHandler::mLastWarningCode;
 		}
 
-		static void ClearLastWarningCode()
-		{
-			ErrorHandler::mLastWarningCode = static_cast<WarningCode>( 0 );
-		}
-
 		static ErrorCode GetLastErrorCode()
 		{
 			return ErrorHandler::mLastErrorCode;
 		}
 
-		static void ClearLastErrorCode()
-		{
-			ErrorHandler::mLastErrorCode = static_cast<ErrorCode>( 0 );
-		}
-
 		static FatalErrorCode GetLastFatalErrorCode()
 		{
 			return ErrorHandler::mLastFatalErrorCode;
-		}
-
-		static void ClearLastFatalErrorCode()
-		{
-			ErrorHandler::mLastFatalErrorCode = static_cast<FatalErrorCode>( 0 );
 		}
 
 	private:
