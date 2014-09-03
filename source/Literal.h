@@ -67,7 +67,7 @@ namespace lyrics
 			value.object = object;
 		}
 
-		const Type type;
+		Type type;
 		Value value;
 	};
 }
