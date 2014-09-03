@@ -51,6 +51,7 @@ namespace lyrics
 
 	forward_list<Token>::const_iterator Interpreter::mToken;
 	unordered_map<u16string, Literal> Interpreter::mSymbolTable;
+	int Interpreter::mReturnCode;
 
 	constexpr char ErrorHandler::WARNING[];
 	constexpr char ErrorHandler::ERROR[];
