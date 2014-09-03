@@ -7,6 +7,7 @@
 #include "Literal.h"
 
 #include "ErrorCode.h"
+#include "FatalErrorCode.h"
 #include "Logger.h"
 
 #ifndef INTERPRETER
@@ -21,124 +22,177 @@ namespace lyrics
 	class Interpreter
 	{
 	public:
-		bool Interpret( const string fileName )
+		static bool Interpret( const Option &option )
 		{
-			forward_list<Token> token;
+			if ( option.GetSourceFileName().empty() )
+			{
+				ErrorHandler::FatalError( FatalErrorCode::NO_INPUT_FILES );
+				return false;
+			}
 
-			if ( !Tokenizer().Tokenize( fileName, token ) )
+			forward_list<Token> tokenList;
+
+			if ( !Tokenizer::Tokenize( option.GetSourceFileName(), tokenList ) )
 			{
 				return false;
 			}
 
-			mToken = token.cbegin();
+			mToken = tokenList.cbegin();
 
-			Literal literal = Block();
+			Literal returnCode = Interpreter::Block();
+			switch (returnCode.type)
+			{
+			case Literal::Type::INTEGER:
+				Interpreter::mReturnCode = returnCode.value.integer;
+				break;
+
+			case Literal::Type::NULL_LITERAL:
+				Interpreter::mReturnCode = 0;
+				break;
+
+			case Literal::Type::BOOLEAN:
+				Interpreter::mReturnCode = returnCode.value.boolean;
+				break;
+
+			case Literal::Type::REAL:
+				Interpreter::mReturnCode = returnCode.value.real;
+				break;
+
+			default:
+				Interpreter::mReturnCode = ( bool )returnCode.value.integer;
+			}
 
 			return true;
 		}
 
-	private:
-		forward_list<Token>::const_iterator mToken;
-		unordered_map<u16string, Literal> mSymbolTable;
-
-		Literal Block()
+		static int GetReturnCode()
 		{
-//			while ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::PRIVATE && mToken->type != Token::Type::PUBLIC && mToken->type != Token::Type::PROTECTED && mToken->type != Token::Type::WHEN && mToken->type != Token::Type::END_OF_FILE )
-//			{
-//				Statement();
-//			}
+			return Interpreter::mReturnCode;
 		}
 
-//		Literal Statement()
-//		{
-//			switch ( mToken->type )
-//			{
+	private:
+		static forward_list<Token>::const_iterator mToken;
+		static unordered_map<u16string, Literal> mSymbolTable;
+		static int mReturnCode;
+
+		static Literal Block()
+		{
+			Literal returnCode;
+
+			while ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::PRIVATE && mToken->type != Token::Type::PUBLIC && mToken->type != Token::Type::PROTECTED && mToken->type != Token::Type::WHEN && mToken->type != Token::Type::END_OF_FILE )
+			{
+				returnCode = Interpreter::Statement();
+
+				if ( ( bool )ErrorHandler::GetLastErrorCode() )
+				{
+					return Literal( 1ll );
+				}
+			}
+
+			return returnCode;
+		}
+
+		static Literal Statement()
+		{
+			switch ( mToken->type )
+			{
 //			case Token::Type::IF:
-//				return If();
+//				Interpreter::If();
+//				break;
 //
 //			case Token::Type::FOR:
-//				return For();
+//				Interpreter::For();
+//				break;
 //
 //			case Token::Type::RETURN:
-//				return Return();
-//
-//			case Token::Type::BREAK:
-//				return Break();
-//
+//				return Interpreter::Return();
+
+			case Token::Type::BREAK:
+				Interpreter::Break();
+				break;
+
 //			case Token::Type::WHILE:
-//				return While();
+//				Interpreter::While();
+//				break;
 //
 //			case Token::Type::CASE:
-//				return Case();
+//				Interpreter::Case();
+//				break;
 //
 //			case Token::Type::IMPORT:
-//				return Import();
+//				Interpreter::Import();
+//				break;
 //
 //			case Token::Type::FOREACH:
-//				return ForEach();
-//
-//			case Token::Type::NEXT:
-//				return Next();
-//
+//				Interpreter::ForEach();
+//				break;
+
+			case Token::Type::NEXT:
+				Interpreter::Next();
+				break;
+
 //			default:
-//				return Expression();
-//			}
-//		}
-//
-//		Literal PrimaryExpression()
-//		{
-//			switch ( mToken->type )
-//			{
-//			case Token::Type::IDENTIFIER:
-//				return new IdentifierNode( mToken->location, mToken++->value.identifier );
-//
-//			case Token::Type::INTEGER_LITERAL:
-//				return new IntegerLiteralNode( mToken->location, mToken++->value.integer );
-//
-//			case Token::Type::STRING_LITERAL:
-//				return new StringLiteralNode( mToken->location, mToken++->value.string );
-//
-//			case Token::Type::BOOLEAN_LITERAL:
-//				return new BooleanLiteralNode( mToken->location, mToken++->value.boolean );
-//
-//			case Token::Type::NULL_LITERAL:
-//				return new NullLiteralNode( mToken++->location );
-//
-//			case Token::Type::REAL_LITERAL:
-//				return new RealLiteralNode( mToken->location, mToken++->value.real );
-//
+//				Interpreter::Expression();
+//				break;
+			}
+
+			return Literal( 0ll );
+		}
+
+		static Literal PrimaryExpression()
+		{
+			switch ( mToken->type )
+			{
+			case Token::Type::IDENTIFIER:
+				return Literal( Literal::Type::REFERENCE, mToken++->value.identifier );
+
+			case Token::Type::INTEGER_LITERAL:
+				return Literal( mToken++->value.integer );
+
+			case Token::Type::STRING_LITERAL:
+				return Literal( Literal::Type::STRING, mToken++->value.string );
+
+			case Token::Type::BOOLEAN_LITERAL:
+				return Literal( mToken++->value.boolean );
+
+			case Token::Type::NULL_LITERAL:
+				return Literal();
+
+			case Token::Type::REAL_LITERAL:
+				return Literal( mToken++->value.real );
+
 //			case Token::Type::DEF:
-//				return FunctionLiteral( mToken++ );
+//				return Interpreter::FunctionLiteral( mToken++ );
 //
 //			case static_cast<Token::Type>( u'(' ):
-//				return ParenthesizedExpression();
+//				return Interpreter::ParenthesizedExpression();
 //
 //			case static_cast<Token::Type>( u'[' ):
-//				return ArrayLiteral();
+//				return Interpreter::ArrayLiteral();
 //
 //			case static_cast<Token::Type>( u'{' ):
-//				return HashLiteral();
+//				return Interpreter::HashLiteral();
 //
 //			case Token::Type::THIS:
 //				return new ThisNode( mToken->location );
 //
 //			default:
-//				Logger::Error( ErrorCode::EXPECTED_PRIMARY_EXPRESSION, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION );
 //
 //				mToken++;
 //
 //				return nullptr;
-//			}
-//		}
-//
-//		Literal ArrayLiteral()
+			}
+		}
+
+//		static Literal ArrayLiteral()
 //		{
 //			ArrayLiteralNode *node = new ArrayLiteralNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 //				delete node;
 //
 //				return nullptr;
@@ -148,14 +202,14 @@ namespace lyrics
 //			{
 //				for (;;)
 //				{
-//					node->AddExpression( Expression() );
+//					node->AddExpression( Interpreter::Expression() );
 //
 //					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //					{
 //						mToken++;
 //						if ( mToken->type == Token::Type::END_OF_FILE )
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 //							delete node;
 //
 //							return nullptr;
@@ -171,7 +225,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_ARRAY_LITERAL, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 //						delete node;
 //
 //						return nullptr;
@@ -184,14 +238,14 @@ namespace lyrics
 //			return node;
 //		}
 //
-//		Literal HashLiteral()
+//		static Literal HashLiteral()
 //		{
 //			HashLiteralNode *node = new HashLiteralNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 //				delete node;
 //
 //				return nullptr;
@@ -205,11 +259,11 @@ namespace lyrics
 //				{
 //					auto tToken = mToken;
 //
-//					expression = Expression();
+//					expression = Interpreter::Expression();
 //
 //					if ( mToken->type != static_cast<Token::Type>( u':' ) )
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_HASH, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_HASH );
 //						delete expression;
 //						delete node;
 //
@@ -219,21 +273,21 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 //						delete expression;
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					node->AddHash( new HashNode( tToken->location, expression, Expression() ) );
+//					node->AddHash( new HashNode( tToken->location, expression, Interpreter::Expression() ) );
 //
 //					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //					{
 //						mToken++;
 //						if ( mToken->type == Token::Type::END_OF_FILE )
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 //							delete node;
 //
 //							return nullptr;
@@ -249,7 +303,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_HASH_LITERAL, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 //						delete node;
 //
 //						return nullptr;
@@ -262,14 +316,14 @@ namespace lyrics
 //			return node;
 //		}
 //
-//		Literal FunctionLiteral( forward_list<Token>::const_iterator token )
+//		static Literal FunctionLiteral( forward_list<Token>::const_iterator token )
 //		{
 //			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 //			{
 //				mToken++;
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //
 //					return nullptr;
 //				}
@@ -295,7 +349,7 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == Token::Type::END_OF_FILE )
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //								delete node;
 //
 //								return nullptr;
@@ -311,7 +365,7 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == Token::Type::END_OF_FILE )
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //								delete name;
 //								delete node;
 //
@@ -320,7 +374,7 @@ namespace lyrics
 //						}
 //						else
 //						{
-//							Logger::Error( ErrorCode::EXPECTED_PARAMETER_NAME, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME );
 //							delete node;
 //
 //							return nullptr;
@@ -342,7 +396,7 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == Token::Type::END_OF_FILE )
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //								delete name;
 //								delete node;
 //
@@ -351,11 +405,11 @@ namespace lyrics
 //
 //							if ( isValueParameter )
 //							{
-//								parameter = new ValueParameterNode( tToken->location, name, Expression() );
+//								parameter = new ValueParameterNode( tToken->location, name, Interpreter::Expression() );
 //							}
 //							else
 //							{
-//								Logger::Error( ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT );
 //								delete name;
 //								delete node;
 //
@@ -370,7 +424,7 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == Token::Type::END_OF_FILE )
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //								delete node;
 //
 //								return nullptr;
@@ -382,7 +436,7 @@ namespace lyrics
 //						}
 //						else
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //							delete node;
 //
 //							return nullptr;
@@ -393,13 +447,13 @@ namespace lyrics
 //				mToken++;
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //					delete node;
 //
 //					return nullptr;
 //				}
 //
-//				node->block = Block();
+//				node->block = Interpreter::Block();
 //
 //				if ( mToken->type == Token::Type::END )
 //				{
@@ -409,7 +463,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //					delete node;
 //
 //					return nullptr;
@@ -417,26 +471,26 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_PARAMETER, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PARAMETER );
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal ParenthesizedExpression()
+//		static Literal ParenthesizedExpression()
 //		{
 //			ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //
-//			node->expression = Expression();
+//			node->expression = Interpreter::Expression();
 //
 //			if ( mToken->type == static_cast<Token::Type>( u')' ) )
 //			{
@@ -446,17 +500,17 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_RIGHT_PARENTHESIS, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal PostfixExpression()
+//		static Literal PostfixExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = PrimaryExpression();
+//			ExpressionNode *expression = Interpreter::PrimaryExpression();
 //
 //			if ( expression == nullptr || ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::THIS ) )
 //			{
@@ -470,20 +524,20 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
 //						delete expression;
 //
 //						return nullptr;
 //					}
 //
-//					expression = new IndexReferenceNode( tToken->location, expression, Expression() );
+//					expression = new IndexReferenceNode( tToken->location, expression, Interpreter::Expression() );
 //
 //					if ( mToken->type == static_cast<Token::Type>( u']' ) )
 //					{
 //						mToken++;
 //						if ( mToken->type == Token::Type::END_OF_FILE )
 //						{
-//							Logger::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
 //							delete expression;
 //
 //							return nullptr;
@@ -491,7 +545,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_INDEX, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
 //						delete expression;
 //
 //						return nullptr;
@@ -502,7 +556,7 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL );
 //						delete expression;
 //
 //						return nullptr;
@@ -514,14 +568,14 @@ namespace lyrics
 //					{
 //						for (;;)
 //						{
-//							node->AddArgument( Expression() );
+//							node->AddArgument( Interpreter::Expression() );
 //
 //							if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //							{
 //								mToken++;
 //								if ( mToken->type == Token::Type::END_OF_FILE )
 //								{
-//									Logger::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
+//									ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL );
 //									delete node;
 //
 //									return nullptr;
@@ -533,7 +587,7 @@ namespace lyrics
 //							}
 //							else
 //							{
-//								Logger::Error( ErrorCode::EXPECTED_FUNCTION_CALL, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL );
 //								delete node;
 //
 //								return nullptr;
@@ -550,7 +604,7 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
 //						delete expression;
 //
 //						return nullptr;
@@ -563,7 +617,7 @@ namespace lyrics
 //						mToken++;
 //						if ( mToken->type == Token::Type::END_OF_FILE )
 //						{
-//							Logger::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
 //							delete expression;
 //
 //							return nullptr;
@@ -571,7 +625,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_MEMBER, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
 //						delete expression;
 //
 //						return nullptr;
@@ -584,67 +638,67 @@ namespace lyrics
 //			}
 //		}
 //
-//		Literal UnaryExpression()
+//		static Literal UnaryExpression()
 //		{
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //
 //				return nullptr;
 //			}
 //			else if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) && mToken->type != static_cast<Token::Type>( u'~' ) && mToken->type != static_cast<Token::Type>( u'!' ) )
 //			{
-//				return PostfixExpression();
+//				return Interpreter::PostfixExpression();
 //			}
 //			else
 //			{
-//				return new UnaryExpressionNode( mToken->location, mToken++->type, UnaryExpression() );
+//				return new UnaryExpressionNode( mToken->location, mToken++->type, Interpreter::UnaryExpression() );
 //			}
 //		}
 //
-//		Literal MultiplicativeExpression()
+//		static Literal MultiplicativeExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = UnaryExpression();
+//			ExpressionNode *expression = Interpreter::UnaryExpression();
 //
 //			while ( mToken->type == static_cast<Token::Type>( u'*' ) || mToken->type == static_cast<Token::Type>( u'/' ) || mToken->type == static_cast<Token::Type>( u'%' ) )
 //			{
-//				expression = new MultiplicativeExpressionNode( tToken->location, mToken++->type, expression, UnaryExpression() );
+//				expression = new MultiplicativeExpressionNode( tToken->location, mToken++->type, expression, Interpreter::UnaryExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal AdditiveExpression()
+//		static Literal AdditiveExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = MultiplicativeExpression();
+//			ExpressionNode *expression = Interpreter::MultiplicativeExpression();
 //
 //			while ( mToken->type == static_cast<Token::Type>( u'+' ) || mToken->type == static_cast<Token::Type>( u'-' ) )
 //			{
-//				expression = new AdditiveExpressionNode( tToken->location, mToken++->type, expression, MultiplicativeExpression() );
+//				expression = new AdditiveExpressionNode( tToken->location, mToken++->type, expression, Interpreter::MultiplicativeExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal ShiftExpression()
+//		static Literal ShiftExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = AdditiveExpression();
+//			ExpressionNode *expression = Interpreter::AdditiveExpression();
 //
 //			while ( mToken->type == Token::Type::SHIFT_LEFT || mToken->type == Token::Type::SHIFT_RIGHT )
 //			{
-//				expression = new ShiftExpressionNode( tToken->location, mToken++->type, expression, AdditiveExpression() );
+//				expression = new ShiftExpressionNode( tToken->location, mToken++->type, expression, Interpreter::AdditiveExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal AndExpression()
+//		static Literal AndExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = ShiftExpression();
+//			ExpressionNode *expression = Interpreter::ShiftExpression();
 //
 //			while ( mToken->type == static_cast<Token::Type>( u'&' ) )
 //			{
@@ -652,102 +706,102 @@ namespace lyrics
 //
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //					delete expression;
 //
 //					return nullptr;
 //				}
 //
-//				expression = new AndExpressionNode( tToken->location, expression, ShiftExpression() );
+//				expression = new AndExpressionNode( tToken->location, expression, Interpreter::ShiftExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal OrExpression()
+//		static Literal OrExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = AndExpression();
+//			ExpressionNode *expression = Interpreter::AndExpression();
 //
 //			while ( mToken->type == static_cast<Token::Type>( u'|' ) || mToken->type == static_cast<Token::Type>( u'^' ) )
 //			{
-//				expression = new OrExpressionNode( tToken->location, mToken++->type, expression, AndExpression() );
+//				expression = new OrExpressionNode( tToken->location, mToken++->type, expression, Interpreter::AndExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal RelationalExpression()
+//		static Literal RelationalExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = OrExpression();
+//			ExpressionNode *expression = Interpreter::OrExpression();
 //
 //			while ( mToken->type == static_cast<Token::Type>( u'<' ) || mToken->type == static_cast<Token::Type>( u'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
 //			{
-//				expression = new RelationalExpressionNode( tToken->location, mToken++->type, expression, OrExpression() );
+//				expression = new RelationalExpressionNode( tToken->location, mToken++->type, expression, Interpreter::OrExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal EqualityExpression()
+//		static Literal EqualityExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = RelationalExpression();
+//			ExpressionNode *expression = Interpreter::RelationalExpression();
 //
 //			while ( mToken->type == Token::Type::EQUAL || mToken->type == Token::Type::NOT_EQUAL )
 //			{
-//				expression = new EqualityExpressionNode( tToken->location, mToken++->type, expression, RelationalExpression() );
+//				expression = new EqualityExpressionNode( tToken->location, mToken++->type, expression, Interpreter::RelationalExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal LogicalAndExpression()
+//		static Literal LogicalAndExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = EqualityExpression();
+//			ExpressionNode *expression = Interpreter::EqualityExpression();
 //
 //			while ( mToken->type == Token::Type::AND )
 //			{
 //				mToken++;
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //					delete expression;
 //
 //					return nullptr;
 //				}
 //
-//				expression = new LogicalAndExpressionNode( tToken->location, expression, EqualityExpression() );
+//				expression = new LogicalAndExpressionNode( tToken->location, expression, Interpreter::EqualityExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal LogicalOrExpression()
+//		static Literal LogicalOrExpression()
 //		{
 //			auto tToken = mToken;
-//			ExpressionNode *expression = LogicalAndExpression();
+//			ExpressionNode *expression = Interpreter::LogicalAndExpression();
 //
 //			while ( mToken->type == Token::Type::OR )
 //			{
 //				mToken++;
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //					delete expression;
 //
 //					return nullptr;
 //				}
 //
-//				expression = new LogicalOrExpressionNode( tToken->location, expression, LogicalAndExpression() );
+//				expression = new LogicalOrExpressionNode( tToken->location, expression, Interpreter::LogicalAndExpression() );
 //			}
 //
 //			return expression;
 //		}
 //
-//		Literal AssignmentExpression()
+//		static Literal AssignmentExpression()
 //		{
 //			auto tToken = mToken;
 //
@@ -770,11 +824,11 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 //							{
-//								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), FunctionLiteral( tToken ) );
+//								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), Interpreter::FunctionLiteral( tToken ) );
 //							}
 //							else
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //								delete identifier;
 //								delete member;
 //
@@ -783,7 +837,7 @@ namespace lyrics
 //						}
 //						else
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //							delete identifier;
 //
 //							return nullptr;
@@ -791,14 +845,14 @@ namespace lyrics
 //					}
 //					else if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //						delete identifier;
 //
 //						return nullptr;
 //					}
 //					else
 //					{
-//						return new AssignmentExpressionNode( tToken->location, identifier, FunctionLiteral( tToken ) );
+//						return new AssignmentExpressionNode( tToken->location, identifier, Interpreter::FunctionLiteral( tToken ) );
 //					}
 //				}
 //				else if ( mToken->type == Token::Type::THIS )
@@ -816,11 +870,11 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 //							{
-//								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), FunctionLiteral( tToken ) );
+//								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), Interpreter::FunctionLiteral( tToken ) );
 //							}
 //							else
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //								delete thisNode;
 //								delete identifier;
 //
@@ -829,7 +883,7 @@ namespace lyrics
 //						}
 //						else
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //							delete thisNode;
 //
 //							return nullptr;
@@ -837,7 +891,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //						delete thisNode;
 //
 //						return nullptr;
@@ -845,7 +899,7 @@ namespace lyrics
 //				}
 //				else if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_FUNCTION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
 //
 //					return nullptr;
 //				}
@@ -853,22 +907,22 @@ namespace lyrics
 //				{
 //					mToken = tToken;
 //
-//					return PrimaryExpression();
+//					return Interpreter::PrimaryExpression();
 //				}
 //
 //			case Token::Type::CLASS:
-//				return Class();
+//				return Interpreter::Class();
 //
 //			case Token::Type::PACKAGE:
-//				return Package();
+//				return Interpreter::Package();
 //
 //			case Token::Type::END_OF_FILE:
-//				Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //
 //				return nullptr;
 //
 //			default:
-//				ExpressionNode *expression = LogicalOrExpression();
+//				ExpressionNode *expression = Interpreter::LogicalOrExpression();
 //
 //				if ( expression == nullptr || mToken->type != static_cast<Token::Type>( u'=' ) )
 //				{
@@ -882,17 +936,17 @@ namespace lyrics
 //
 //						if ( mToken->type == Token::Type::END_OF_FILE )
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_EXPRESSION, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 //							delete expression;
 //
 //							return nullptr;
 //						}
 //
-//						return new AssignmentExpressionNode( tToken->location, expression, AssignmentExpression() );
+//						return new AssignmentExpressionNode( tToken->location, expression, Interpreter::AssignmentExpression() );
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
 //						delete expression;
 //
 //						return nullptr;
@@ -901,7 +955,7 @@ namespace lyrics
 //			}
 //		}
 //
-//		Literal Class()
+//		static Literal Class()
 //		{
 //			auto tToken = mToken;
 //
@@ -917,7 +971,7 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //						delete node;
 //						delete name;
 //
@@ -928,14 +982,14 @@ namespace lyrics
 //					{
 //						for (;;)
 //						{
-//							node->AddArgument( Expression() );
+//							node->AddArgument( Interpreter::Expression() );
 //
 //							if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //							{
 //								mToken++;
 //								if ( mToken->type == Token::Type::END_OF_FILE )
 //								{
-//									Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//									ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //									delete node;
 //									delete name;
 //
@@ -948,7 +1002,7 @@ namespace lyrics
 //							}
 //							else
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //								delete node;
 //								delete name;
 //
@@ -959,7 +1013,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //					delete node;
 //					delete name;
 //
@@ -982,7 +1036,7 @@ namespace lyrics
 //							mToken++;
 //							if ( mToken->type == Token::Type::END_OF_FILE )
 //							{
-//								Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //								delete node;
 //								delete name;
 //
@@ -993,14 +1047,14 @@ namespace lyrics
 //							{
 //								for (;;)
 //								{
-//									node->baseClassConstructorCall->AddArgument( Expression() );
+//									node->baseClassConstructorCall->AddArgument( Interpreter::Expression() );
 //
 //									if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //									{
 //										mToken++;
 //										if ( mToken->type == Token::Type::END_OF_FILE )
 //										{
-//											Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//											ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //											delete node;
 //											delete name;
 //
@@ -1013,7 +1067,7 @@ namespace lyrics
 //									}
 //									else
 //									{
-//										Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//										ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //										delete node;
 //										delete name;
 //
@@ -1024,7 +1078,7 @@ namespace lyrics
 //						}
 //						else
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //							delete node;
 //							delete name;
 //
@@ -1033,7 +1087,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_BASE_CLASS, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_BASE_CLASS );
 //						delete node;
 //						delete name;
 //
@@ -1044,7 +1098,7 @@ namespace lyrics
 //				mToken++;
 //				if ( mToken->type == Token::Type::INCLUDE )
 //				{
-//					node->include = Include();
+//					node->include = Interpreter::Include();
 //				}
 //
 //				Token::Type accessSpecifier;
@@ -1070,14 +1124,14 @@ namespace lyrics
 //				{
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_CLASS_DEFINITION, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 //						delete node;
 //						delete name;
 //
 //						return nullptr;
 //					}
 //
-//					node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
+//					node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Interpreter::Block() ) );
 //
 //					switch ( mToken->type )
 //					{
@@ -1094,7 +1148,7 @@ namespace lyrics
 //						return new AssignmentExpressionNode( tToken->location, name, node );
 //
 //					default:
-//						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //						delete node;
 //						delete name;
 //
@@ -1104,13 +1158,13 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_CLASS_NAME, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_CLASS_NAME );
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal Include()
+//		static Literal Include()
 //		{
 //			IncludeNode *node = new IncludeNode( mToken->location );
 //
@@ -1123,7 +1177,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::EXPECTED_PACKAGE, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PACKAGE );
 //					delete node;
 //
 //					return nullptr;
@@ -1134,7 +1188,7 @@ namespace lyrics
 //			return node;
 //		}
 //
-//		Literal Package()
+//		static Literal Package()
 //		{
 //			auto tToken = mToken;
 //
@@ -1142,7 +1196,7 @@ namespace lyrics
 //			if ( mToken->type == Token::Type::IDENTIFIER )
 //			{
 //				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
-//				PackageNode *node = new PackageNode( tToken->location, Block() );
+//				PackageNode *node = new PackageNode( tToken->location, Interpreter::Block() );
 //
 //				mToken++;
 //				if ( mToken->type == Token::Type::END )
@@ -1153,7 +1207,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //					delete node;
 //					delete name;
 //
@@ -1162,18 +1216,18 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_PACKAGE_NAME, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME );
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal Expression()
+//		static Literal Expression()
 //		{
-//			return AssignmentExpression();
+//			return Interpreter::AssignmentExpression();
 //		}
 //
-//		Literal Import()
+//		static Literal Import()
 //		{
 //			ImportNode *node = new ImportNode( mToken->location );
 //
@@ -1186,7 +1240,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::EXPECTED_IDENTIFIER, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_IDENTIFIER );
 //					delete node;
 //
 //					return nullptr;
@@ -1197,7 +1251,7 @@ namespace lyrics
 //			return node;
 //		}
 //
-//		Literal If()
+//		static Literal If()
 //		{
 //			IfNode *node = new IfNode( mToken->location );
 //			ElseIfNode *elseIfNode;
@@ -1209,14 +1263,14 @@ namespace lyrics
 //				mToken++;
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 //					delete elseIfNode;
 //					delete node;
 //
 //					return nullptr;
 //				}
 //
-//				elseIfNode->condition = Expression();
+//				elseIfNode->condition = Interpreter::Expression();
 //
 //				if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 //				{
@@ -1225,14 +1279,14 @@ namespace lyrics
 //
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 //					delete elseIfNode;
 //					delete node;
 //
 //					return nullptr;
 //				}
 //
-//				elseIfNode->block = Block();
+//				elseIfNode->block = Interpreter::Block();
 //				node->AddElseIf( elseIfNode );
 //
 //				if ( mToken->type == Token::Type::END )
@@ -1246,13 +1300,13 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_IF_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					node->block = Block();
+//					node->block = Interpreter::Block();
 //
 //					if ( mToken->type == Token::Type::END )
 //					{
@@ -1262,7 +1316,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //						delete node;
 //
 //						return nullptr;
@@ -1270,7 +1324,7 @@ namespace lyrics
 //				}
 //				else if ( mToken->type != Token::Type::ELSEIF )
 //				{
-//					Logger::Error( ErrorCode::EXPECTED_END_ELSE_ELSEIF, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF );
 //					delete node;
 //
 //					return nullptr;
@@ -1278,20 +1332,20 @@ namespace lyrics
 //			}
 //		}
 //
-//		Literal Case()
+//		static Literal Case()
 //		{
 //			CaseNode *node = new CaseNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //
-//			node->value = Expression();
+//			node->value = Interpreter::Expression();
 //
 //			if ( mToken->type == Token::Type::WHEN )
 //			{
@@ -1304,14 +1358,14 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 //						delete whenNode;
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					whenNode->condition = Expression();
+//					whenNode->condition = Interpreter::Expression();
 //
 //					if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 //					{
@@ -1320,14 +1374,14 @@ namespace lyrics
 //
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 //						delete whenNode;
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					whenNode->block = Block();
+//					whenNode->block = Interpreter::Block();
 //					node->AddWhen( whenNode );
 //
 //					if ( mToken->type == Token::Type::ELSE )
@@ -1335,13 +1389,13 @@ namespace lyrics
 //						mToken++;
 //						if ( mToken->type == Token::Type::END_OF_FILE )
 //						{
-//							Logger::Error( ErrorCode::INCOMPLETE_CASE_STATEMENT, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 //							delete node;
 //
 //							return nullptr;
 //						}
 //
-//						node->block = Block();
+//						node->block = Interpreter::Block();
 //
 //						if ( mToken->type == Token::Type::END )
 //						{
@@ -1351,7 +1405,7 @@ namespace lyrics
 //						}
 //						else
 //						{
-//							Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //							delete node;
 //
 //							return nullptr;
@@ -1365,7 +1419,7 @@ namespace lyrics
 //					}
 //					else if ( mToken->type != Token::Type::WHEN )
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF );
 //						delete node;
 //
 //						return nullptr;
@@ -1374,27 +1428,27 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_WHEN, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_WHEN );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal While()
+//		static Literal While()
 //		{
 //			WhileNode *node = new WhileNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_WHILE_STATEMENT, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //
-//			node->condition = Expression();
+//			node->condition = Interpreter::Expression();
 //
 //			if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 //			{
@@ -1403,13 +1457,13 @@ namespace lyrics
 //
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_WHILE_STATEMENT, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //
-//			node->block = Block();
+//			node->block = Interpreter::Block();
 //
 //			if ( mToken->type == Token::Type::END )
 //			{
@@ -1419,53 +1473,53 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal For()
+//		static Literal For()
 //		{
 //			ForNode *node = new ForNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //
-//			node->initializer = Expression();
+//			node->initializer = Interpreter::Expression();
 //
 //			if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //			{
 //				mToken++;
 //				if ( mToken->type == Token::Type::END_OF_FILE )
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 //					delete node;
 //
 //					return nullptr;
 //				}
 //
-//				node->condition = Expression();
+//				node->condition = Interpreter::Expression();
 //
 //				if ( mToken->type == static_cast<Token::Type>( u',' ) )
 //				{
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					node->iterator = Expression();
+//					node->iterator = Interpreter::Expression();
 //
 //					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 //					{
@@ -1474,13 +1528,13 @@ namespace lyrics
 //
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					node->block = Block();
+//					node->block = Interpreter::Block();
 //
 //					if ( mToken->type == Token::Type::END )
 //					{
@@ -1490,7 +1544,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //						delete node;
 //
 //						return nullptr;
@@ -1498,7 +1552,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 //					delete node;
 //
 //					return nullptr;
@@ -1506,27 +1560,27 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_FOR_STATEMENT, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //		}
 //
-//		Literal ForEach()
+//		static Literal ForEach()
 //		{
 //			ForEachNode *node = new ForEachNode( mToken->location );
 //
 //			mToken++;
 //			if ( mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //
-//			node->variable = Expression();
+//			node->variable = Interpreter::Expression();
 //
 //			if ( node->variable ->GetType() == Node::Type::IDENTIFIER || node->variable ->GetType() == Node::Type::MEMBER_REFERENCE || node->variable ->GetType() == Node::Type::INDEX_REFERENCE )
 //			{
@@ -1535,17 +1589,17 @@ namespace lyrics
 //					mToken++;
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					node->collection = Expression();
+//					node->collection = Interpreter::Expression();
 //
 //					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
 //						delete node;
 //
 //						return nullptr;
@@ -1558,13 +1612,13 @@ namespace lyrics
 //
 //					if ( mToken->type == Token::Type::END_OF_FILE )
 //					{
-//						Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 //						delete node;
 //
 //						return nullptr;
 //					}
 //
-//					node->block = Block();
+//					node->block = Interpreter::Block();
 //
 //					if ( mToken->type == Token::Type::END )
 //					{
@@ -1574,7 +1628,7 @@ namespace lyrics
 //					}
 //					else
 //					{
-//						Logger::Error( ErrorCode::EXPECTED_END, mToken->location );
+//						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 //						delete node;
 //
 //						return nullptr;
@@ -1582,7 +1636,7 @@ namespace lyrics
 //				}
 //				else
 //				{
-//					Logger::Error( ErrorCode::INCOMPLETE_FOREACH_STATEMENT, mToken->location );
+//					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 //					delete node;
 //
 //					return nullptr;
@@ -1590,24 +1644,24 @@ namespace lyrics
 //			}
 //			else
 //			{
-//				Logger::Error( ErrorCode::EXPECTED_LHS, mToken->location );
+//				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
 //				delete node;
 //
 //				return nullptr;
 //			}
 //		}
-//
-//		Literal Break()
-//		{
-//			return new BreakNode( mToken++->location );
-//		}
-//
-//		Literal Next()
-//		{
-//			return new NextNode( mToken++->location );
-//		}
-//
-//		Literal Return()
+
+		static Literal Break()
+		{
+			return Literal( 0ll );
+		}
+
+		static Literal Next()
+		{
+			return Literal( 0ll );
+		}
+
+//		static Literal Return()
 //		{
 //			auto tToken = mToken;
 //
@@ -1615,11 +1669,11 @@ namespace lyrics
 //
 //			if ( mToken->type == Token::Type::END || mToken->type == Token::Type::ELSE || mToken->type == Token::Type::ELSEIF || mToken->type == Token::Type::PRIVATE || mToken->type == Token::Type::PUBLIC || mToken->type == Token::Type::PROTECTED || mToken->type == Token::Type::WHEN || mToken->type == Token::Type::END_OF_FILE )
 //			{
-//				return new ReturnNode( tToken->location );
+//				return Literal( 0ll );
 //			}
 //			else
 //			{
-//				return new ReturnNode( tToken->location, Expression() );
+//				return Interpreter::Expression();
 //			}
 //		}
 	};
