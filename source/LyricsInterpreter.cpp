@@ -43,6 +43,12 @@ namespace lyrics
 	const u16string Tokenizer::WHEN = u"when";
 	const u16string Tokenizer::WHILE = u"while";
 
+	char16_t *Tokenizer::mText;
+	unsigned int Tokenizer::mTextLength;
+	unsigned int Tokenizer::mOffset;
+
+	forward_list<Token>::const_iterator Tokenizer::mLastToken;
+
 	forward_list<Token>::const_iterator Interpreter::mToken;
 	unordered_map<u16string, Literal> Interpreter::mSymbolTable;
 
