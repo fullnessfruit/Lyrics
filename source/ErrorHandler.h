@@ -23,8 +23,6 @@ namespace lyrics
 	public:
 		static void Warning( const Location location, const WarningCode warningCode )
 		{
-			ErrorHandler::mLastWarningCode = warningCode;
-
 			switch ( warningCode )
 			{
 			case WarningCode::UNKNOWN_ESCAPE_SEQUENCE:
@@ -39,8 +37,6 @@ namespace lyrics
 
 		static void Error( const Location location, const ErrorCode errorCode )
 		{
-			ErrorHandler::mLastErrorCode = errorCode;
-
 			switch ( errorCode )
 			{
 			case ErrorCode::WRONG_CHARACTER:
@@ -179,8 +175,6 @@ namespace lyrics
 
 		static void FatalError( const FatalErrorCode fatalErrorCode )
 		{
-			ErrorHandler::mLastFatalErrorCode = fatalErrorCode;
-
 			switch ( fatalErrorCode )
 			{
 			case FatalErrorCode::NO_INPUT_FILES:
@@ -196,26 +190,6 @@ namespace lyrics
 				break;
 			}
 		}
-
-		static WarningCode GetLastWarningCode()
-		{
-			return ErrorHandler::mLastWarningCode;
-		}
-
-		static ErrorCode GetLastErrorCode()
-		{
-			return ErrorHandler::mLastErrorCode;
-		}
-
-		static FatalErrorCode GetLastFatalErrorCode()
-		{
-			return ErrorHandler::mLastFatalErrorCode;
-		}
-
-	private:
-		static WarningCode mLastWarningCode;
-		static ErrorCode mLastErrorCode;
-		static FatalErrorCode mLastFatalErrorCode;
 	};
 }
 

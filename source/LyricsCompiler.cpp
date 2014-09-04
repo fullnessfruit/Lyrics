@@ -51,10 +51,6 @@ namespace lyrics
 	constexpr char ErrorHandler::WARNING[];
 	constexpr char ErrorHandler::ERROR[];
 	constexpr char ErrorHandler::FATAL_ERROR[];
-
-	WarningCode ErrorHandler::mLastWarningCode;
-	ErrorCode ErrorHandler::mLastErrorCode;
-	FatalErrorCode ErrorHandler::mLastFatalErrorCode;
 }
 
 int main( int argc, char *argv[] )
