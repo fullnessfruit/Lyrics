@@ -360,14 +360,14 @@ namespace lyrics
 				currentLocation.IncreaseColumn();
 				Tokenizer::mOffset++;
 
-				Scan( tokenList, currentLocation );
+				Tokenizer::Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == u'\n' )
 			{
 				currentLocation.IncreaseLine();
 				Tokenizer::mOffset++;
 
-				Scan( tokenList, currentLocation );
+				Tokenizer::Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == u'.' )
 			{
@@ -832,7 +832,7 @@ namespace lyrics
 				}
 				while ( tChar != u'\r' && tChar != u'\n' );
 
-				Scan( tokenList, currentLocation );
+				Tokenizer::Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == u'{' || tChar == u'}' || tChar == u',' || tChar == u':' || tChar == u'~' || tChar == u'%' || tChar == u'^' )
 			{
@@ -845,14 +845,14 @@ namespace lyrics
 			{
 				Tokenizer::mOffset++;
 
-				Scan( tokenList, currentLocation );
+				Tokenizer::Scan( tokenList, currentLocation );
 			}
 			else if ( tChar == Tokenizer::NEXT_LINE || tChar == Tokenizer::LINE_SEPARATOR || tChar == Tokenizer::PARAGRAPH_SEPARATOR )	// New line character.
 			{
 				Tokenizer::mOffset++;
 				currentLocation.IncreaseLine();
 
-				Scan( tokenList, currentLocation );
+				Tokenizer::Scan( tokenList, currentLocation );
 			}
 			else
 			{
