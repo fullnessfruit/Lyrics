@@ -68,7 +68,6 @@ namespace lyrics
 		static const u16string OUT;
 		static const u16string PACKAGE;
 		static const u16string PRIVATE;
-		static const u16string PROTECTED;
 		static const u16string PUBLIC;
 		static const u16string RETURN;
 		static const u16string THEN;
@@ -153,7 +152,7 @@ namespace lyrics
 				}
 				else
 				{
-					if ( ( 2u > length || 7u < length ) && length != 9u )	// If the token is shorter than 2 or longer than 7 and not equal to 9, then the token is identifier.
+					if ( 2u > length || 7u < length )	// If the token is shorter than 2 or longer than 7, then the token is identifier.
 					{
 						Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
 					}
@@ -331,18 +330,6 @@ namespace lyrics
 							{
 								delete tStr;
 								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::INCLUDE, currentLocation );
-							}
-							else
-							{
-								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation );
-							}
-							break;
-
-						case 9u:
-							if ( *tStr == Tokenizer::PROTECTED )
-							{
-								delete tStr;
-								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::PROTECTED, currentLocation );
 							}
 							else
 							{

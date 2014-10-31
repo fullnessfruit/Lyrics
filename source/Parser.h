@@ -52,7 +52,7 @@ namespace lyrics
 		{
 			BlockNode *node = new BlockNode( Parser::mToken->location );
 
-			while ( Parser::mToken->type != Token::Type::END && Parser::mToken->type != Token::Type::ELSE && Parser::mToken->type != Token::Type::ELSEIF && Parser::mToken->type != Token::Type::PRIVATE && Parser::mToken->type != Token::Type::PUBLIC && Parser::mToken->type != Token::Type::PROTECTED && Parser::mToken->type != Token::Type::WHEN && Parser::mToken->type != Token::Type::END_OF_FILE )
+			while ( Parser::mToken->type != Token::Type::END && Parser::mToken->type != Token::Type::ELSE && Parser::mToken->type != Token::Type::ELSEIF && Parser::mToken->type != Token::Type::PRIVATE && Parser::mToken->type != Token::Type::PUBLIC && Parser::mToken->type != Token::Type::WHEN && Parser::mToken->type != Token::Type::END_OF_FILE )
 			{
 				node->AddStatement( Parser::Statement() );
 			}
@@ -1067,7 +1067,6 @@ namespace lyrics
 				{
 				case Token::Type::PRIVATE:
 				case Token::Type::PUBLIC:
-				case Token::Type::PROTECTED:
 					accessSpecifier = Parser::mToken->type;
 					Parser::mToken++;
 					break;
@@ -1094,7 +1093,6 @@ namespace lyrics
 					{
 					case Token::Type::PRIVATE:
 					case Token::Type::PUBLIC:
-					case Token::Type::PROTECTED:
 						accessSpecifier = Parser::mToken->type;
 						tToken = Parser::mToken++;
 						break;
@@ -1624,7 +1622,7 @@ namespace lyrics
 
 			Parser::mToken++;
 
-			if ( Parser::mToken->type == Token::Type::END || Parser::mToken->type == Token::Type::ELSE || Parser::mToken->type == Token::Type::ELSEIF || Parser::mToken->type == Token::Type::PRIVATE || Parser::mToken->type == Token::Type::PUBLIC || Parser::mToken->type == Token::Type::PROTECTED || Parser::mToken->type == Token::Type::WHEN || Parser::mToken->type == Token::Type::END_OF_FILE )
+			if ( Parser::mToken->type == Token::Type::END || Parser::mToken->type == Token::Type::ELSE || Parser::mToken->type == Token::Type::ELSEIF || Parser::mToken->type == Token::Type::PRIVATE || Parser::mToken->type == Token::Type::PUBLIC || Parser::mToken->type == Token::Type::WHEN || Parser::mToken->type == Token::Type::END_OF_FILE )
 			{
 				return new ReturnNode( tToken->location );
 			}

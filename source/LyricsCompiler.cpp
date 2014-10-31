@@ -31,7 +31,6 @@ namespace lyrics
 	const u16string Tokenizer::OUT = u"out";
 	const u16string Tokenizer::PACKAGE = u"package";
 	const u16string Tokenizer::PRIVATE = u"private";
-	const u16string Tokenizer::PROTECTED = u"protected";
 	const u16string Tokenizer::PUBLIC = u"public";
 	const u16string Tokenizer::RETURN = u"return";
 	const u16string Tokenizer::THEN = u"then";
