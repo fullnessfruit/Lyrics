@@ -14,7 +14,6 @@ namespace lyrics
 	const u16string Tokenizer::BREAK = u"break";
 	const u16string Tokenizer::CASE = u"case";
 	const u16string Tokenizer::CLASS = u"class";
-	const u16string Tokenizer::DEF = u"def";
 	const u16string Tokenizer::DO = u"do";
 	const u16string Tokenizer::END = u"end";
 	const u16string Tokenizer::ELSE = u"else";
@@ -33,6 +32,7 @@ namespace lyrics
 	const u16string Tokenizer::PRIVATE = u"private";
 	const u16string Tokenizer::PUBLIC = u"public";
 	const u16string Tokenizer::RETURN = u"return";
+	const u16string Tokenizer::ROUTINE = u"routine";
 	const u16string Tokenizer::THEN = u"then";
 	const u16string Tokenizer::THIS = u"this";
 	const u16string Tokenizer::TRUE = u"true";

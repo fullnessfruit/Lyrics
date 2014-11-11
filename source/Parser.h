@@ -118,8 +118,8 @@ namespace lyrics
 			case Token::Type::REAL_LITERAL:
 				return new RealLiteralNode( Parser::mToken->location, Parser::mToken++->value.real );
 
-			case Token::Type::DEF:
-				return Parser::FunctionLiteral( Parser::mToken++ );
+			case Token::Type::ROUTINE:
+				return Parser::RoutineLiteral( Parser::mToken++ );
 
 			case static_cast<Token::Type>( u'(' ):
 				return Parser::ParenthesizedExpression();
@@ -273,19 +273,19 @@ namespace lyrics
 			return node;
 		}
 
-		static FunctionLiteralNode *FunctionLiteral( forward_list<Token>::const_iterator token )
+		static RoutineLiteralNode *RoutineLiteral( forward_list<Token>::const_iterator token )
 		{
 			if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
 			{
 				Parser::mToken++;
 				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 
 					return nullptr;
 				}
 
-				FunctionLiteralNode *node = new FunctionLiteralNode( token->location );
+				RoutineLiteralNode *node = new RoutineLiteralNode( token->location );
 
 				if ( Parser::mToken->type != static_cast<Token::Type>( u')' ) )
 				{
@@ -306,7 +306,7 @@ namespace lyrics
 							Parser::mToken++;
 							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete node;
 
 								return nullptr;
@@ -322,7 +322,7 @@ namespace lyrics
 							Parser::mToken++;
 							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete name;
 								delete node;
 
@@ -353,7 +353,7 @@ namespace lyrics
 							Parser::mToken++;
 							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete name;
 								delete node;
 
@@ -381,7 +381,7 @@ namespace lyrics
 							Parser::mToken++;
 							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete node;
 
 								return nullptr;
@@ -393,7 +393,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete node;
 
 							return nullptr;
@@ -404,7 +404,7 @@ namespace lyrics
 				Parser::mToken++;
 				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 					delete node;
 
 					return nullptr;
@@ -513,13 +513,13 @@ namespace lyrics
 					Parser::mToken++;
 					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL );
+						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 						delete expression;
 
 						return nullptr;
 					}
 
-					FunctionCallNode *node = new FunctionCallNode( tToken->location, expression );
+					RoutineCallNode *node = new RoutineCallNode( tToken->location, expression );
 
 					if ( Parser::mToken->type != static_cast<Token::Type>( u')' ) )
 					{
@@ -532,7 +532,7 @@ namespace lyrics
 								Parser::mToken++;
 								if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 								{
-									ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL );
+									ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 									delete node;
 
 									return nullptr;
@@ -544,7 +544,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 								delete node;
 
 								return nullptr;
@@ -764,7 +764,7 @@ namespace lyrics
 
 			switch ( Parser::mToken->type )
 			{
-			case Token::Type::DEF:
+			case Token::Type::ROUTINE:
 				Parser::mToken++;
 				if ( Parser::mToken->type == Token::Type::IDENTIFIER )
 				{
@@ -781,11 +781,11 @@ namespace lyrics
 							Parser::mToken++;
 							if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
 							{
-								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), Parser::FunctionLiteral( tToken ) );
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), Parser::RoutineLiteral( tToken ) );
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete identifier;
 								delete member;
 
@@ -794,7 +794,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete identifier;
 
 							return nullptr;
@@ -802,14 +802,14 @@ namespace lyrics
 					}
 					else if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 						delete identifier;
 
 						return nullptr;
 					}
 					else
 					{
-						return new AssignmentExpressionNode( tToken->location, identifier, Parser::FunctionLiteral( tToken ) );
+						return new AssignmentExpressionNode( tToken->location, identifier, Parser::RoutineLiteral( tToken ) );
 					}
 				}
 				else if ( Parser::mToken->type == Token::Type::THIS )
@@ -827,11 +827,11 @@ namespace lyrics
 							Parser::mToken++;
 							if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
 							{
-								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), Parser::FunctionLiteral( tToken ) );
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), Parser::RoutineLiteral( tToken ) );
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete thisNode;
 								delete identifier;
 
@@ -840,7 +840,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete thisNode;
 
 							return nullptr;
@@ -848,7 +848,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 						delete thisNode;
 
 						return nullptr;
@@ -856,7 +856,7 @@ namespace lyrics
 				}
 				else if ( Parser::mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FUNCTION );
+					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 
 					return nullptr;
 				}

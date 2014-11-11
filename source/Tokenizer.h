@@ -51,7 +51,6 @@ namespace lyrics
 		static const u16string BREAK;
 		static const u16string CASE;
 		static const u16string CLASS;
-		static const u16string DEF;
 		static const u16string DO;
 		static const u16string END;
 		static const u16string ELSE;
@@ -70,6 +69,7 @@ namespace lyrics
 		static const u16string PRIVATE;
 		static const u16string PUBLIC;
 		static const u16string RETURN;
+		static const u16string ROUTINE;
 		static const u16string THEN;
 		static const u16string THIS;
 		static const u16string TRUE;
@@ -193,11 +193,6 @@ namespace lyrics
 								delete tStr;
 								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::FOR, currentLocation );
 							}
-							else if ( *tStr == Tokenizer::DEF )
-							{
-								delete tStr;
-								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::DEF, currentLocation );
-							}
 							else if ( *tStr == Tokenizer::OUT )
 							{
 								delete tStr;
@@ -311,7 +306,12 @@ namespace lyrics
 							break;
 
 						case 7u:
-							if ( *tStr == Tokenizer::PRIVATE )
+							if ( *tStr == Tokenizer::ROUTINE )
+							{
+								delete tStr;
+								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::ROUTINE, currentLocation );
+							}
+							else if ( *tStr == Tokenizer::PRIVATE )
 							{
 								delete tStr;
 								Tokenizer::mLastToken = tokenList.emplace_after( Tokenizer::mLastToken, Token::Type::PRIVATE, currentLocation );

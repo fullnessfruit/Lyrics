@@ -22,9 +22,9 @@ namespace lyrics
 		enum struct Type
 		{
 			BLOCK,
-						IDENTIFIER, THIS, NULL_LITERAL, BOOLEAN_LITERAL, INTEGER_LITERAL, REAL_LITERAL, STRING_LITERAL, ARRAY_LITERAL, HASH_LITERAL, FUNCTION_LITERAL, PARENTHESIZED_EXPRESSION,
+						IDENTIFIER, THIS, NULL_LITERAL, BOOLEAN_LITERAL, INTEGER_LITERAL, REAL_LITERAL, STRING_LITERAL, ARRAY_LITERAL, HASH_LITERAL, ROUTINE_LITERAL, PARENTHESIZED_EXPRESSION,
 							HASH, VALUE_PARAMETER, OUTPUT_PARAMETER,
-						INDEX_REFERENCE, FUNCTION_CALL, MEMBER_REFERENCE,
+						INDEX_REFERENCE, ROUTINE_CALL, MEMBER_REFERENCE,
 					UNARY_EXPRESSION, MULTIPLICATIVE_EXPRESSION, ADDITIVE_EXPRESSION, SHIFT_EXPRESSION, AND_EXPRESSION, OR_EXPRESSION, RELATIONAL_EXPRESSION, EQUALITY_EXPRESSION, LOGICAL_AND_EXPRESSION, LOGICAL_OR_EXPRESSION, ASSIGNMENT_EXPRESSION,
 				CLASS,
 					BASE_CLASS_CONSTRUCTOR_CALL, INCLUDE, ACCESS_SPECIFIED_BLOCK_LIST, ACCESS_SPECIFIED_BLOCK,
@@ -61,14 +61,14 @@ namespace lyrics
 				class ArrayLiteralNode;
 				class HashLiteralNode;
 					class HashNode;
-				class FunctionLiteralNode;
+				class RoutineLiteralNode;
 					class ParameterNode;
 						class ValueParameterNode;
 						class OutputParameterNode;
 				class ParenthesizedExpressionNode;
 			class PostfixExpressionNode;
 				class IndexReferenceNode;
-				class FunctionCallNode;
+				class RoutineCallNode;
 				class MemberReferenceNode;
 			class UnaryExpressionNode;
 			class MultiplicativeExpressionNode;
@@ -470,14 +470,14 @@ namespace lyrics
 		}
 	};
 
-	class FunctionLiteralNode: public PrimaryExpressionNode
+	class RoutineLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit FunctionLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), block( nullptr )
+		explicit RoutineLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), block( nullptr )
 		{
 		}
 
-		~FunctionLiteralNode()
+		~RoutineLiteralNode()
 		{
 			for ( auto i : list )
 			{
@@ -497,7 +497,7 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::FUNCTION_LITERAL;
+			return Node::Type::ROUTINE_LITERAL;
 		}
 
 		void AddParameter( ParameterNode * const node )
@@ -571,14 +571,14 @@ namespace lyrics
 		}
 	};
 
-	class FunctionCallNode: public PostfixExpressionNode
+	class RoutineCallNode: public PostfixExpressionNode
 	{
 	public:
-		FunctionCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression ), last( list.cbefore_begin() )
+		RoutineCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression ), last( list.cbefore_begin() )
 		{
 		}
 
-		~FunctionCallNode()
+		~RoutineCallNode()
 		{
 			for ( auto i : list )
 			{
@@ -596,7 +596,7 @@ namespace lyrics
 
 		virtual Node::Type GetType() const
 		{
-			return Node::Type::FUNCTION_CALL;
+			return Node::Type::ROUTINE_CALL;
 		}
 
 		void AddArgument( ExpressionNode * const node )

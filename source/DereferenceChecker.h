@@ -96,7 +96,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const FunctionLiteralNode * const node )
+		virtual bool Visit( const RoutineLiteralNode * const node )
 		{
 			bool canProgress = true;
 
@@ -202,7 +202,7 @@ namespace lyrics
 			return canProgress;
 		}
 
-		virtual bool Visit( const FunctionCallNode * const node )
+		virtual bool Visit( const RoutineCallNode * const node )
 		{
 			bool canProgress = true;
 

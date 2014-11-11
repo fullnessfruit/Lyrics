@@ -89,7 +89,7 @@ foreach j in a
 	write( j )
 end
 
-def factorial( i )
+routine factorial( i )
 	if i <= 1
 		return 1
 	else
@@ -99,7 +99,7 @@ end
 
 write( factorial( 9 ) )
 
-def add( a, i = 10 )
+routine add( a, i = 10 )
 	k = 0
 	for j = a, j <= i, j = j + 1
 		k = k + j
