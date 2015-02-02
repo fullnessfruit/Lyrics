@@ -21,9 +21,7 @@ namespace lyrics
 			using std::ios;
 			using std::ios_base;
 
-			ifstream input;
-
-			input.open( fileName, ios::in | ios::binary );
+			ifstream input( fileName, ios::in | ios::binary );
 
 			if ( !input )
 			{
@@ -44,7 +42,6 @@ namespace lyrics
 				return false;
 			}
 
-			input.seekg( 0, ios_base::beg );
 			input.read( data , size );
 			input.close();
 
@@ -61,6 +58,7 @@ namespace lyrics
 
 			input.seekg( 0, ios_base::end );
 			off = input.tellg();
+			input.seekg( 0, ios_base::beg );
 
 			if ( off == -1 )
 			{
