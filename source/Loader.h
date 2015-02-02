@@ -1,5 +1,4 @@
 #include <string>
-
 #include <fstream>
 
 #ifndef LOADER
@@ -8,6 +7,7 @@
 namespace lyrics
 {
 	using std::string;
+	using std::ifstream;
 
 	class Loader
 	{
@@ -17,7 +17,6 @@ namespace lyrics
 	public:
 		static bool LoadData( const string fileName, char *&data, unsigned int &size )
 		{
-			using std::ifstream;
 			using std::ios;
 			using std::ios_base;
 
@@ -49,7 +48,7 @@ namespace lyrics
 		}
 	
 	private:
-		static bool GetInputStreamSize( std::ifstream &input, unsigned int &size )
+		static bool GetInputStreamSize( ifstream &input, unsigned int &size )
 		{
 			using std::ios_base;
 			using std::streamoff;
