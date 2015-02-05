@@ -61,12 +61,10 @@ namespace lyrics
 			{
 				return false;
 			}
-			else
-			{
-				size = off;
 
-				return true;
-			}
+			size = off;
+
+			return true;
 		}
 	};
 }
