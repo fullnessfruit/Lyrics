@@ -21,7 +21,7 @@ namespace lyrics
 			char *data = nullptr;
 			unsigned int size = 0;
 
-			if ( !Loader::LoadData( fileName, data, size ) )
+			if ( !Loader::Load( fileName, data, size ) )
 			{
 				// TODO:
 				return false;

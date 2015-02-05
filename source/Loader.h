@@ -7,7 +7,7 @@
 namespace lyrics
 {
 	using std::string;
-	using std::ifstream;
+	using std::istream;
 
 	class Loader
 	{
@@ -15,8 +15,9 @@ namespace lyrics
 		Loader() = delete;
 
 	public:
-		static bool LoadData( const string fileName, char *&data, unsigned int &size )
+		static bool Load( const string fileName, char *&data, unsigned int &size )
 		{
+			using std::ifstream;
 			using std::ios;
 			using std::ios_base;
 
@@ -28,7 +29,7 @@ namespace lyrics
 				return false;
 			}
 
-			if ( !Loader::GetInputStreamSize( input, size ) )
+			if ( !Loader::IStreamSize( input, size ) )
 			{
 				// TODO:
 				return false;
@@ -48,7 +49,7 @@ namespace lyrics
 		}
 	
 	private:
-		static bool GetInputStreamSize( ifstream &input, unsigned int &size )
+		static bool IStreamSize( istream &input, unsigned int &size )
 		{
 			using std::ios_base;
 			using std::streamoff;
