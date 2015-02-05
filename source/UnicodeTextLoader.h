@@ -13,7 +13,7 @@ namespace lyrics
 	class UnicodeTextLoader : public Loader
 	{
 	public:
-		bool LoadText( const string name, char16_t *&text, unsigned int &length )
+		bool LoadUnicodeText( const string name, char16_t *&text, unsigned int &length )
 		{
 			char *data = nullptr;
 			unsigned int size = 0;
