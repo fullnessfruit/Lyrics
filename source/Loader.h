@@ -12,17 +12,13 @@ namespace lyrics
 	class Loader
 	{
 	public:
-		Loader( const string name ) : mName( name )
-		{
-		}
-
-		bool Load( char *&data, unsigned int &size )
+		bool Load( const string name, char *&data, unsigned int &size )
 		{
 			using std::ifstream;
 			using std::ios;
 			using std::ios_base;
 
-			ifstream input( mName, ios::in | ios::binary );
+			ifstream input( name, ios::in | ios::binary );
 
 			if ( !input )
 			{
@@ -50,8 +46,6 @@ namespace lyrics
 		}
 	
 	private:
-		const string mName;
-
 		static bool IStreamSize( istream &input, unsigned int &size )
 		{
 			using std::ios_base;

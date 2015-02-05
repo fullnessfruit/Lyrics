@@ -13,16 +13,12 @@ namespace lyrics
 	class TextLoader : public Loader
 	{
 	public:
-		TextLoader( const string name ) : Loader( name )
-		{
-		}
-
-		bool LoadText( char16_t *&text, unsigned int &length )
+		bool LoadText( const string name, char16_t *&text, unsigned int &length )
 		{
 			char *data = nullptr;
 			unsigned int size = 0;
 
-			if ( !Load( data, size ) )
+			if ( !Load( name, data, size ) )
 			{
 				// TODO:
 				return false;
