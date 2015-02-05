@@ -26,7 +26,7 @@ namespace lyrics
 				return false;
 			}
 
-			if ( !Loader::IStreamSize( input, size ) )
+			if ( !IStreamSize( input, size ) )
 			{
 				// TODO:
 				return false;
@@ -46,7 +46,7 @@ namespace lyrics
 		}
 	
 	private:
-		static bool IStreamSize( istream &input, unsigned int &size )
+		bool IStreamSize( istream &input, unsigned int &size )
 		{
 			using std::ios_base;
 			using std::streamoff;
