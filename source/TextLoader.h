@@ -3,7 +3,7 @@
 
 #include "Loader.h"
 
-#ifndef TEXT_LOADER
+#ifndef FILE_LOADER
 #define FILE_LOADER
 
 namespace lyrics
