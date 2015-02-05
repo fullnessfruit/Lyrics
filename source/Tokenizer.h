@@ -27,7 +27,7 @@ namespace lyrics
 	public:
 		static bool Tokenize( const string fileName, forward_list<Token> &tokenList )
 		{
-			if ( !TextLoader::LoadText( fileName, Tokenizer::mText, Tokenizer::mTextLength ) )
+			if ( !FileLoader( fileName ).LoadText( Tokenizer::mText, Tokenizer::mTextLength ) )
 			{
 				ErrorHandler::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;

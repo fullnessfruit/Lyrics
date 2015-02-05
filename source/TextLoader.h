@@ -4,30 +4,31 @@
 #include "Loader.h"
 
 #ifndef TEXT_LOADER
-#define TEXT_LOADER
+#define FILE_LOADER
 
 namespace lyrics
 {
 	using std::string;
 
-	class TextLoader
+	class FileLoader : public Loader
 	{
-	private:
-		TextLoader() = delete;
-
 	public:
-		static bool LoadText( const string fileName, char16_t *&text, unsigned int &length )
+		FileLoader( const string name ) : Loader( name )
+		{
+		}
+
+		bool LoadText( char16_t *&text, unsigned int &length )
 		{
 			char *data = nullptr;
 			unsigned int size = 0;
 
-			if ( !Loader::Load( fileName, data, size ) )
+			if ( !Load( data, size ) )
 			{
 				// TODO:
 				return false;
 			}
 
-			text = TextLoader::ConvertToUTF16( ( unsigned char * )data, size, length );
+			text = FileLoader::ConvertToUTF16( ( unsigned char * )data, size, length );
 			delete [] data;
 			if ( !text )
 			{
@@ -54,11 +55,11 @@ namespace lyrics
 			case 0xEF:
 				if ( data[1] == 0xBB && data[2] == 0xBF )
 				{
-					return TextLoader::UTF8ToUTF16( data + 3, size - 3, length );
+					return FileLoader::UTF8ToUTF16( data + 3, size - 3, length );
 				}
 				else
 				{
-					return TextLoader::UTF8ToUTF16( data, size, length );
+					return FileLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -69,7 +70,7 @@ namespace lyrics
 				}
 				else
 				{
-					return TextLoader::UTF8ToUTF16( data, size, length );
+					return FileLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -91,12 +92,12 @@ namespace lyrics
 					}
 					else
 					{
-						return TextLoader::UTF32ToUTF16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
+						return FileLoader::UTF32ToUTF16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
 					}
 				}
 				else
 				{
-					return TextLoader::UTF8ToUTF16( data, size, length );
+					return FileLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -107,12 +108,12 @@ namespace lyrics
 				}
 				else
 				{
-					return TextLoader::UTF8ToUTF16( data, size, length );
+					return FileLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 			
 			default:
-				return TextLoader::UTF8ToUTF16( data, size, length );
+				return FileLoader::UTF8ToUTF16( data, size, length );
 			}
 
 			return nullptr;
