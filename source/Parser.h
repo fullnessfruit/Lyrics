@@ -18,11 +18,8 @@ namespace lyrics
 
 	class Parser
 	{
-	private:
-		Parser() = delete;
-
 	public:
-		static bool Parse( const string fileName, BlockNode *&root )
+		bool Parse( const string fileName, BlockNode *&root )
 		{
 			forward_list<Token> tokenList;
 
@@ -31,9 +28,9 @@ namespace lyrics
 				return false;
 			}
 
-			Parser::mToken = tokenList.cbegin();
+			mToken = tokenList.cbegin();
 
-			root = Parser::Block();
+			root = Block();
 
 			if ( root )
 			{
@@ -46,143 +43,143 @@ namespace lyrics
 		}
 	
 	private:
-		static forward_list<Token>::const_iterator mToken;
+		forward_list<Token>::const_iterator mToken;
 
-		static BlockNode *Block()
+		BlockNode *Block()
 		{
-			BlockNode *node = new BlockNode( Parser::mToken->location );
+			BlockNode *node = new BlockNode( mToken->location );
 
-			while ( Parser::mToken->type != Token::Type::END && Parser::mToken->type != Token::Type::ELSE && Parser::mToken->type != Token::Type::ELSEIF && Parser::mToken->type != Token::Type::PRIVATE && Parser::mToken->type != Token::Type::PUBLIC && Parser::mToken->type != Token::Type::WHEN && Parser::mToken->type != Token::Type::END_OF_FILE )
+			while ( mToken->type != Token::Type::END && mToken->type != Token::Type::ELSE && mToken->type != Token::Type::ELSEIF && mToken->type != Token::Type::PRIVATE && mToken->type != Token::Type::PUBLIC && mToken->type != Token::Type::WHEN && mToken->type != Token::Type::END_OF_FILE )
 			{
-				node->AddStatement( Parser::Statement() );
+				node->AddStatement( Statement() );
 			}
 
 			return node;
 		}
 
-		static StatementNode *Statement()
+		StatementNode *Statement()
 		{
-			switch ( Parser::mToken->type )
+			switch ( mToken->type )
 			{
 			case Token::Type::IF:
-				return Parser::If();
+				return If();
 
 			case Token::Type::FOR:
-				return Parser::For();
+				return For();
 
 			case Token::Type::RETURN:
-				return Parser::Return();
+				return Return();
 
 			case Token::Type::BREAK:
-				return Parser::Break();
+				return Break();
 
 			case Token::Type::WHILE:
-				return Parser::While();
+				return While();
 
 			case Token::Type::CASE:
-				return Parser::Case();
+				return Case();
 
 			case Token::Type::IMPORT:
-				return Parser::Import();
+				return Import();
 
 			case Token::Type::FOREACH:
-				return Parser::ForEach();
+				return ForEach();
 
 			case Token::Type::NEXT:
-				return Parser::Next();
+				return Next();
 			
 			default:
-				return Parser::Expression();
+				return Expression();
 			}
 		}
 
-		static ExpressionNode *PrimaryExpression()
+		ExpressionNode *PrimaryExpression()
 		{
-			switch ( Parser::mToken->type )
+			switch ( mToken->type )
 			{
 			case Token::Type::IDENTIFIER:
-				return new IdentifierNode( Parser::mToken->location, Parser::mToken++->value.identifier );
+				return new IdentifierNode( mToken->location, mToken++->value.identifier );
 
 			case Token::Type::INTEGER_LITERAL:
-				return new IntegerLiteralNode( Parser::mToken->location, Parser::mToken++->value.integer );
+				return new IntegerLiteralNode( mToken->location, mToken++->value.integer );
 
 			case Token::Type::STRING_LITERAL:
-				return new StringLiteralNode( Parser::mToken->location, Parser::mToken++->value.string );
+				return new StringLiteralNode( mToken->location, mToken++->value.string );
 
 			case Token::Type::BOOLEAN_LITERAL:
-				return new BooleanLiteralNode( Parser::mToken->location, Parser::mToken++->value.boolean );
+				return new BooleanLiteralNode( mToken->location, mToken++->value.boolean );
 
 			case Token::Type::NULL_LITERAL:
-				return new NullLiteralNode( Parser::mToken++->location );
+				return new NullLiteralNode( mToken++->location );
 
 			case Token::Type::REAL_LITERAL:
-				return new RealLiteralNode( Parser::mToken->location, Parser::mToken++->value.real );
+				return new RealLiteralNode( mToken->location, mToken++->value.real );
 
 			case Token::Type::ROUTINE:
-				return Parser::RoutineLiteral( Parser::mToken++ );
+				return RoutineLiteral( mToken++ );
 
 			case static_cast<Token::Type>( u'(' ):
-				return Parser::ParenthesizedExpression();
+				return ParenthesizedExpression();
 
 			case static_cast<Token::Type>( u'[' ):
-				return Parser::ArrayLiteral();
+				return ArrayLiteral();
 
 			case static_cast<Token::Type>( u'{' ):
-				return Parser::HashLiteral();
+				return HashLiteral();
 			
 			case Token::Type::THIS:
-				return new ThisNode( Parser::mToken->location );
+				return new ThisNode( mToken->location );
 
 			default:
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION );
 
-				Parser::mToken++;
+				mToken++;
 
 				return nullptr;
 			}
 		}
 
-		static ArrayLiteralNode *ArrayLiteral()
+		ArrayLiteralNode *ArrayLiteral()
 		{
-			ArrayLiteralNode *node = new ArrayLiteralNode( Parser::mToken->location );
+			ArrayLiteralNode *node = new ArrayLiteralNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 				delete node;
 
 				return nullptr;
 			}
 
-			if ( Parser::mToken->type != static_cast<Token::Type>( u']' ) )
+			if ( mToken->type != static_cast<Token::Type>( u']' ) )
 			{
 				for (;;)
 				{
-					node->AddExpression( Parser::Expression() );
+					node->AddExpression( Expression() );
 
-					if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+						mToken++;
+						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 							delete node;
 
 							return nullptr;
 						}
-						else if ( Parser::mToken->type == static_cast<Token::Type>( u']' ) )
+						else if ( mToken->type == static_cast<Token::Type>( u']' ) )
 						{
 							break;
 						}
 					}
-					else if ( Parser::mToken->type == static_cast<Token::Type>( u']' ) )
+					else if ( mToken->type == static_cast<Token::Type>( u']' ) )
 					{
 						break;
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 						delete node;
 
 						return nullptr;
@@ -190,77 +187,77 @@ namespace lyrics
 				}
 			}
 
-			Parser::mToken++;
+			mToken++;
 
 			return node;
 		}
 
-		static HashLiteralNode *HashLiteral()
+		HashLiteralNode *HashLiteral()
 		{
-			HashLiteralNode *node = new HashLiteralNode( Parser::mToken->location );
+			HashLiteralNode *node = new HashLiteralNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 				delete node;
 
 				return nullptr;
 			}
 
-			if ( Parser::mToken->type != static_cast<Token::Type>( u'}' ) )
+			if ( mToken->type != static_cast<Token::Type>( u'}' ) )
 			{
 				ExpressionNode *expression;
 
 				for (;;)
 				{
-					auto tToken = Parser::mToken;
+					auto tToken = mToken;
 
-					expression = Parser::Expression();
+					expression = Expression();
 
-					if ( Parser::mToken->type != static_cast<Token::Type>( u':' ) )
+					if ( mToken->type != static_cast<Token::Type>( u':' ) )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_HASH );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_HASH );
 						delete expression;
 						delete node;
 
 						return nullptr;
 					}
 
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 						delete expression;
 						delete node;
 
 						return nullptr;
 					}
 
-					node->AddHash( new HashNode( tToken->location, expression, Parser::Expression() ) );
+					node->AddHash( new HashNode( tToken->location, expression, Expression() ) );
 
-					if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+						mToken++;
+						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 							delete node;
 
 							return nullptr;
 						}
-						else if ( Parser::mToken->type == static_cast<Token::Type>( u'}' ) )
+						else if ( mToken->type == static_cast<Token::Type>( u'}' ) )
 						{
 							break;
 						}
 					}
-					else if ( Parser::mToken->type == static_cast<Token::Type>( u'}' ) )
+					else if ( mToken->type == static_cast<Token::Type>( u'}' ) )
 					{
 						break;
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 						delete node;
 
 						return nullptr;
@@ -268,26 +265,26 @@ namespace lyrics
 				}
 			}
 
-			Parser::mToken++;
+			mToken++;
 
 			return node;
 		}
 
-		static RoutineLiteralNode *RoutineLiteral( forward_list<Token>::const_iterator token )
+		RoutineLiteralNode *RoutineLiteral( forward_list<Token>::const_iterator token )
 		{
-			if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
+			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 			{
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 
 					return nullptr;
 				}
 
 				RoutineLiteralNode *node = new RoutineLiteralNode( token->location );
 
-				if ( Parser::mToken->type != static_cast<Token::Type>( u')' ) )
+				if ( mToken->type != static_cast<Token::Type>( u')' ) )
 				{
 					ParameterNode *parameter;
 					bool isValueParameter;
@@ -295,18 +292,18 @@ namespace lyrics
 
 					for (;;)
 					{
-						auto tToken = Parser::mToken;
+						auto tToken = mToken;
 
-						if ( Parser::mToken->type != Token::Type::OUT )
+						if ( mToken->type != Token::Type::OUT )
 						{
 							isValueParameter = true;
 						}
 						else
 						{
-							Parser::mToken++;
-							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+							mToken++;
+							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete node;
 
 								return nullptr;
@@ -315,14 +312,14 @@ namespace lyrics
 							isValueParameter = false;
 						}
 
-						if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+						if ( mToken->type == Token::Type::IDENTIFIER )
 						{
-							name = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
+							name = new IdentifierNode( mToken->location, mToken->value.identifier );
 
-							Parser::mToken++;
-							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+							mToken++;
+							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete name;
 								delete node;
 
@@ -331,13 +328,13 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME );
+							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME );
 							delete node;
 
 							return nullptr;
 						}
 
-						if ( Parser::mToken->type != static_cast<Token::Type>( u'=' ) )
+						if ( mToken->type != static_cast<Token::Type>( u'=' ) )
 						{
 							if ( isValueParameter )
 							{
@@ -350,10 +347,10 @@ namespace lyrics
 						}
 						else
 						{
-							Parser::mToken++;
-							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+							mToken++;
+							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete name;
 								delete node;
 
@@ -362,11 +359,11 @@ namespace lyrics
 
 							if ( isValueParameter )
 							{
-								parameter = new ValueParameterNode( tToken->location, name, Parser::Expression() );
+								parameter = new ValueParameterNode( tToken->location, name, Expression() );
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT );
+								ErrorHandler::Error( mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT );
 								delete name;
 								delete node;
 
@@ -376,24 +373,24 @@ namespace lyrics
 
 						node->AddParameter( parameter );
 
-						if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+						if ( mToken->type == static_cast<Token::Type>( u',' ) )
 						{
-							Parser::mToken++;
-							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+							mToken++;
+							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete node;
 
 								return nullptr;
 							}
 						}
-						else if ( Parser::mToken->type == static_cast<Token::Type>( u')' ) )
+						else if ( mToken->type == static_cast<Token::Type>( u')' ) )
 						{
 							break;
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete node;
 
 							return nullptr;
@@ -401,26 +398,26 @@ namespace lyrics
 					}
 				}
 
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 					delete node;
 
 					return nullptr;
 				}
 
-				node->block = Parser::Block();
+				node->block = Block();
 
-				if ( Parser::mToken->type == Token::Type::END )
+				if ( mToken->type == Token::Type::END )
 				{
-					Parser::mToken++;
+					mToken++;
 
 					return node;
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 					delete node;
 
 					return nullptr;
@@ -428,46 +425,46 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_PARAMETER );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PARAMETER );
 
 				return nullptr;
 			}
 		}
 
-		static ParenthesizedExpressionNode *ParenthesizedExpression()
+		ParenthesizedExpressionNode *ParenthesizedExpression()
 		{
-			ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( Parser::mToken->location );
+			ParenthesizedExpressionNode *node = new ParenthesizedExpressionNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 				delete node;
 
 				return nullptr;
 			}
 
-			node->expression = Parser::Expression();
+			node->expression = Expression();
 
-			if ( Parser::mToken->type == static_cast<Token::Type>( u')' ) )
+			if ( mToken->type == static_cast<Token::Type>( u')' ) )
 			{
-				Parser::mToken++;
+				mToken++;
 
 				return node;
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS );
 				delete node;
 
 				return nullptr;
 			}
 		}
 
-		static ExpressionNode *PostfixExpression()
+		ExpressionNode *PostfixExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::PrimaryExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = PrimaryExpression();
 
 			if ( expression == nullptr || ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::THIS ) )
 			{
@@ -476,25 +473,25 @@ namespace lyrics
 
 			for (;;)
 			{
-				if ( Parser::mToken->type == static_cast<Token::Type>( u'[' ) )
+				if ( mToken->type == static_cast<Token::Type>( u'[' ) )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_INDEX );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
 						delete expression;
 
 						return nullptr;
 					}
 
-					expression = new IndexReferenceNode( tToken->location, expression, Parser::Expression() );
+					expression = new IndexReferenceNode( tToken->location, expression, Expression() );
 
-					if ( Parser::mToken->type == static_cast<Token::Type>( u']' ) )
+					if ( mToken->type == static_cast<Token::Type>( u']' ) )
 					{
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+						mToken++;
+						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_INDEX );
+							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
 							delete expression;
 
 							return nullptr;
@@ -502,18 +499,18 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_INDEX );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
 						delete expression;
 
 						return nullptr;
 					}
 				}
-				else if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
+				else if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 						delete expression;
 
 						return nullptr;
@@ -521,30 +518,30 @@ namespace lyrics
 
 					RoutineCallNode *node = new RoutineCallNode( tToken->location, expression );
 
-					if ( Parser::mToken->type != static_cast<Token::Type>( u')' ) )
+					if ( mToken->type != static_cast<Token::Type>( u')' ) )
 					{
 						for (;;)
 						{
-							node->AddArgument( Parser::Expression() );
+							node->AddArgument( Expression() );
 
-							if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+							if ( mToken->type == static_cast<Token::Type>( u',' ) )
 							{
-								Parser::mToken++;
-								if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+								mToken++;
+								if ( mToken->type == Token::Type::END_OF_FILE )
 								{
-									ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
+									ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 									delete node;
 
 									return nullptr;
 								}
 							}
-							else if ( Parser::mToken->type == static_cast<Token::Type>( u')' ) )
+							else if ( mToken->type == static_cast<Token::Type>( u')' ) )
 							{
 								break;
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
+								ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 								delete node;
 
 								return nullptr;
@@ -552,29 +549,29 @@ namespace lyrics
 						}
 					}
 
-					Parser::mToken++;
+					mToken++;
 
 					return node;
 				}
-				else if ( Parser::mToken->type == static_cast<Token::Type>( u'.' ) )
+				else if ( mToken->type == static_cast<Token::Type>( u'.' ) )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_MEMBER );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
 						delete expression;
 
 						return nullptr;
 					}
 
-					if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+					if ( mToken->type == Token::Type::IDENTIFIER )
 					{
-						expression = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier ) );
+						expression = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mToken->location, mToken->value.identifier ) );
 
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+						mToken++;
+						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_MEMBER );
+							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
 							delete expression;
 
 							return nullptr;
@@ -582,7 +579,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_MEMBER );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
 						delete expression;
 
 						return nullptr;
@@ -595,197 +592,197 @@ namespace lyrics
 			}
 		}
 
-		static ExpressionNode *UnaryExpression()
+		ExpressionNode *UnaryExpression()
 		{
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 
 				return nullptr;
 			}
-			else if ( Parser::mToken->type != static_cast<Token::Type>( u'+' ) && Parser::mToken->type != static_cast<Token::Type>( u'-' ) && Parser::mToken->type != static_cast<Token::Type>( u'~' ) && Parser::mToken->type != static_cast<Token::Type>( u'!' ) )
+			else if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) && mToken->type != static_cast<Token::Type>( u'~' ) && mToken->type != static_cast<Token::Type>( u'!' ) )
 			{
-				return Parser::PostfixExpression();
+				return PostfixExpression();
 			}
 			else
 			{
-				return new UnaryExpressionNode( Parser::mToken->location, Parser::mToken++->type, Parser::UnaryExpression() );
+				return new UnaryExpressionNode( mToken->location, mToken++->type, UnaryExpression() );
 			}
 		}
 
-		static ExpressionNode *MultiplicativeExpression()
+		ExpressionNode *MultiplicativeExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::UnaryExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = UnaryExpression();
 
-			while ( Parser::mToken->type == static_cast<Token::Type>( u'*' ) || Parser::mToken->type == static_cast<Token::Type>( u'/' ) || Parser::mToken->type == static_cast<Token::Type>( u'%' ) )
+			while ( mToken->type == static_cast<Token::Type>( u'*' ) || mToken->type == static_cast<Token::Type>( u'/' ) || mToken->type == static_cast<Token::Type>( u'%' ) )
 			{
-				expression = new MultiplicativeExpressionNode( tToken->location, Parser::mToken++->type, expression, Parser::UnaryExpression() );
-			}
-
-			return expression;
-		}
-
-		static ExpressionNode *AdditiveExpression()
-		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::MultiplicativeExpression();
-
-			while ( Parser::mToken->type == static_cast<Token::Type>( u'+' ) || Parser::mToken->type == static_cast<Token::Type>( u'-' ) )
-			{
-				expression = new AdditiveExpressionNode( tToken->location, Parser::mToken++->type, expression, Parser::MultiplicativeExpression() );
+				expression = new MultiplicativeExpressionNode( tToken->location, mToken++->type, expression, UnaryExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *ShiftExpression()
+		ExpressionNode *AdditiveExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::AdditiveExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = MultiplicativeExpression();
 
-			while ( Parser::mToken->type == Token::Type::SHIFT_LEFT || Parser::mToken->type == Token::Type::SHIFT_RIGHT )
+			while ( mToken->type == static_cast<Token::Type>( u'+' ) || mToken->type == static_cast<Token::Type>( u'-' ) )
 			{
-				expression = new ShiftExpressionNode( tToken->location, Parser::mToken++->type, expression, Parser::AdditiveExpression() );
+				expression = new AdditiveExpressionNode( tToken->location, mToken++->type, expression, MultiplicativeExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *AndExpression()
+		ExpressionNode *ShiftExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::ShiftExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = AdditiveExpression();
 
-			while ( Parser::mToken->type == static_cast<Token::Type>( u'&' ) )
+			while ( mToken->type == Token::Type::SHIFT_LEFT || mToken->type == Token::Type::SHIFT_RIGHT )
 			{
-				Parser::mToken++;
+				expression = new ShiftExpressionNode( tToken->location, mToken++->type, expression, AdditiveExpression() );
+			}
 
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			return expression;
+		}
+
+		ExpressionNode *AndExpression()
+		{
+			auto tToken = mToken;
+			ExpressionNode *expression = ShiftExpression();
+
+			while ( mToken->type == static_cast<Token::Type>( u'&' ) )
+			{
+				mToken++;
+
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 					delete expression;
 
 					return nullptr;
 				}
 
-				expression = new AndExpressionNode( tToken->location, expression, Parser::ShiftExpression() );
+				expression = new AndExpressionNode( tToken->location, expression, ShiftExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *OrExpression()
+		ExpressionNode *OrExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::AndExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = AndExpression();
 
-			while ( Parser::mToken->type == static_cast<Token::Type>( u'|' ) || Parser::mToken->type == static_cast<Token::Type>( u'^' ) )
+			while ( mToken->type == static_cast<Token::Type>( u'|' ) || mToken->type == static_cast<Token::Type>( u'^' ) )
 			{
-				expression = new OrExpressionNode( tToken->location, Parser::mToken++->type, expression, Parser::AndExpression() );
+				expression = new OrExpressionNode( tToken->location, mToken++->type, expression, AndExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *RelationalExpression()
+		ExpressionNode *RelationalExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::OrExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = OrExpression();
 
-			while ( Parser::mToken->type == static_cast<Token::Type>( u'<' ) || Parser::mToken->type == static_cast<Token::Type>( u'>' ) || Parser::mToken->type == Token::Type::LESS_THAN_OR_EQUAL || Parser::mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
+			while ( mToken->type == static_cast<Token::Type>( u'<' ) || mToken->type == static_cast<Token::Type>( u'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
 			{
-				expression = new RelationalExpressionNode( tToken->location, Parser::mToken++->type, expression, Parser::OrExpression() );
+				expression = new RelationalExpressionNode( tToken->location, mToken++->type, expression, OrExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *EqualityExpression()
+		ExpressionNode *EqualityExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::RelationalExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = RelationalExpression();
 
-			while ( Parser::mToken->type == Token::Type::EQUAL || Parser::mToken->type == Token::Type::NOT_EQUAL )
+			while ( mToken->type == Token::Type::EQUAL || mToken->type == Token::Type::NOT_EQUAL )
 			{
-				expression = new EqualityExpressionNode( tToken->location, Parser::mToken++->type, expression, Parser::RelationalExpression() );
+				expression = new EqualityExpressionNode( tToken->location, mToken++->type, expression, RelationalExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *LogicalAndExpression()
+		ExpressionNode *LogicalAndExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::EqualityExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = EqualityExpression();
 
-			while ( Parser::mToken->type == Token::Type::AND )
+			while ( mToken->type == Token::Type::AND )
 			{
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 					delete expression;
 
 					return nullptr;
 				}
 
-				expression = new LogicalAndExpressionNode( tToken->location, expression, Parser::EqualityExpression() );
+				expression = new LogicalAndExpressionNode( tToken->location, expression, EqualityExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *LogicalOrExpression()
+		ExpressionNode *LogicalOrExpression()
 		{
-			auto tToken = Parser::mToken;
-			ExpressionNode *expression = Parser::LogicalAndExpression();
+			auto tToken = mToken;
+			ExpressionNode *expression = LogicalAndExpression();
 
-			while ( Parser::mToken->type == Token::Type::OR )
+			while ( mToken->type == Token::Type::OR )
 			{
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 					delete expression;
 
 					return nullptr;
 				}
 
-				expression = new LogicalOrExpressionNode( tToken->location, expression, Parser::LogicalAndExpression() );
+				expression = new LogicalOrExpressionNode( tToken->location, expression, LogicalAndExpression() );
 			}
 
 			return expression;
 		}
 
-		static ExpressionNode *AssignmentExpression()
+		ExpressionNode *AssignmentExpression()
 		{
-			auto tToken = Parser::mToken;
+			auto tToken = mToken;
 
-			switch ( Parser::mToken->type )
+			switch ( mToken->type )
 			{
 			case Token::Type::ROUTINE:
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+				mToken++;
+				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					IdentifierNode *identifier = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
+					IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
 
-					Parser::mToken++;
-					if ( Parser::mToken->type == static_cast<Token::Type>( u'.' ) )
+					mToken++;
+					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
 					{
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+						mToken++;
+						if ( mToken->type == Token::Type::IDENTIFIER )
 						{
-							IdentifierNode *member = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
+							IdentifierNode *member = new IdentifierNode( mToken->location, mToken->value.identifier );
 
-							Parser::mToken++;
-							if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
+							mToken++;
+							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 							{
-								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), Parser::RoutineLiteral( tToken ) );
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), RoutineLiteral( tToken ) );
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete identifier;
 								delete member;
 
@@ -794,44 +791,44 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete identifier;
 
 							return nullptr;
 						}
 					}
-					else if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					else if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 						delete identifier;
 
 						return nullptr;
 					}
 					else
 					{
-						return new AssignmentExpressionNode( tToken->location, identifier, Parser::RoutineLiteral( tToken ) );
+						return new AssignmentExpressionNode( tToken->location, identifier, RoutineLiteral( tToken ) );
 					}
 				}
-				else if ( Parser::mToken->type == Token::Type::THIS )
+				else if ( mToken->type == Token::Type::THIS )
 				{
-					ThisNode *thisNode = new ThisNode( Parser::mToken->location );
+					ThisNode *thisNode = new ThisNode( mToken->location );
 
-					Parser::mToken++;
-					if ( Parser::mToken->type == static_cast<Token::Type>( u'.' ) )
+					mToken++;
+					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
 					{
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+						mToken++;
+						if ( mToken->type == Token::Type::IDENTIFIER )
 						{
-							IdentifierNode *identifier = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
+							IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
 
-							Parser::mToken++;
-							if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
+							mToken++;
+							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 							{
-								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), Parser::RoutineLiteral( tToken ) );
+								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), RoutineLiteral( tToken ) );
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete thisNode;
 								delete identifier;
 
@@ -840,7 +837,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete thisNode;
 
 							return nullptr;
@@ -848,40 +845,40 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 						delete thisNode;
 
 						return nullptr;
 					}
 				}
-				else if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				else if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 
 					return nullptr;
 				}
 				else
 				{
-					Parser::mToken = tToken;
+					mToken = tToken;
 
-					return Parser::PrimaryExpression();
+					return PrimaryExpression();
 				}
 
 			case Token::Type::CLASS:
-				return Parser::Class();
+				return Class();
 
 			case Token::Type::PACKAGE:
-				return Parser::Package();
+				return Package();
 
 			case Token::Type::END_OF_FILE:
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 
 				return nullptr;
 
 			default:
-				ExpressionNode *expression = Parser::LogicalOrExpression();
+				ExpressionNode *expression = LogicalOrExpression();
 
-				if ( expression == nullptr || Parser::mToken->type != static_cast<Token::Type>( u'=' ) )
+				if ( expression == nullptr || mToken->type != static_cast<Token::Type>( u'=' ) )
 				{
 					return expression;
 				}
@@ -889,21 +886,21 @@ namespace lyrics
 				{
 					if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
 					{
-						Parser::mToken++;
+						mToken++;
 
-						if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 							delete expression;
 
 							return nullptr;
 						}
 
-						return new AssignmentExpressionNode( tToken->location, expression, Parser::AssignmentExpression() );
+						return new AssignmentExpressionNode( tToken->location, expression, AssignmentExpression() );
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_LHS );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
 						delete expression;
 
 						return nullptr;
@@ -912,54 +909,54 @@ namespace lyrics
 			}
 		}
 
-		static AssignmentExpressionNode *Class()
+		AssignmentExpressionNode *Class()
 		{
-			auto tToken = Parser::mToken;
+			auto tToken = mToken;
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+			mToken++;
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				IdentifierNode *name = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
+				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
 				ClassNode *node = new ClassNode( tToken->location );
 
-				Parser::mToken++;
-				if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
+				mToken++;
+				if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 						delete node;
 						delete name;
 
 						return nullptr;
 					}
 
-					if ( Parser::mToken->type != static_cast<Token::Type>( u')' ) )
+					if ( mToken->type != static_cast<Token::Type>( u')' ) )
 					{
 						for (;;)
 						{
-							node->AddArgument( Parser::Expression() );
+							node->AddArgument( Expression() );
 
-							if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+							if ( mToken->type == static_cast<Token::Type>( u',' ) )
 							{
-								Parser::mToken++;
-								if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+								mToken++;
+								if ( mToken->type == Token::Type::END_OF_FILE )
 								{
-									ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+									ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 									delete node;
 									delete name;
 
 									return nullptr;
 								}
 							}
-							else if ( Parser::mToken->type == static_cast<Token::Type>( u')' ) )
+							else if ( mToken->type == static_cast<Token::Type>( u')' ) )
 							{
 								break;
 							}
 							else
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 								delete node;
 								delete name;
 
@@ -970,61 +967,61 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 					delete node;
 					delete name;
 
 					return nullptr;
 				}
 
-				Parser::mToken++;
-				if ( Parser::mToken->type == static_cast<Token::Type>( u':' ) )
+				mToken++;
+				if ( mToken->type == static_cast<Token::Type>( u':' ) )
 				{
-					node->baseClassConstructorCall = new BaseClassConstructorCallNode( Parser::mToken->location );
+					node->baseClassConstructorCall = new BaseClassConstructorCallNode( mToken->location );
 
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+					mToken++;
+					if ( mToken->type == Token::Type::IDENTIFIER )
 					{
-						node->baseClassConstructorCall->baseClass = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
+						node->baseClassConstructorCall->baseClass = new IdentifierNode( mToken->location, mToken->value.identifier );
 
-						Parser::mToken++;
-						if ( Parser::mToken->type == static_cast<Token::Type>( u'(' ) )
+						mToken++;
+						if ( mToken->type == static_cast<Token::Type>( u'(' ) )
 						{
-							Parser::mToken++;
-							if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+							mToken++;
+							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 								delete node;
 								delete name;
 
 								return nullptr;
 							}
 
-							if ( Parser::mToken->type != static_cast<Token::Type>( u')' ) )
+							if ( mToken->type != static_cast<Token::Type>( u')' ) )
 							{
 								for (;;)
 								{
-									node->baseClassConstructorCall->AddArgument( Parser::Expression() );
+									node->baseClassConstructorCall->AddArgument( Expression() );
 
-									if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+									if ( mToken->type == static_cast<Token::Type>( u',' ) )
 									{
-										Parser::mToken++;
-										if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+										mToken++;
+										if ( mToken->type == Token::Type::END_OF_FILE )
 										{
-											ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+											ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 											delete node;
 											delete name;
 
 											return nullptr;
 										}
 									}
-									else if ( Parser::mToken->type == static_cast<Token::Type>( u')' ) )
+									else if ( mToken->type == static_cast<Token::Type>( u')' ) )
 									{
 										break;
 									}
 									else
 									{
-										ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+										ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 										delete node;
 										delete name;
 
@@ -1035,7 +1032,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 							delete node;
 							delete name;
 
@@ -1044,7 +1041,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_BASE_CLASS );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_BASE_CLASS );
 						delete node;
 						delete name;
 
@@ -1052,23 +1049,23 @@ namespace lyrics
 					}
 				}
 
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::INCLUDE )
+				mToken++;
+				if ( mToken->type == Token::Type::INCLUDE )
 				{
-					node->include = Parser::Include();
+					node->include = Include();
 				}
 
 				Token::Type accessSpecifier;
-				auto tToken = Parser::mToken;
+				auto tToken = mToken;
 
-				node->accessSpecifiedBlockList = new AccessSpecifiedBlockListNode( Parser::mToken->location );
+				node->accessSpecifiedBlockList = new AccessSpecifiedBlockListNode( mToken->location );
 
-				switch ( Parser::mToken->type )
+				switch ( mToken->type )
 				{
 				case Token::Type::PRIVATE:
 				case Token::Type::PUBLIC:
-					accessSpecifier = Parser::mToken->type;
-					Parser::mToken++;
+					accessSpecifier = mToken->type;
+					mToken++;
 					break;
 
 				default:
@@ -1078,32 +1075,32 @@ namespace lyrics
 
 				for (;;)
 				{
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 						delete node;
 						delete name;
 
 						return nullptr;
 					}
 
-					node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Parser::Block() ) );
+					node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
 
-					switch ( Parser::mToken->type )
+					switch ( mToken->type )
 					{
 					case Token::Type::PRIVATE:
 					case Token::Type::PUBLIC:
-						accessSpecifier = Parser::mToken->type;
-						tToken = Parser::mToken++;
+						accessSpecifier = mToken->type;
+						tToken = mToken++;
 						break;
 
 					case Token::Type::END:
-						Parser::mToken++;
+						mToken++;
 
 						return new AssignmentExpressionNode( tToken->location, name, node );
 
 					default:
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 						delete name;
 
@@ -1113,56 +1110,56 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_CLASS_NAME );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_CLASS_NAME );
 
 				return nullptr;
 			}
 		}
 
-		static IncludeNode *Include()
+		IncludeNode *Include()
 		{
-			IncludeNode *node = new IncludeNode( Parser::mToken->location );
+			IncludeNode *node = new IncludeNode( mToken->location );
 
 			do
 			{
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+				mToken++;
+				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					node->AddPackage( new IdentifierNode( Parser::mToken->location, Parser::mToken++->value.identifier ) );
+					node->AddPackage( new IdentifierNode( mToken->location, mToken++->value.identifier ) );
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_PACKAGE );
+					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PACKAGE );
 					delete node;
 
 					return nullptr;
 				}
 			}
-			while ( Parser::mToken->type == static_cast<Token::Type>( u',' ) );
+			while ( mToken->type == static_cast<Token::Type>( u',' ) );
 
 			return node;
 		}
 
-		static AssignmentExpressionNode *Package()
+		AssignmentExpressionNode *Package()
 		{
-			auto tToken = Parser::mToken;
+			auto tToken = mToken;
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+			mToken++;
+			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
-				IdentifierNode *name = new IdentifierNode( Parser::mToken->location, Parser::mToken->value.identifier );
-				PackageNode *node = new PackageNode( tToken->location, Parser::Block() );
+				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
+				PackageNode *node = new PackageNode( tToken->location, Block() );
 
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END )
+				mToken++;
+				if ( mToken->type == Token::Type::END )
 				{
-					Parser::mToken++;
+					mToken++;
 
 					return new AssignmentExpressionNode( tToken->location, name, node );
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 					delete node;
 					delete name;
 
@@ -1171,115 +1168,115 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME );
 
 				return nullptr;
 			}
 		}
 
-		static ExpressionNode *Expression()
+		ExpressionNode *Expression()
 		{
-			return Parser::AssignmentExpression();
+			return AssignmentExpression();
 		}
 
-		static ImportNode *Import()
+		ImportNode *Import()
 		{
-			ImportNode *node = new ImportNode( Parser::mToken->location );
+			ImportNode *node = new ImportNode( mToken->location );
 
 			do
 			{
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::IDENTIFIER )
+				mToken++;
+				if ( mToken->type == Token::Type::IDENTIFIER )
 				{
-					node->AddIdentifier( new IdentifierNode( Parser::mToken->location, Parser::mToken++->value.identifier ) );
+					node->AddIdentifier( new IdentifierNode( mToken->location, mToken++->value.identifier ) );
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_IDENTIFIER );
+					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_IDENTIFIER );
 					delete node;
 
 					return nullptr;
 				}
 			}
-			while ( Parser::mToken->type == static_cast<Token::Type>( u'.' ) );
+			while ( mToken->type == static_cast<Token::Type>( u'.' ) );
 
 			return node;
 		}
 
-		static IfNode *If()
+		IfNode *If()
 		{
-			IfNode *node = new IfNode( Parser::mToken->location );
+			IfNode *node = new IfNode( mToken->location );
 			ElseIfNode *elseIfNode;
 
 			for (;;)
 			{
-				elseIfNode = new ElseIfNode( Parser::mToken->location );
+				elseIfNode = new ElseIfNode( mToken->location );
 
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 					delete elseIfNode;
 					delete node;
 
 					return nullptr;
 				}
 
-				elseIfNode->condition = Parser::Expression();
+				elseIfNode->condition = Expression();
 
-				if ( Parser::mToken->type == Token::Type::THEN || Parser::mToken->type == static_cast<Token::Type>( u':' ) )
+				if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 				{
-					Parser::mToken++;
+					mToken++;
 				}
 
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 					delete elseIfNode;
 					delete node;
 
 					return nullptr;
 				}
 
-				elseIfNode->block = Parser::Block();
+				elseIfNode->block = Block();
 				node->AddElseIf( elseIfNode );
 
-				if ( Parser::mToken->type == Token::Type::END )
+				if ( mToken->type == Token::Type::END )
 				{
-					Parser::mToken++;
+					mToken++;
 
 					return node;
 				}
-				else if ( Parser::mToken->type == Token::Type::ELSE )
+				else if ( mToken->type == Token::Type::ELSE )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 						delete node;
 
 						return nullptr;
 					}
 
-					node->block = Parser::Block();
+					node->block = Block();
 
-					if ( Parser::mToken->type == Token::Type::END )
+					if ( mToken->type == Token::Type::END )
 					{
-						Parser::mToken++;
+						mToken++;
 
 						return node;
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 
 						return nullptr;
 					}
 				}
-				else if ( Parser::mToken->type != Token::Type::ELSEIF )
+				else if ( mToken->type != Token::Type::ELSEIF )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF );
+					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF );
 					delete node;
 
 					return nullptr;
@@ -1287,94 +1284,94 @@ namespace lyrics
 			}
 		}
 
-		static CaseNode *Case()
+		CaseNode *Case()
 		{
-			CaseNode *node = new CaseNode( Parser::mToken->location );
+			CaseNode *node = new CaseNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 				delete node;
 
 				return nullptr;
 			}
 
-			node->value = Parser::Expression();
+			node->value = Expression();
 
-			if ( Parser::mToken->type == Token::Type::WHEN )
+			if ( mToken->type == Token::Type::WHEN )
 			{
 				WhenNode *whenNode;
 
 				for (;;)
 				{
-					whenNode = new WhenNode( Parser::mToken->location );
+					whenNode = new WhenNode( mToken->location );
 
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 						delete whenNode;
 						delete node;
 
 						return nullptr;
 					}
 
-					whenNode->condition = Parser::Expression();
+					whenNode->condition = Expression();
 
-					if ( Parser::mToken->type == Token::Type::THEN || Parser::mToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
 					{
-						Parser::mToken++;
+						mToken++;
 					}
 
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 						delete whenNode;
 						delete node;
 
 						return nullptr;
 					}
 
-					whenNode->block = Parser::Block();
+					whenNode->block = Block();
 					node->AddWhen( whenNode );
 
-					if ( Parser::mToken->type == Token::Type::ELSE )
+					if ( mToken->type == Token::Type::ELSE )
 					{
-						Parser::mToken++;
-						if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+						mToken++;
+						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 							delete node;
 
 							return nullptr;
 						}
 
-						node->block = Parser::Block();
+						node->block = Block();
 
-						if ( Parser::mToken->type == Token::Type::END )
+						if ( mToken->type == Token::Type::END )
 						{
-							Parser::mToken++;
+							mToken++;
 
 							return node;
 						}
 						else
 						{
-							ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 							delete node;
 
 							return nullptr;
 						}
 					}
-					else if ( Parser::mToken->type == Token::Type::END )
+					else if ( mToken->type == Token::Type::END )
 					{
-						Parser::mToken++;
+						mToken++;
 
 						return node;
 					}
-					else if ( Parser::mToken->type != Token::Type::WHEN )
+					else if ( mToken->type != Token::Type::WHEN )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF );
 						delete node;
 
 						return nullptr;
@@ -1383,123 +1380,123 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_WHEN );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_WHEN );
 				delete node;
 
 				return nullptr;
 			}
 		}
 
-		static WhileNode *While()
+		WhileNode *While()
 		{
-			WhileNode *node = new WhileNode( Parser::mToken->location );
+			WhileNode *node = new WhileNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
 				delete node;
 
 				return nullptr;
 			}
 
-			node->condition = Parser::Expression();
+			node->condition = Expression();
 
-			if ( Parser::mToken->type == Token::Type::DO || Parser::mToken->type == static_cast<Token::Type>( u':' ) )
+			if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 			{
-				Parser::mToken++;
+				mToken++;
 			}
 
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
 				delete node;
 
 				return nullptr;
 			}
 
-			node->block = Parser::Block();
+			node->block = Block();
 
-			if ( Parser::mToken->type == Token::Type::END )
+			if ( mToken->type == Token::Type::END )
 			{
-				Parser::mToken++;
+				mToken++;
 
 				return node;
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 				delete node;
 
 				return nullptr;
 			}
 		}
 
-		static ForNode *For()
+		ForNode *For()
 		{
-			ForNode *node = new ForNode( Parser::mToken->location );
+			ForNode *node = new ForNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 				delete node;
 
 				return nullptr;
 			}
 
-			node->initializer = Parser::Expression();
+			node->initializer = Expression();
 
-			if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+			if ( mToken->type == static_cast<Token::Type>( u',' ) )
 			{
-				Parser::mToken++;
-				if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+				mToken++;
+				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 					delete node;
 
 					return nullptr;
 				}
 
-				node->condition = Parser::Expression();
+				node->condition = Expression();
 
-				if ( Parser::mToken->type == static_cast<Token::Type>( u',' ) )
+				if ( mToken->type == static_cast<Token::Type>( u',' ) )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 						delete node;
 
 						return nullptr;
 					}
 
-					node->iterator = Parser::Expression();
+					node->iterator = Expression();
 
-					if ( Parser::mToken->type == Token::Type::DO || Parser::mToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 					{
-						Parser::mToken++;
+						mToken++;
 					}
 
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 						delete node;
 
 						return nullptr;
 					}
 
-					node->block = Parser::Block();
+					node->block = Block();
 
-					if ( Parser::mToken->type == Token::Type::END )
+					if ( mToken->type == Token::Type::END )
 					{
-						Parser::mToken++;
+						mToken++;
 
 						return node;
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 
 						return nullptr;
@@ -1507,7 +1504,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 					delete node;
 
 					return nullptr;
@@ -1515,75 +1512,75 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 				delete node;
 
 				return nullptr;
 			}
 		}
 
-		static ForEachNode *ForEach()
+		ForEachNode *ForEach()
 		{
-			ForEachNode *node = new ForEachNode( Parser::mToken->location );
+			ForEachNode *node = new ForEachNode( mToken->location );
 
-			Parser::mToken++;
-			if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+			mToken++;
+			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 				delete node;
 
 				return nullptr;
 			}
 
-			node->variable = Parser::Expression();
+			node->variable = Expression();
 
 			if ( node->variable ->GetType() == Node::Type::IDENTIFIER || node->variable ->GetType() == Node::Type::MEMBER_REFERENCE || node->variable ->GetType() == Node::Type::INDEX_REFERENCE )
 			{
-				if ( Parser::mToken->type == Token::Type::IN )
+				if ( mToken->type == Token::Type::IN )
 				{
-					Parser::mToken++;
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					mToken++;
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 						delete node;
 
 						return nullptr;
 					}
 
-					node->collection = Parser::Expression();
+					node->collection = Expression();
 
 					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_LHS );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
 						delete node;
 
 						return nullptr;
 					}
 
-					if ( Parser::mToken->type == Token::Type::DO || Parser::mToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
 					{
-						Parser::mToken++;
+						mToken++;
 					}
 
-					if ( Parser::mToken->type == Token::Type::END_OF_FILE )
+					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 						delete node;
 
 						return nullptr;
 					}
 
-					node->block = Parser::Block();
+					node->block = Block();
 
-					if ( Parser::mToken->type == Token::Type::END )
+					if ( mToken->type == Token::Type::END )
 					{
-						Parser::mToken++;
+						mToken++;
 
 						return node;
 					}
 					else
 					{
-						ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 
 						return nullptr;
@@ -1591,7 +1588,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( Parser::mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 					delete node;
 
 					return nullptr;
@@ -1599,36 +1596,36 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( Parser::mToken->location, ErrorCode::EXPECTED_LHS );
+				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
 				delete node;
 
 				return nullptr;
 			}
 		}
 
-		static BreakNode *Break()
+		BreakNode *Break()
 		{
-			return new BreakNode( Parser::mToken++->location );
+			return new BreakNode( mToken++->location );
 		}
 
-		static NextNode *Next()
+		NextNode *Next()
 		{
-			return new NextNode( Parser::mToken++->location );
+			return new NextNode( mToken++->location );
 		}
 
-		static ReturnNode *Return()
+		ReturnNode *Return()
 		{
-			auto tToken = Parser::mToken;
+			auto tToken = mToken;
 
-			Parser::mToken++;
+			mToken++;
 
-			if ( Parser::mToken->type == Token::Type::END || Parser::mToken->type == Token::Type::ELSE || Parser::mToken->type == Token::Type::ELSEIF || Parser::mToken->type == Token::Type::PRIVATE || Parser::mToken->type == Token::Type::PUBLIC || Parser::mToken->type == Token::Type::WHEN || Parser::mToken->type == Token::Type::END_OF_FILE )
+			if ( mToken->type == Token::Type::END || mToken->type == Token::Type::ELSE || mToken->type == Token::Type::ELSEIF || mToken->type == Token::Type::PRIVATE || mToken->type == Token::Type::PUBLIC || mToken->type == Token::Type::WHEN || mToken->type == Token::Type::END_OF_FILE )
 			{
 				return new ReturnNode( tToken->location );
 			}
 			else
 			{
-				return new ReturnNode( tToken->location, Parser::Expression() );
+				return new ReturnNode( tToken->location, Expression() );
 			}
 		}
 	};

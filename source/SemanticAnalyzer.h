@@ -24,7 +24,7 @@ namespace lyrics
 		{
 			Scope *top;
 
-			if ( !Parser::Parse( fileName, root ) )
+			if ( !Parser().Parse( fileName, root ) )
 			{
 				return false;
 			}

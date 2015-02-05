@@ -39,8 +39,6 @@ namespace lyrics
 	const u16string Tokenizer::WHEN = u"when";
 	const u16string Tokenizer::WHILE = u"while";
 
-	forward_list<Token>::const_iterator Parser::mToken;
-
 	constexpr char ErrorHandler::WARNING[];
 	constexpr char ErrorHandler::ERROR[];
 	constexpr char ErrorHandler::FATAL_ERROR[];
