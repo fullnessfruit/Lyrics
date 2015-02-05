@@ -3,12 +3,11 @@
 
 #include "Token.h"
 #include "Location.h"
-#include "TextLoader.h"
-
 #include "WarningCode.h"
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
 #include "ErrorHandler.h"
+#include "UnicodeTextLoader.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER
@@ -27,7 +26,7 @@ namespace lyrics
 	public:
 		static bool Tokenize( const string fileName, forward_list<Token> &tokenList )
 		{
-			if ( !TextLoader().LoadText( fileName, Tokenizer::mText, Tokenizer::mTextLength ) )
+			if ( !UnicodeTextLoader().LoadText( fileName, Tokenizer::mText, Tokenizer::mTextLength ) )
 			{
 				ErrorHandler::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;
