@@ -24,7 +24,7 @@ namespace lyrics
 				return false;
 			}
 
-			text = UnicodeTextLoader::ConvertToUTF16( ( unsigned char * )data, size, length );
+			text = UnicodeTextLoader::ConvertToUTF16( ( const unsigned char * const )data, size, length );
 			delete [] data;
 			if ( !text )
 			{
