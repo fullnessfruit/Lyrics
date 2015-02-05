@@ -26,7 +26,7 @@ namespace lyrics
 		{
 			forward_list<Token> tokenList;
 
-			if ( !Tokenizer::Tokenize( fileName, tokenList ) )
+			if ( !Tokenizer().Tokenize( fileName, tokenList ) )
 			{
 				return false;
 			}
