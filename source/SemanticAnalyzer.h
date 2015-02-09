@@ -16,11 +16,8 @@ namespace lyrics
 
 	class SemanticAnalyzer
 	{
-	private:
-		SemanticAnalyzer() = delete;
-
 	public:
-		static bool SemanticAnalysis( const string fileName, BlockNode *&root )
+		bool SemanticAnalysis( const string fileName, BlockNode *&root )
 		{
 			Scope *top;
 

@@ -31,7 +31,7 @@ namespace lyrics
 
 			BlockNode *root = nullptr;
 
-			if ( !SemanticAnalyzer::SemanticAnalysis( option.GetSourceFileName(), root ) )
+			if ( !SemanticAnalyzer().SemanticAnalysis( option.GetSourceFileName(), root ) )
 			{
 				delete root;
 
