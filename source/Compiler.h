@@ -20,7 +20,7 @@ namespace lyrics
 	public:
 		bool Compile( const Option &option )
 		{
-			if ( option.GetSourceFileName().empty() )
+			if ( option.SourceCodeFileName().empty() )
 			{
 				ErrorHandler::FatalError( FatalErrorCode::NO_INPUT_FILES );
 				return false;
@@ -28,7 +28,7 @@ namespace lyrics
 
 			BlockNode *root = nullptr;
 
-			if ( !SemanticAnalyzer().SemanticAnalysis( option.GetSourceFileName(), root ) )
+			if ( !SemanticAnalyzer().SemanticAnalysis( option.SourceCodeFileName(), root ) )
 			{
 				delete root;
 

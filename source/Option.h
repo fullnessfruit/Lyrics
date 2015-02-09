@@ -18,23 +18,23 @@ namespace lyrics
 				{
 					if ( argv[i][1] == 's' && argv[i][2] == '\0' )
 					{
-						mSourceFileName = argv[++i];
+						mSourceCodeFileName = argv[++i];
 					}
 				}
 				else
 				{
-					mSourceFileName = argv[i];
+					mSourceCodeFileName = argv[i];
 				}
 			}
 		}
 
-		const string GetSourceFileName() const
+		const string SourceCodeFileName() const
 		{
-			return mSourceFileName;
+			return mSourceCodeFileName;
 		}
 
 	private:
-		string mSourceFileName;
+		string mSourceCodeFileName;
 	};
 }
 
