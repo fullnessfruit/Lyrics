@@ -51,7 +51,7 @@ int main( int argc, char *argv[] )
 
 	const Option option = Option( argc, argv );
 
-	if ( !Compiler::Compile( option ) )
+	if ( !Compiler().Compile( option ) )
 	{
 		// TODO:
 		return 0;

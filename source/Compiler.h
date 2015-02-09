@@ -17,11 +17,8 @@ namespace lyrics
 
 	class Compiler
 	{
-	private:
-		Compiler() = delete;
-
 	public:
-		static bool Compile( const Option &option )
+		bool Compile( const Option &option )
 		{
 			if ( option.GetSourceFileName().empty() )
 			{
