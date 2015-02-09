@@ -526,7 +526,7 @@ namespace lyrics
 
 					while ( !scope->IsExist( identifier ) )
 					{
-						scope = scope->GetParent();
+						scope = scope->Parent();
 
 						if ( !scope )
 						{

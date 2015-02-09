@@ -30,7 +30,7 @@ namespace lyrics
 			}
 		}
 
-		const Scope *GetParent() const
+		const Scope *Parent() const
 		{
 			return mParent;
 		}
