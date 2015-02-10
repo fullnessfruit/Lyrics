@@ -49,15 +49,12 @@ namespace lyrics
 		bool IStreamSize( istream &input, unsigned int &size )
 		{
 			using std::ios_base;
-			using std::streamoff;
-
-			streamoff off;
 
 			input.seekg( 0, ios_base::end );
-			off = input.tellg();
+			auto off = input.tellg();
 			input.seekg( 0, ios_base::beg );
 
-			if ( off == -1 )
+			if ( off == decltype( off )( -1 ) )
 			{
 				return false;
 			}
