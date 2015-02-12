@@ -23,7 +23,7 @@ namespace lyrics
 	public:
 		bool Tokenize( const string fileName, forward_list<Token> &tokenList )
 		{
-			if ( !UnicodeTextLoader().LoadUnicodeText( fileName, mText, mTextLength ) )
+			if ( !UnicodeTextLoader().Load( fileName, mText, mTextLength ) )
 			{
 				ErrorHandler::FatalError( FatalErrorCode::NO_SUCH_FILE );
 				return false;

@@ -13,12 +13,12 @@ namespace lyrics
 	class UnicodeTextLoader : public Loader
 	{
 	public:
-		bool LoadUnicodeText( const string name, char16_t *&text, unsigned int &length )
+		bool Load( const string name, char16_t *&text, unsigned int &length )
 		{
 			char *data = nullptr;
 			unsigned int size = 0;
 
-			if ( !Load( name, data, size ) )
+			if ( !Loader::Load( name, data, size ) )
 			{
 				// TODO:
 				return false;
