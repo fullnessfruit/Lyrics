@@ -19,7 +19,7 @@ namespace lyrics
 
 			ifstream input( name, ios::in | ios::binary );
 
-			if ( !input )
+			if ( input.rdstate() == ios_base::failbit )
 			{
 				// TODO:
 				return false;
