@@ -21,7 +21,7 @@ namespace lyrics
 	class Tokenizer
 	{
 	public:
-		bool Tokenize( const string fileName, forward_list<Token> &tokenList )
+		bool Tokenize( const string &fileName, forward_list<Token> &tokenList )
 		{
 			if ( !UnicodeTextLoader().Load( fileName, mText, mTextLength ) )
 			{

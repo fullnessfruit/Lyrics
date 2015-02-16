@@ -12,7 +12,7 @@ namespace lyrics
 	class Loader
 	{
 	public:
-		bool Load( const string name, char *&data, unsigned int &size )
+		bool Load( const string &name, char *&data, unsigned int &size )
 		{
 			using std::ios;
 			using std::ios_base;

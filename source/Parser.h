@@ -19,7 +19,7 @@ namespace lyrics
 	class Parser
 	{
 	public:
-		bool Parse( const string fileName, BlockNode *&root )
+		bool Parse( const string &fileName, BlockNode *&root )
 		{
 			forward_list<Token> tokenList;
 
