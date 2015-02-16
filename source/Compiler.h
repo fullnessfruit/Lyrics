@@ -1,5 +1,3 @@
-#include <string>
-
 #include "Option.h"
 
 #include "SemanticAnalyzer.h"
@@ -13,8 +11,6 @@
 
 namespace lyrics
 {
-	using std::string;
-
 	class Compiler
 	{
 	public:

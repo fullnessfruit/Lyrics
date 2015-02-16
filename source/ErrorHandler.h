@@ -9,8 +9,6 @@
 
 namespace lyrics
 {
-	using std::string;
-
 	class ErrorHandler
 	{
 	private:
