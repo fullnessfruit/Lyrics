@@ -6,6 +6,9 @@
 #include "Token.h"
 #include "Compiler.h"
 
+#include "FatalErrorCode.h"
+#include "ErrorHandler.h"
+
 namespace lyrics
 {
 	using std::u16string;
@@ -51,9 +54,18 @@ int main( int argc, char *argv[] )
 
 	const Option option = Option( argc, argv );
 
-	if ( !Compiler().Compile( option ) )
+	try
 	{
-		// TODO:
+		if ( !Compiler().Compile( option ) )
+		{
+			// TODO:
+			return 1;
+		}
+	}
+	catch ( lyrics::FatalErrorCode fatalErrorCode )
+	{
+		lyrics::ErrorHandler::FatalError( fatalErrorCode );
+
 		return 1;
 	}
 
