@@ -175,8 +175,8 @@ namespace lyrics
 		{
 			switch ( fatalErrorCode )
 			{
-			case FatalErrorCode::NO_INPUT_FILES:
-				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "No input files." );
+			case FatalErrorCode::NO_INPUT_FILE:
+				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "No input file." );
 				break;
 
 			case FatalErrorCode::NO_SUCH_FILE:

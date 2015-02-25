@@ -17,7 +17,7 @@ namespace lyrics
 		{
 			if ( option.SourceCodeFileName().empty() )
 			{
-				throw FatalErrorCode::NO_INPUT_FILES;
+				throw FatalErrorCode::NO_INPUT_FILE;
 			}
 
 			BlockNode *root = nullptr;

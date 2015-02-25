@@ -5,7 +5,7 @@ namespace lyrics
 {
 	enum class FatalErrorCode: unsigned int
 	{
-		NO_INPUT_FILES = 1001,
+		NO_INPUT_FILE = 1001,
 		NO_SUCH_FILE = 2001
 	};
 }
