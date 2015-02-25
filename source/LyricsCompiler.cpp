@@ -2,7 +2,6 @@
 #include <forward_list>
 
 #include "Option.h"
-
 #include "Token.h"
 #include "Compiler.h"
 
