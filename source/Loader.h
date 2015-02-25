@@ -1,5 +1,6 @@
 #include <string>
 #include <fstream>
+#include <new>
 
 #ifndef LOADER
 #define LOADER
@@ -16,6 +17,7 @@ namespace lyrics
 		{
 			using std::ios;
 			using std::ios_base;
+			using std::bad_alloc;
 
 			ifstream input( name, ios::in | ios::binary );
 
@@ -31,8 +33,11 @@ namespace lyrics
 				return false;
 			}
 
-			data = new char [size];
-			if ( data == nullptr )
+			try
+			{
+				data = new char [size];
+			}
+			catch ( const bad_alloc &e )
 			{
 				// TODO:
 				return false;
