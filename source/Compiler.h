@@ -3,7 +3,6 @@
 #include "SemanticAnalyzer.h"
 
 #include "FatalErrorCode.h"
-#include "ErrorHandler.h"
 #include "Logger.h"
 
 #ifndef COMPILER
@@ -18,8 +17,7 @@ namespace lyrics
 		{
 			if ( option.SourceCodeFileName().empty() )
 			{
-				ErrorHandler::FatalError( FatalErrorCode::NO_INPUT_FILES );
-				return false;
+				throw FatalErrorCode::NO_INPUT_FILES;
 			}
 
 			BlockNode *root = nullptr;
