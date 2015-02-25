@@ -61,7 +61,7 @@ int main( int argc, char *argv[] )
 			return 1;
 		}
 	}
-	catch ( lyrics::FatalErrorCode fatalErrorCode )
+	catch ( lyrics::FatalErrorCode &fatalErrorCode )
 	{
 		lyrics::ErrorHandler::FatalError( fatalErrorCode );
 
