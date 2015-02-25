@@ -27,9 +27,9 @@ namespace lyrics
 			cout << logType << ' ' << code << ": " << message << endl;
 		}
 
-		static void BuildTerminated()
+		static void CompilationTerminated()
 		{
-			cout << "Build terminated." << endl;
+			cout << "Compilation terminated." << endl;
 		}
 
 		static void StandardError( const Location location, const char logType[], const unsigned int code )

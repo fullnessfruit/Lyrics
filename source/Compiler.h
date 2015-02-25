@@ -29,7 +29,7 @@ namespace lyrics
 				return false;
 			}
 
-			Logger::BuildTerminated();
+			Logger::CompilationTerminated();
 
 			return true;
 		}
