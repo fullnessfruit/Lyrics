@@ -7,7 +7,7 @@
 #include "ErrorCode.h"
 #include "ErrorHandler.h"
 #include "FatalErrorCode.h"
-#include "UnicodeTextLoader.h"
+#include "TextLoader.h"
 
 #ifndef TOKENIZER
 #define TOKENIZER
