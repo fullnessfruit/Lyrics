@@ -36,10 +36,6 @@ namespace lyrics
 			}
 
 			delete [] data;
-			if ( !text )
-			{
-				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
-			}
 
 			return text;
 		}
