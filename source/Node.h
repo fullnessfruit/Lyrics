@@ -84,8 +84,6 @@ namespace lyrics
 				class ClassNode;
 					class BaseClassConstructorCallNode;
 					class IncludeNode;
-					class AccessSpecifiedBlockListNode;
-					class AccessSpecifiedBlockNode;
 				class PackageNode;
 		class ImportNode;
 		class SelectionNode;
@@ -1002,70 +1000,10 @@ namespace lyrics
 		}
 	};
 
-	class AccessSpecifiedBlockNode: public Node
-	{
-	public:
-		AccessSpecifiedBlockNode( const Location &location, const Token::Type accessSpecifier, const BlockNode * const block ) : Node( location ), accessSpecifier( accessSpecifier ), block( block )
-		{
-		}
-
-		~AccessSpecifiedBlockNode()
-		{
-			delete block;
-		}
-
-		const Token::Type accessSpecifier;
-		const BlockNode * const block;
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ACCESS_SPECIFIED_BLOCK;
-		}
-	};
-
-	class AccessSpecifiedBlockListNode: public Node
-	{
-	public:
-		explicit AccessSpecifiedBlockListNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
-		{
-		}
-
-		~AccessSpecifiedBlockListNode()
-		{
-			for ( auto i : list )
-			{
-				delete i;
-			}
-		}
-
-		forward_list<AccessSpecifiedBlockNode *> list;
-		forward_list<AccessSpecifiedBlockNode *>::const_iterator last;
-
-		virtual bool Accept( Visitor &visitor ) const
-		{
-			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ACCESS_SPECIFIED_BLOCK_LIST;
-		}
-
-		void AddAccessSpecifiedBlock( AccessSpecifiedBlockNode * const node )
-		{
-			last = list.insert_after( last, node );
-		}
-	};
-
 	class ClassNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), baseClassConstructorCall( nullptr ), include( nullptr ), accessSpecifiedBlockList( nullptr )
+		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), baseClassConstructorCall( nullptr ), include( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1077,14 +1015,14 @@ namespace lyrics
 			}
 			delete baseClassConstructorCall;
 			delete include;
-			delete accessSpecifiedBlockList;
+			delete block;
 		}
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
 		BaseClassConstructorCallNode *baseClassConstructorCall;
 		IncludeNode *include;
-		AccessSpecifiedBlockListNode *accessSpecifiedBlockList;
+		BlockNode *block;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{

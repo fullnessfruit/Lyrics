@@ -26,7 +26,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -45,7 +45,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -64,7 +64,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -81,7 +81,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->value )
@@ -90,7 +90,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -108,7 +108,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -118,7 +118,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -134,7 +134,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->defalutArgument )
@@ -155,7 +155,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -171,7 +171,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -187,7 +187,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->index )
@@ -196,7 +196,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -212,7 +212,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			for ( auto i : node->list )
@@ -223,7 +223,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -240,7 +240,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->member )
@@ -249,7 +249,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -265,7 +265,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -281,7 +281,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -290,7 +290,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -306,7 +306,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -315,7 +315,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -331,7 +331,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -340,7 +340,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -356,7 +356,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -365,7 +365,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -381,7 +381,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -390,7 +390,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -406,7 +406,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -415,7 +415,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -431,7 +431,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -440,7 +440,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -456,7 +456,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -465,7 +465,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -481,7 +481,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->right )
@@ -490,7 +490,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -506,7 +506,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->rhs )
@@ -515,7 +515,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -533,7 +533,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -547,9 +547,9 @@ namespace lyrics
 				canProgress &= node->include->Accept( *this );
 			}
 
-			if ( node->accessSpecifiedBlockList )
+			if ( node->block )
 			{
-				canProgress &= node->accessSpecifiedBlockList->Accept( *this );
+				canProgress &= node->block->Accept( *this );
 			}
 			else
 			{
@@ -580,7 +580,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -599,43 +599,8 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const AccessSpecifiedBlockListNode * const node )
-		{
-			bool canProgress = true;
-
-			for ( auto i : node->list )
-			{
-				if ( i )
-				{
-					canProgress &= i->Accept( *this );
-				}
-				else
-				{
-					canProgress &= false;
-				}
-			}
-
-			return canProgress;
-		}
-
-		virtual bool Visit( const AccessSpecifiedBlockNode * const node )
-		{
-			bool canProgress = true;
-
-			if ( node->block )
-			{
-				canProgress &= node->block->Accept( *this );
-			}
-			else
-			{
-				canProgress = false;
 			}
 
 			return canProgress;
@@ -651,7 +616,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -669,7 +634,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -688,7 +653,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -710,7 +675,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->block )
@@ -719,7 +684,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -735,7 +700,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			for ( auto i : node->list )
@@ -746,7 +711,7 @@ namespace lyrics
 				}
 				else
 				{
-					canProgress &= false;
+					canProgress = false;
 				}
 			}
 
@@ -768,7 +733,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->block )
@@ -777,7 +742,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -793,7 +758,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->block )
@@ -802,7 +767,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -818,7 +783,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->condition )
@@ -827,7 +792,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->iterator )
@@ -836,7 +801,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->block )
@@ -845,7 +810,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;
@@ -861,7 +826,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->collection )
@@ -870,7 +835,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			if ( node->block )
@@ -879,7 +844,7 @@ namespace lyrics
 			}
 			else
 			{
-				canProgress &= false;
+				canProgress = false;
 			}
 
 			return canProgress;

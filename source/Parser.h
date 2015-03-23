@@ -1055,57 +1055,22 @@ namespace lyrics
 					node->include = Include();
 				}
 
-				Token::Type accessSpecifier;
-				auto tToken = mToken;
+				node->block = Block();
 
-				node->accessSpecifiedBlockList = new AccessSpecifiedBlockListNode( mToken->location );
-
-				switch ( mToken->type )
+				mToken++;
+				if ( mToken->type == Token::Type::END )
 				{
-				case Token::Type::PRIVATE:
-				case Token::Type::PUBLIC:
-					accessSpecifier = mToken->type;
 					mToken++;
-					break;
 
-				default:
-					accessSpecifier = Token::Type::PUBLIC;
-					break;
+					return new AssignmentExpressionNode( tToken->location, name, node );
 				}
-
-				for (;;)
+				else
 				{
-					if ( mToken->type == Token::Type::END_OF_FILE )
-					{
-						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
-						delete node;
-						delete name;
+					ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
+					delete node;
+					delete name;
 
-						return nullptr;
-					}
-
-					node->accessSpecifiedBlockList->AddAccessSpecifiedBlock( new AccessSpecifiedBlockNode( tToken->location, accessSpecifier, Block() ) );
-
-					switch ( mToken->type )
-					{
-					case Token::Type::PRIVATE:
-					case Token::Type::PUBLIC:
-						accessSpecifier = mToken->type;
-						tToken = mToken++;
-						break;
-
-					case Token::Type::END:
-						mToken++;
-
-						return new AssignmentExpressionNode( tToken->location, name, node );
-
-					default:
-						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
-						delete node;
-						delete name;
-
-						return nullptr;
-					}
+					return nullptr;
 				}
 			}
 			else
