@@ -23,7 +23,7 @@ namespace lyrics
 	public:
 		bool Tokenize( const string &fileName, forward_list<Token> &tokenList )
 		{
-			mText = UnicodeTextLoader().Load( fileName, mTextLength );
+			mText = TextLoader().Load( fileName, mTextLength );
 
 			Location currentLocation( fileName );
 

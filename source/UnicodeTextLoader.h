@@ -10,7 +10,7 @@ namespace lyrics
 {
 	using std::string;
 
-	class UnicodeTextLoader : public Loader
+	class TextLoader : public Loader
 	{
 	public:
 		char16_t *Load( const string &name, unsigned int &length )
@@ -20,7 +20,7 @@ namespace lyrics
 
 			data = Loader::Load( name, size );
 
-			char16_t *text = UnicodeTextLoader::ConvertToUTF16( ( const unsigned char * const )data, size, length );
+			char16_t *text = TextLoader::ConvertToUTF16( ( const unsigned char * const )data, size, length );
 
 			delete [] data;
 			if ( !text )
@@ -47,11 +47,11 @@ namespace lyrics
 			case 0xEF:
 				if ( data[1] == 0xBB && data[2] == 0xBF )
 				{
-					return UnicodeTextLoader::UTF8ToUTF16( data + 3, size - 3, length );
+					return TextLoader::UTF8ToUTF16( data + 3, size - 3, length );
 				}
 				else
 				{
-					return UnicodeTextLoader::UTF8ToUTF16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -62,7 +62,7 @@ namespace lyrics
 				}
 				else
 				{
-					return UnicodeTextLoader::UTF8ToUTF16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -84,12 +84,12 @@ namespace lyrics
 					}
 					else
 					{
-						return UnicodeTextLoader::UTF32ToUTF16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
+						return TextLoader::UTF32ToUTF16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
 					}
 				}
 				else
 				{
-					return UnicodeTextLoader::UTF8ToUTF16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 
@@ -100,12 +100,12 @@ namespace lyrics
 				}
 				else
 				{
-					return UnicodeTextLoader::UTF8ToUTF16( data, size, length );
+					return TextLoader::UTF8ToUTF16( data, size, length );
 				}
 				break;
 			
 			default:
-				return UnicodeTextLoader::UTF8ToUTF16( data, size, length );
+				return TextLoader::UTF8ToUTF16( data, size, length );
 			}
 
 			return nullptr;
