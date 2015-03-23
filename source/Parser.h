@@ -131,7 +131,7 @@ namespace lyrics
 				return new ThisNode( mToken->location );
 
 			default:
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION );
 
 				mToken++;
 
@@ -146,7 +146,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 				delete node;
 
 				return nullptr;
@@ -163,7 +163,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 							delete node;
 
 							return nullptr;
@@ -179,7 +179,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL );
 						delete node;
 
 						return nullptr;
@@ -199,7 +199,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 				delete node;
 
 				return nullptr;
@@ -217,7 +217,7 @@ namespace lyrics
 
 					if ( mToken->type != static_cast<Token::Type>( u':' ) )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_HASH );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_HASH );
 						delete expression;
 						delete node;
 
@@ -227,7 +227,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 						delete expression;
 						delete node;
 
@@ -241,7 +241,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 							delete node;
 
 							return nullptr;
@@ -257,7 +257,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL );
 						delete node;
 
 						return nullptr;
@@ -277,7 +277,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 
 					return nullptr;
 				}
@@ -303,7 +303,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete node;
 
 								return nullptr;
@@ -319,7 +319,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete name;
 								delete node;
 
@@ -328,7 +328,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME );
+							ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME );
 							delete node;
 
 							return nullptr;
@@ -350,7 +350,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete name;
 								delete node;
 
@@ -363,7 +363,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT );
+								ErrorHandler::OnError( mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT );
 								delete name;
 								delete node;
 
@@ -378,7 +378,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete node;
 
 								return nullptr;
@@ -390,7 +390,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete node;
 
 							return nullptr;
@@ -401,7 +401,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 					delete node;
 
 					return nullptr;
@@ -417,7 +417,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+					ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 					delete node;
 
 					return nullptr;
@@ -425,7 +425,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PARAMETER );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_PARAMETER );
 
 				return nullptr;
 			}
@@ -438,7 +438,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 				delete node;
 
 				return nullptr;
@@ -454,7 +454,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS );
 				delete node;
 
 				return nullptr;
@@ -478,7 +478,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_INDEX );
 						delete expression;
 
 						return nullptr;
@@ -491,7 +491,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
+							ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_INDEX );
 							delete expression;
 
 							return nullptr;
@@ -499,7 +499,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_INDEX );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_INDEX );
 						delete expression;
 
 						return nullptr;
@@ -510,7 +510,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 						delete expression;
 
 						return nullptr;
@@ -529,7 +529,7 @@ namespace lyrics
 								mToken++;
 								if ( mToken->type == Token::Type::END_OF_FILE )
 								{
-									ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
+									ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 									delete node;
 
 									return nullptr;
@@ -541,7 +541,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
+								ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL );
 								delete node;
 
 								return nullptr;
@@ -558,7 +558,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_MEMBER );
 						delete expression;
 
 						return nullptr;
@@ -571,7 +571,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
+							ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_MEMBER );
 							delete expression;
 
 							return nullptr;
@@ -579,7 +579,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_MEMBER );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_MEMBER );
 						delete expression;
 
 						return nullptr;
@@ -596,7 +596,7 @@ namespace lyrics
 		{
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 
 				return nullptr;
 			}
@@ -660,7 +660,7 @@ namespace lyrics
 
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 					delete expression;
 
 					return nullptr;
@@ -721,7 +721,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 					delete expression;
 
 					return nullptr;
@@ -743,7 +743,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 					delete expression;
 
 					return nullptr;
@@ -782,7 +782,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete identifier;
 								delete member;
 
@@ -791,7 +791,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete identifier;
 
 							return nullptr;
@@ -799,7 +799,7 @@ namespace lyrics
 					}
 					else if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 						delete identifier;
 
 						return nullptr;
@@ -828,7 +828,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 								delete thisNode;
 								delete identifier;
 
@@ -837,7 +837,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 							delete thisNode;
 
 							return nullptr;
@@ -845,7 +845,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 						delete thisNode;
 
 						return nullptr;
@@ -853,7 +853,7 @@ namespace lyrics
 				}
 				else if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_ROUTINE );
 
 					return nullptr;
 				}
@@ -871,7 +871,7 @@ namespace lyrics
 				return Package();
 
 			case Token::Type::END_OF_FILE:
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 
 				return nullptr;
 
@@ -890,7 +890,7 @@ namespace lyrics
 
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 							delete expression;
 
 							return nullptr;
@@ -900,7 +900,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_LHS );
 						delete expression;
 
 						return nullptr;
@@ -925,7 +925,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 						delete node;
 						delete name;
 
@@ -943,7 +943,7 @@ namespace lyrics
 								mToken++;
 								if ( mToken->type == Token::Type::END_OF_FILE )
 								{
-									ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+									ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 									delete node;
 									delete name;
 
@@ -956,7 +956,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 								delete node;
 								delete name;
 
@@ -967,7 +967,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 					delete node;
 					delete name;
 
@@ -990,7 +990,7 @@ namespace lyrics
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
 							{
-								ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+								ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 								delete node;
 								delete name;
 
@@ -1008,7 +1008,7 @@ namespace lyrics
 										mToken++;
 										if ( mToken->type == Token::Type::END_OF_FILE )
 										{
-											ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+											ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 											delete node;
 											delete name;
 
@@ -1021,7 +1021,7 @@ namespace lyrics
 									}
 									else
 									{
-										ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+										ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 										delete node;
 										delete name;
 
@@ -1032,7 +1032,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 							delete node;
 							delete name;
 
@@ -1041,7 +1041,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_BASE_CLASS );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_BASE_CLASS );
 						delete node;
 						delete name;
 
@@ -1077,7 +1077,7 @@ namespace lyrics
 				{
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION );
 						delete node;
 						delete name;
 
@@ -1100,7 +1100,7 @@ namespace lyrics
 						return new AssignmentExpressionNode( tToken->location, name, node );
 
 					default:
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 						delete name;
 
@@ -1110,7 +1110,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_CLASS_NAME );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_CLASS_NAME );
 
 				return nullptr;
 			}
@@ -1129,7 +1129,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PACKAGE );
+					ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_PACKAGE );
 					delete node;
 
 					return nullptr;
@@ -1159,7 +1159,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+					ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 					delete node;
 					delete name;
 
@@ -1168,7 +1168,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME );
 
 				return nullptr;
 			}
@@ -1192,7 +1192,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_IDENTIFIER );
+					ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_IDENTIFIER );
 					delete node;
 
 					return nullptr;
@@ -1215,7 +1215,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 					delete elseIfNode;
 					delete node;
 
@@ -1231,7 +1231,7 @@ namespace lyrics
 
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 					delete elseIfNode;
 					delete node;
 
@@ -1252,7 +1252,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT );
 						delete node;
 
 						return nullptr;
@@ -1268,7 +1268,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 
 						return nullptr;
@@ -1276,7 +1276,7 @@ namespace lyrics
 				}
 				else if ( mToken->type != Token::Type::ELSEIF )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF );
+					ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF );
 					delete node;
 
 					return nullptr;
@@ -1291,7 +1291,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 				delete node;
 
 				return nullptr;
@@ -1310,7 +1310,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 						delete whenNode;
 						delete node;
 
@@ -1326,7 +1326,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 						delete whenNode;
 						delete node;
 
@@ -1341,7 +1341,7 @@ namespace lyrics
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
+							ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT );
 							delete node;
 
 							return nullptr;
@@ -1357,7 +1357,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+							ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 							delete node;
 
 							return nullptr;
@@ -1371,7 +1371,7 @@ namespace lyrics
 					}
 					else if ( mToken->type != Token::Type::WHEN )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF );
 						delete node;
 
 						return nullptr;
@@ -1380,7 +1380,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_WHEN );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_WHEN );
 				delete node;
 
 				return nullptr;
@@ -1394,7 +1394,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
 				delete node;
 
 				return nullptr;
@@ -1409,7 +1409,7 @@ namespace lyrics
 
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT );
 				delete node;
 
 				return nullptr;
@@ -1425,7 +1425,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 				delete node;
 
 				return nullptr;
@@ -1439,7 +1439,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 				delete node;
 
 				return nullptr;
@@ -1452,7 +1452,7 @@ namespace lyrics
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 					delete node;
 
 					return nullptr;
@@ -1465,7 +1465,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 						delete node;
 
 						return nullptr;
@@ -1480,7 +1480,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 						delete node;
 
 						return nullptr;
@@ -1496,7 +1496,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 
 						return nullptr;
@@ -1504,7 +1504,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 					delete node;
 
 					return nullptr;
@@ -1512,7 +1512,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT );
 				delete node;
 
 				return nullptr;
@@ -1526,7 +1526,7 @@ namespace lyrics
 			mToken++;
 			if ( mToken->type == Token::Type::END_OF_FILE )
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 				delete node;
 
 				return nullptr;
@@ -1541,7 +1541,7 @@ namespace lyrics
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 						delete node;
 
 						return nullptr;
@@ -1551,7 +1551,7 @@ namespace lyrics
 
 					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_LHS );
 						delete node;
 
 						return nullptr;
@@ -1564,7 +1564,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::END_OF_FILE )
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+						ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 						delete node;
 
 						return nullptr;
@@ -1580,7 +1580,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_END );
+						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_END );
 						delete node;
 
 						return nullptr;
@@ -1588,7 +1588,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
+					ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT );
 					delete node;
 
 					return nullptr;
@@ -1596,7 +1596,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( mToken->location, ErrorCode::EXPECTED_LHS );
+				ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_LHS );
 				delete node;
 
 				return nullptr;

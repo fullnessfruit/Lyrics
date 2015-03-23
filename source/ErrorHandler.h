@@ -18,7 +18,7 @@ namespace lyrics
 		static constexpr char FATAL_ERROR[] = "fatal error";
 
 	public:
-		static void Warning( const Location location, const WarningCode warningCode )
+		static void OnWarning( const Location location, const WarningCode warningCode )
 		{
 			switch ( warningCode )
 			{
@@ -32,7 +32,7 @@ namespace lyrics
 			}
 		}
 
-		static void Error( const Location location, const ErrorCode errorCode )
+		static void OnError( const Location location, const ErrorCode errorCode )
 		{
 			switch ( errorCode )
 			{

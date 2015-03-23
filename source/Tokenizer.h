@@ -580,7 +580,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
+					ErrorHandler::OnError( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 
 					return false;
 				}
@@ -598,7 +598,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
+							ErrorHandler::OnError( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 							delete tStr;
 
 							return false;
@@ -673,7 +673,7 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
+								ErrorHandler::OnError( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 								delete tStr;
 
 								return false;
@@ -686,20 +686,20 @@ namespace lyrics
 							}
 							else
 							{
-								ErrorHandler::Warning( currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE );
+								ErrorHandler::OnWarning( currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE );
 								tStr->push_back( tChar );
 								length += 3;
 							}
 							break;
 						
 						default:
-							ErrorHandler::Warning( currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE );
+							ErrorHandler::OnWarning( currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE );
 							break;
 						}
 					}
 					else if ( tChar == '\r' || tChar == '\n' )
 					{
-						ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
+						ErrorHandler::OnError( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 						delete tStr;
 
 						return true;
@@ -716,7 +716,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::Error( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
+						ErrorHandler::OnError( currentLocation, ErrorCode::STRING_NOT_TERMINATED );
 						delete tStr;
 
 						return false;
@@ -773,7 +773,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::Error( currentLocation, ErrorCode::WRONG_CHARACTER );
+				ErrorHandler::OnError( currentLocation, ErrorCode::WRONG_CHARACTER );
 
 				mOffset++;
 				currentLocation.IncreaseColumn();
