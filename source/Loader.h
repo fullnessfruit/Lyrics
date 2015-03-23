@@ -13,7 +13,7 @@ namespace lyrics
 	class Loader
 	{
 	public:
-		bool Load( const string &name, char *&data, unsigned int &size )
+		char *Load( const string &name, unsigned int &size )
 		{
 			using std::ios;
 			using std::ios_base;
@@ -23,15 +23,12 @@ namespace lyrics
 
 			if ( input.rdstate() == ios_base::failbit )
 			{
-				// TODO:
-				return false;
+				throw FatalErrorCode::CANNOT_OPEN_FILE;
 			}
 
-			if ( !IFStreamSize( input, size ) )
-			{
-				// TODO:
-				return false;
-			}
+			size = IFStreamSize( input );
+
+			char *data;
 
 			try
 			{
@@ -39,33 +36,51 @@ namespace lyrics
 			}
 			catch ( const bad_alloc &e )
 			{
-				// TODO:
-				return false;
+				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 			}
 
-			input.read( data , size );
-			input.close();
+			try
+			{
+				input.read( data , size );
+			}
+			catch ( const ios_base::failure &e )
+			{
+				throw FatalErrorCode::CANNOT_READ_FILE;
+			}
 
-			return true;
+			input.close();
+			if ( input.rdstate() == ios_base::failbit )
+			{
+				throw FatalErrorCode::CANNOT_CLOSE_FILE;
+			}
+
+			return data;
 		}
 	
 	private:
-		bool IFStreamSize( ifstream &input, unsigned int &size )
+		unsigned int IFStreamSize( ifstream &input )
 		{
 			using std::ios_base;
 
-			input.seekg( 0, ios_base::end );
-			auto off = input.tellg();
-			input.seekg( 0, ios_base::beg );
+			decltype( input.tellg() ) off;
+
+			try
+			{
+				input.seekg( 0, ios_base::end );
+				off = input.tellg();
+				input.seekg( 0, ios_base::beg );
+			}
+			catch ( const ios_base::failure &e )
+			{
+				throw FatalErrorCode::CANNOT_READ_FILE;
+			}
 
 			if ( off == decltype( off )( -1 ) )
 			{
-				return false;
+				throw FatalErrorCode::CANNOT_READ_FILE;
 			}
 
-			size = off;
-
-			return true;
+			return off;
 		}
 	};
 }

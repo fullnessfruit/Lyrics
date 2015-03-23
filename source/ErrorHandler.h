@@ -1,7 +1,6 @@
 #include "WarningCode.h"
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
-
 #include "Logger.h"
 
 #ifndef ERROR_HANDLER
@@ -171,7 +170,7 @@ namespace lyrics
 			}
 		}
 
-		static void FatalError( const FatalErrorCode fatalErrorCode )
+		static void OnFatalError( const FatalErrorCode &fatalErrorCode )
 		{
 			switch ( fatalErrorCode )
 			{
@@ -179,8 +178,20 @@ namespace lyrics
 				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "No input file." );
 				break;
 
-			case FatalErrorCode::NO_SUCH_FILE:
-				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "No such file." );
+			case FatalErrorCode::CANNOT_OPEN_FILE:
+				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "Cannot open file." );
+				break;
+
+			case FatalErrorCode::CANNOT_READ_FILE:
+				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "Cannot read file." );
+				break;
+
+			case FatalErrorCode::CANNOT_CLOSE_FILE:
+				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "Cannot close file." );
+				break;
+
+			case FatalErrorCode::NOT_ENOUGH_MEMORY:
+				Logger::Log( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ), "Not enough memory." );
 				break;
 
 			default:

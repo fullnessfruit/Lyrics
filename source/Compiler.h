@@ -1,7 +1,6 @@
-#include "Option.h"
-
 #include "SemanticAnalyzer.h"
 
+#include "Option.h"
 #include "FatalErrorCode.h"
 #include "Logger.h"
 

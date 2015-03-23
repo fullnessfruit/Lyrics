@@ -5,8 +5,8 @@
 #include "Location.h"
 #include "WarningCode.h"
 #include "ErrorCode.h"
-#include "FatalErrorCode.h"
 #include "ErrorHandler.h"
+#include "FatalErrorCode.h"
 #include "UnicodeTextLoader.h"
 
 #ifndef TOKENIZER
@@ -23,11 +23,7 @@ namespace lyrics
 	public:
 		bool Tokenize( const string &fileName, forward_list<Token> &tokenList )
 		{
-			if ( !UnicodeTextLoader().Load( fileName, mText, mTextLength ) )
-			{
-				ErrorHandler::FatalError( FatalErrorCode::NO_SUCH_FILE );
-				return false;
-			}
+			mText = UnicodeTextLoader().Load( fileName, mTextLength );
 
 			Location currentLocation( fileName );
 

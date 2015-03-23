@@ -1,12 +1,12 @@
 #include <string>
 #include <forward_list>
 
-#include "Option.h"
-#include "Token.h"
 #include "Compiler.h"
 
-#include "FatalErrorCode.h"
+#include "Option.h"
+#include "Token.h"
 #include "ErrorHandler.h"
+#include "FatalErrorCode.h"
 
 namespace lyrics
 {
@@ -60,9 +60,9 @@ int main( int argc, char *argv[] )
 			return 1;
 		}
 	}
-	catch ( const lyrics::FatalErrorCode &fatalErrorCode )
+	catch ( const lyrics::FatalErrorCode fatalErrorCode )
 	{
-		lyrics::ErrorHandler::FatalError( fatalErrorCode );
+		lyrics::ErrorHandler::OnFatalError( fatalErrorCode );
 
 		return 1;
 	}

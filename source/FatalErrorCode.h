@@ -6,7 +6,10 @@ namespace lyrics
 	enum class FatalErrorCode: unsigned int
 	{
 		NO_INPUT_FILE = 1001,
-		NO_SUCH_FILE
+		CANNOT_OPEN_FILE,
+		CANNOT_READ_FILE,
+		CANNOT_CLOSE_FILE,
+		NOT_ENOUGH_MEMORY
 	};
 }
 

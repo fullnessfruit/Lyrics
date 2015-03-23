@@ -13,26 +13,22 @@ namespace lyrics
 	class UnicodeTextLoader : public Loader
 	{
 	public:
-		bool Load( const string &name, char16_t *&text, unsigned int &length )
+		char16_t *Load( const string &name, unsigned int &length )
 		{
 			char *data = nullptr;
 			unsigned int size = 0;
 
-			if ( !Loader::Load( name, data, size ) )
-			{
-				// TODO:
-				return false;
-			}
+			data = Loader::Load( name, size );
 
-			text = UnicodeTextLoader::ConvertToUTF16( ( const unsigned char * const )data, size, length );
+			char16_t *text = UnicodeTextLoader::ConvertToUTF16( ( const unsigned char * const )data, size, length );
+
 			delete [] data;
 			if ( !text )
 			{
-				// TODO:
-				return false;
+				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 			}
 
-			return true;
+			return text;
 		}
 	
 	private:
