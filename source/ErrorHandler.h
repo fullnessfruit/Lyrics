@@ -27,7 +27,7 @@ namespace lyrics
 				break;
 
 			default:
-				Logger::StandardError( location, ErrorHandler::WARNING, static_cast<unsigned int>( warningCode ) );
+				Logger::StandardErrorLog( location, ErrorHandler::WARNING, static_cast<unsigned int>( warningCode ) );
 				break;
 			}
 		}
@@ -165,7 +165,7 @@ namespace lyrics
 				break;
 
 			default:
-				Logger::StandardError( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ) );
+				Logger::StandardErrorLog( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ) );
 				break;
 			}
 		}
@@ -195,7 +195,7 @@ namespace lyrics
 				break;
 
 			default:
-				Logger::StandardError( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ) );
+				Logger::StandardErrorLog( ErrorHandler::FATAL_ERROR, static_cast<unsigned int>( fatalErrorCode ) );
 				break;
 			}
 		}
