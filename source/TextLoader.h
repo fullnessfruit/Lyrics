@@ -1,5 +1,6 @@
 #include <cstring>
 #include <string>
+#include <new>
 
 #include "Loader.h"
 #include "TextEncoder.h"

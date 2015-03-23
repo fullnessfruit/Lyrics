@@ -1,5 +1,6 @@
 #include <string>
 #include <forward_list>
+#include <new>
 
 #include "Token.h"
 #include "Location.h"
@@ -17,6 +18,7 @@ namespace lyrics
 	using std::string;
 	using std::u16string;
 	using std::forward_list;
+	using std::bad_alloc;
 
 	class Tokenizer
 	{
@@ -31,8 +33,16 @@ namespace lyrics
 
 			mLastToken = tokenList.cbefore_begin();
 
-			while ( Scan( tokenList, currentLocation ) );
-			mLastToken = tokenList.emplace_after( mLastToken, Token::Type::END_OF_FILE, currentLocation );
+			try
+			{
+				while ( Scan( tokenList, currentLocation ) );
+				mLastToken = tokenList.emplace_after( mLastToken, Token::Type::END_OF_FILE, currentLocation );
+			}
+			catch ( const bad_alloc &e )
+			{
+				delete [] mText;
+				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
+			}
 
 			delete [] mText;
 
