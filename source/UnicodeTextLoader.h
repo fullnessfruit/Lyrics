@@ -20,7 +20,7 @@ namespace lyrics
 
 			data = Loader::Load( name, size );
 
-			char16_t *text = TextLoader::ConvertToUTF16( ( const unsigned char * const )data, size, length );
+			char16_t *text = TextLoader::EncodeToUTF16( ( const unsigned char * const )data, size, length );
 
 			delete [] data;
 			if ( !text )
@@ -32,7 +32,7 @@ namespace lyrics
 		}
 	
 	private:
-		static char16_t *ConvertToUTF16( const unsigned char * const data, const unsigned int size, unsigned int &length )
+		static char16_t *EncodeToUTF16( const unsigned char * const data, const unsigned int size, unsigned int &length )
 		{
 			using std::size_t;
 			using std::memcpy;
