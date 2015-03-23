@@ -45,12 +45,14 @@ namespace lyrics
 			}
 			catch ( const ios_base::failure &e )
 			{
+				delete [] data;
 				throw FatalErrorCode::CANNOT_READ_FILE;
 			}
 
 			input.close();
 			if ( input.rdstate() == ios_base::failbit )
 			{
+				delete [] data;
 				throw FatalErrorCode::CANNOT_CLOSE_FILE;
 			}
 
