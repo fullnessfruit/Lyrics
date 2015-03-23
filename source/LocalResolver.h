@@ -694,8 +694,6 @@ namespace lyrics
 				canProgress &= false;
 			}
 
-			mScopeStack.pop();
-
 			return canProgress;
 		}
 
