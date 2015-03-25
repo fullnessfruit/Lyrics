@@ -30,6 +30,8 @@ namespace lyrics
 
 			Logger::CompilationTerminated();
 
+			delete root;
+
 			return true;
 		}
 	};
