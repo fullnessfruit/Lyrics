@@ -34,8 +34,8 @@ namespace lyrics
 			}
 			catch ( const bad_alloc &e )
 			{
-				delete root;
-				delete top;
+				Utility::SafeDelete( root );
+				Utility::SafeDelete( top );
 				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 			}
 
@@ -43,7 +43,7 @@ namespace lyrics
 
 			canProgress &= StaticTypeChecker().Check( root );
 
-			delete top;
+			Utility::SafeDelete( top );
 
 			return canProgress;
 		}

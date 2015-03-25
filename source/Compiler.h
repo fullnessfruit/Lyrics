@@ -4,6 +4,8 @@
 #include "FatalErrorCode.h"
 #include "Logger.h"
 
+#include "Utility.h"
+
 #ifndef COMPILER
 #define COMPILER
 
@@ -23,14 +25,14 @@ namespace lyrics
 
 			if ( !SemanticAnalyzer().SemanticAnalysis( option.SourceCodeFileName(), root ) )
 			{
-				delete root;
+				Utility::SafeDelete( root );
 
 				return false;
 			}
 
 			Logger::CompilationTerminated();
 
-			delete root;
+			Utility::SafeDelete( root );
 
 			return true;
 		}

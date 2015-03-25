@@ -2,6 +2,8 @@
 #include <fstream>
 #include <new>
 
+#include "Utility.h"
+
 #ifndef LOADER
 #define LOADER
 
@@ -45,14 +47,14 @@ namespace lyrics
 			}
 			catch ( const ios_base::failure &e )
 			{
-				delete [] data;
+				Utility::SafeDeleteArray( data );
 				throw FatalErrorCode::CANNOT_READ_FILE;
 			}
 
 			input.close();
 			if ( input.rdstate() == ios_base::failbit )
 			{
-				delete [] data;
+				Utility::SafeDeleteArray( data );
 				throw FatalErrorCode::CANNOT_CLOSE_FILE;
 			}
 

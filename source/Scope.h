@@ -2,6 +2,8 @@
 #include <forward_list>
 #include <unordered_set>
 
+#include "Utility.h"
+
 #ifndef SCOPE
 #define SCOPE
 
@@ -26,7 +28,7 @@ namespace lyrics
 		{
 			for ( auto i : mChildren )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
