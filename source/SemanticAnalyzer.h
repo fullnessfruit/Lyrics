@@ -19,7 +19,7 @@ namespace lyrics
 	public:
 		bool SemanticAnalysis( const string &fileName, BlockNode *&root )
 		{
-			Scope *top;
+			Scope *top = nullptr;
 
 			if ( !Parser().Parse( fileName, root ) )
 			{
@@ -28,9 +28,22 @@ namespace lyrics
 
 			bool canProgress = true;
 
-			canProgress &= LocalResolver().Resolve( root, top );
+			try
+			{
+				canProgress &= LocalResolver().Resolve( root, top );
+			}
+			catch ( const bad_alloc &e )
+			{
+				delete root;
+				delete top;
+				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
+			}
+
 			canProgress &= DereferenceChecker().Check( root );
+
 			canProgress &= StaticTypeChecker().Check( root );
+
+			delete top;
 
 			return canProgress;
 		}
