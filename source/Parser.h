@@ -30,7 +30,15 @@ namespace lyrics
 
 			mToken = tokenList.cbegin();
 
-			root = Block();
+			try
+			{
+				root = Block();
+			}
+			catch ( const bad_alloc &e )
+			{
+				delete root;
+				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
+			}
 
 			if ( root )
 			{
