@@ -583,11 +583,7 @@ namespace lyrics
 
 			if ( node->block )
 			{
-				mScopeStack.push( new Scope( mScopeStack.top() ) );
-
 				canProgress &= node->block->Accept( *this );
-
-				mScopeStack.pop();
 			}
 			else
 			{
