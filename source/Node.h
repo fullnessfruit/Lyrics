@@ -8,6 +8,8 @@
 #include "Visitor.h"
 #include "Element.h"
 
+#include "Utility.h"
+
 #ifndef NODE
 #define NODE
 
@@ -123,7 +125,7 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -322,7 +324,7 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -383,7 +385,7 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -479,9 +481,9 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
-			delete block;
+			Utility::SafeDelete( block );
 		}
 
 		forward_list<ParameterNode *> list;
@@ -513,7 +515,7 @@ namespace lyrics
 
 		~ParenthesizedExpressionNode()
 		{
-			delete expression;
+			Utility::SafeDelete( expression );
 		}
 
 		ExpressionNode *expression;
@@ -580,7 +582,7 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -939,10 +941,10 @@ namespace lyrics
 
 		~BaseClassConstructorCallNode()
 		{
-			delete baseClass;
+			Utility::SafeDelete( baseClass );
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -977,7 +979,7 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -1011,11 +1013,11 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
-			delete baseClassConstructorCall;
-			delete include;
-			delete block;
+			Utility::SafeDelete( baseClassConstructorCall );
+			Utility::SafeDelete( include );
+			Utility::SafeDelete( block );
 		}
 
 		forward_list<ExpressionNode *> list;
@@ -1076,7 +1078,7 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
 		}
 
@@ -1120,8 +1122,8 @@ namespace lyrics
 
 		~ElseIfNode()
 		{
-			delete condition;
-			delete block;
+			Utility::SafeDelete( condition );
+			Utility::SafeDelete( block );
 		}
 
 		ExpressionNode *condition;
@@ -1149,9 +1151,9 @@ namespace lyrics
 		{
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
-			delete block;
+			Utility::SafeDelete( block );
 		}
 
 		forward_list<ElseIfNode *> list;
@@ -1183,8 +1185,8 @@ namespace lyrics
 
 		~WhenNode()
 		{
-			delete condition;
-			delete block;
+			Utility::SafeDelete( condition );
+			Utility::SafeDelete( block );
 		}
 
 		ExpressionNode *condition;
@@ -1210,12 +1212,12 @@ namespace lyrics
 
 		~CaseNode()
 		{
-			delete value;
+			Utility::SafeDelete( value );
 			for ( auto i : list )
 			{
-				delete i;
+				Utility::SafeDelete( i );
 			}
-			delete block;
+			Utility::SafeDelete( block );
 		}
 
 		ExpressionNode *value;
@@ -1260,8 +1262,8 @@ namespace lyrics
 
 		~WhileNode()
 		{
-			delete condition;
-			delete block;
+			Utility::SafeDelete( condition );
+			Utility::SafeDelete( block );
 		}
 
 		ExpressionNode *condition;
@@ -1287,10 +1289,10 @@ namespace lyrics
 
 		~ForNode()
 		{
-			delete initializer;
-			delete condition;
-			delete iterator;
-			delete block;
+			Utility::SafeDelete( initializer );
+			Utility::SafeDelete( condition );
+			Utility::SafeDelete( iterator );
+			Utility::SafeDelete( block );
 		}
 
 		ExpressionNode *initializer;
@@ -1318,9 +1320,9 @@ namespace lyrics
 
 		~ForEachNode()
 		{
-			delete variable;
-			delete collection;
-			delete block;
+			Utility::SafeDelete( variable );
+			Utility::SafeDelete( collection );
+			Utility::SafeDelete( block );
 		}
 
 		ExpressionNode *variable;
