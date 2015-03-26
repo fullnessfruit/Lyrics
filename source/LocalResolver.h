@@ -48,7 +48,18 @@ namespace lyrics
 
 		virtual bool Visit( const IdentifierNode * const node )
 		{
-			node->GetType();	// Hide warning.
+			const Scope *scope = mScopeStack.top();
+
+			while ( !scope->IsExist( node->identifier ) )
+			{
+				scope = scope->Parent();
+
+				if ( !scope )
+				{
+					mScopeStack.top()->AddVariable( node->identifier );
+					break;
+				}
+			}
 
 			return true;
 		}

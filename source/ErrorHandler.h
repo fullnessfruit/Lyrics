@@ -160,7 +160,7 @@ namespace lyrics
 				Logger::Log( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ), "Incomplete foreach statement." );
 				break;
 
-			case ErrorCode::DUPLICATED_IDENTIFIER:
+			case ErrorCode::DUPLICATED_IDENTIFIER:	// TODO: Unused yet.
 				Logger::Log( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ), "Duplicated identifier." );
 				break;
 
