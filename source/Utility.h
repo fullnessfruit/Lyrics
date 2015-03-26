@@ -3,10 +3,6 @@
 
 namespace lyrics
 {
-	using std::cout;
-	using std::cerr;
-	using std::endl;
-
 	class Utility
 	{
 	private:
