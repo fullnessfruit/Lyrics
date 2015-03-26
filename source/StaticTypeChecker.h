@@ -35,7 +35,7 @@ namespace lyrics
 
 		virtual bool Visit( const IdentifierNode * const node )
 		{
-			node->type;	// Hide warning.
+			( void )node;	// Hide warning.
 
 			return true;
 		}
