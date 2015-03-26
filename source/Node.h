@@ -40,7 +40,7 @@ namespace lyrics
 					BREAK, NEXT, RETURN
 		};
 
-		explicit Node( const Location &location ) : location( location )
+		explicit Node( const Location &location, const Type type ) : location( location ), type( type )
 		{
 		}
 
@@ -49,8 +49,7 @@ namespace lyrics
 		}
 
 		const Location location;
-
-		virtual Node::Type GetType() const = 0;
+		const Type type;
 	};
 
 	class BlockNode;
@@ -105,7 +104,7 @@ namespace lyrics
 	class StatementNode: public Node
 	{
 	public:
-		explicit StatementNode( const Location &location ) : Node( location )
+		StatementNode( const Location &location, const Type type ) : Node( location, type )
 		{
 		}
 
@@ -117,7 +116,7 @@ namespace lyrics
 	class BlockNode: public Node
 	{
 	public:
-		explicit BlockNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
+		explicit BlockNode( const Location &location ) : Node( location, Type::BLOCK ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -137,11 +136,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::BLOCK;
-		}
-
 		void AddStatement( StatementNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -151,7 +145,7 @@ namespace lyrics
 	class ExpressionNode: public StatementNode
 	{
 	public:
-		explicit ExpressionNode( const Location &location ) : StatementNode( location )
+		ExpressionNode( const Location &location, const Type type ) : StatementNode( location, type )
 		{
 		}
 
@@ -163,7 +157,7 @@ namespace lyrics
 	class PrimaryExpressionNode: public ExpressionNode
 	{
 	public:
-		explicit PrimaryExpressionNode( const Location &location ) : ExpressionNode( location )
+		PrimaryExpressionNode( const Location &location, const Type type ) : ExpressionNode( location, type )
 		{
 		}
 
@@ -175,7 +169,7 @@ namespace lyrics
 	class IdentifierNode: public PrimaryExpressionNode
 	{
 	public:
-		IdentifierNode( const Location &location, const u16string * const identifier ) : PrimaryExpressionNode( location ), identifier( identifier )
+		IdentifierNode( const Location &location, const u16string * const identifier ) : PrimaryExpressionNode( location, Type::IDENTIFIER ), identifier( identifier )
 		{
 		}
 
@@ -190,35 +184,25 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::IDENTIFIER;
-		}
 	};
 
 	class ThisNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ThisNode( const Location &location ) : PrimaryExpressionNode( location )
+		explicit ThisNode( const Location &location ) : PrimaryExpressionNode( location, Type::THIS )
 		{
 		}
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit();
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::THIS;
 		}
 	};
 
 	class NullLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit NullLiteralNode( const Location &location ) : PrimaryExpressionNode( location )
+		explicit NullLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::NULL_LITERAL )
 		{
 		}
 
@@ -226,17 +210,12 @@ namespace lyrics
 		{
 			return visitor.Visit();
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::NULL_LITERAL;
-		}
 	};
 
 	class BooleanLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		BooleanLiteralNode( const Location &location, const bool boolean ) : PrimaryExpressionNode( location ), boolean( boolean )
+		BooleanLiteralNode( const Location &location, const bool boolean ) : PrimaryExpressionNode( location, Type::BOOLEAN_LITERAL ), boolean( boolean )
 		{
 		}
 
@@ -246,17 +225,12 @@ namespace lyrics
 		{
 			return visitor.Visit();
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::BOOLEAN_LITERAL;
-		}
 	};
 
 	class IntegerLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		IntegerLiteralNode( const Location &location, const long long integer ) : PrimaryExpressionNode( location ), integer( integer )
+		IntegerLiteralNode( const Location &location, const long long integer ) : PrimaryExpressionNode( location, Type::INTEGER_LITERAL ), integer( integer )
 		{
 		}
 
@@ -266,17 +240,12 @@ namespace lyrics
 		{
 			return visitor.Visit();
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::INTEGER_LITERAL;
-		}
 	};
 
 	class RealLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		RealLiteralNode( const Location &location, const double real ) : PrimaryExpressionNode( location ), real( real )
+		RealLiteralNode( const Location &location, const double real ) : PrimaryExpressionNode( location, Type::REAL_LITERAL ), real( real )
 		{
 		}
 
@@ -286,17 +255,12 @@ namespace lyrics
 		{
 			return visitor.Visit();
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::REAL_LITERAL;
-		}
 	};
 
 	class StringLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		StringLiteralNode( const Location &location, u16string * const string ) : PrimaryExpressionNode( location ), string( string )
+		StringLiteralNode( const Location &location, u16string * const string ) : PrimaryExpressionNode( location, Type::STRING_LITERAL ), string( string )
 		{
 		}
 
@@ -306,17 +270,12 @@ namespace lyrics
 		{
 			return visitor.Visit();
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::STRING_LITERAL;
-		}
 	};
 
 	class ArrayLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() )
+		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::ARRAY_LITERAL ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -336,11 +295,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ARRAY_LITERAL;
-		}
-
 		void AddExpression( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -350,7 +304,7 @@ namespace lyrics
 	class HashNode: public Node
 	{
 	public:
-		HashNode( const Location &location, const ExpressionNode * const key, const ExpressionNode * const value ) : Node( location ), key( key ), value( value )
+		HashNode( const Location &location, const ExpressionNode * const key, const ExpressionNode * const value ) : Node( location, Type::HASH ), key( key ), value( value )
 		{
 		}
 
@@ -367,17 +321,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::HASH;
-		}
 	};
 
 	class HashLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() )
+		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::HASH_LITERAL ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -397,11 +346,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::HASH_LITERAL;
-		}
-
 		void AddHash( HashNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -411,7 +355,7 @@ namespace lyrics
 	class ParameterNode: public Node
 	{
 	public:
-		ParameterNode( const Location &location, const IdentifierNode * const name ) : Node( location ), name( name )
+		ParameterNode( const Location &location, const Type type, const IdentifierNode * const name ) : Node( location, type ), name( name )
 		{
 		}
 
@@ -426,11 +370,11 @@ namespace lyrics
 	class ValueParameterNode: public ParameterNode
 	{
 	public:
-		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name ), defalutArgument( nullptr )
+		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, Type::VALUE_PARAMETER, name ), defalutArgument( nullptr )
 		{
 		}
 
-		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument ) : ParameterNode( location, name ), defalutArgument( defalutArgument )
+		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument ) : ParameterNode( location, Type::VALUE_PARAMETER, name ), defalutArgument( defalutArgument )
 		{
 		}
 
@@ -445,17 +389,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::VALUE_PARAMETER;
-		}
 	};
 
 	class OutputParameterNode: public ParameterNode
 	{
 	public:
-		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, name )
+		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, Type::OUTPUT_PARAMETER, name )
 		{
 		}
 
@@ -463,17 +402,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::OUTPUT_PARAMETER;
-		}
 	};
 
 	class RoutineLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit RoutineLiteralNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), block( nullptr )
+		explicit RoutineLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::ROUTINE_LITERAL ), last( list.cbefore_begin() ), block( nullptr )
 		{
 		}
 
@@ -495,11 +429,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ROUTINE_LITERAL;
-		}
-
 		void AddParameter( ParameterNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -509,7 +438,7 @@ namespace lyrics
 	class ParenthesizedExpressionNode: public PrimaryExpressionNode
 	{
 	public:
-		ParenthesizedExpressionNode( const Location &location ) : PrimaryExpressionNode( location ), expression( nullptr )
+		ParenthesizedExpressionNode( const Location &location ) : PrimaryExpressionNode( location, Type::PARENTHESIZED_EXPRESSION ), expression( nullptr )
 		{
 		}
 
@@ -524,17 +453,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PARENTHESIZED_EXPRESSION;
-		}
 	};
 
 	class PostfixExpressionNode: public ExpressionNode
 	{
 	public:
-		PostfixExpressionNode( const Location &location, const ExpressionNode * const expression ) : ExpressionNode( location ), expression( expression )
+		PostfixExpressionNode( const Location &location, const Type type, const ExpressionNode * const expression ) : ExpressionNode( location, type ), expression( expression )
 		{
 		}
 
@@ -549,7 +473,7 @@ namespace lyrics
 	class IndexReferenceNode: public PostfixExpressionNode
 	{
 	public:
-		IndexReferenceNode( const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index ) : PostfixExpressionNode( location, expression ), index( index )
+		IndexReferenceNode( const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index ) : PostfixExpressionNode( location, Type::INDEX_REFERENCE, expression ), index( index )
 		{
 		}
 
@@ -564,17 +488,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::INDEX_REFERENCE;
-		}
 	};
 
 	class RoutineCallNode: public PostfixExpressionNode
 	{
 	public:
-		RoutineCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, expression ), last( list.cbefore_begin() )
+		RoutineCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, Type::ROUTINE_CALL, expression ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -594,11 +513,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ROUTINE_CALL;
-		}
-
 		void AddArgument( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -608,7 +522,7 @@ namespace lyrics
 	class MemberReferenceNode: public PostfixExpressionNode
 	{
 	public:
-		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const member ) : PostfixExpressionNode( location, expression ), member( member )
+		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const member ) : PostfixExpressionNode( location, Type::MEMBER_REFERENCE, expression ), member( member )
 		{
 		}
 
@@ -623,17 +537,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::MEMBER_REFERENCE;
-		}
 	};
 
 	class UnaryExpressionNode: public ExpressionNode
 	{
 	public:
-		UnaryExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const expression ) : ExpressionNode( location ), op( op ), expression( expression )
+		UnaryExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const expression ) : ExpressionNode( location, Type::UNARY_EXPRESSION ), op( op ), expression( expression )
 		{
 		}
 
@@ -649,17 +558,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::UNARY_EXPRESSION;
-		}
 	};
 
 	class MultiplicativeExpressionNode: public ExpressionNode
 	{
 	public:
-		MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::MULTIPLICATIVE_EXPRESSION ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -677,17 +581,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::MULTIPLICATIVE_EXPRESSION;
-		}
 	};
 
 	class AdditiveExpressionNode: public ExpressionNode
 	{
 	public:
-		AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::ADDITIVE_EXPRESSION ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -705,17 +604,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ADDITIVE_EXPRESSION;
-		}
 	};
 
 	class ShiftExpressionNode: public ExpressionNode
 	{
 	public:
-		ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::SHIFT_EXPRESSION ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -733,17 +627,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::SHIFT_EXPRESSION;
-		}
 	};
 
 	class AndExpressionNode: public ExpressionNode
 	{
 	public:
-		AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
+		AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::AND_EXPRESSION ), left( left ), right( right )
 		{
 		}
 
@@ -760,17 +649,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::AND_EXPRESSION;
-		}
 	};
 
 	class OrExpressionNode: public ExpressionNode
 	{
 	public:
-		OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::OR_EXPRESSION ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -788,17 +672,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::OR_EXPRESSION;
-		}
 	};
 
 	class RelationalExpressionNode: public ExpressionNode
 	{
 	public:
-		RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::RELATIONAL_EXPRESSION ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -816,17 +695,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::RELATIONAL_EXPRESSION;
-		}
 	};
 
 	class EqualityExpressionNode: public ExpressionNode
 	{
 	public:
-		EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), op( op ), left( left ), right( right )
+		EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::EQUALITY_EXPRESSION ), op( op ), left( left ), right( right )
 		{
 		}
 
@@ -844,17 +718,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::EQUALITY_EXPRESSION;
-		}
 	};
 
 	class LogicalAndExpressionNode: public ExpressionNode
 	{
 	public:
-		LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
+		LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::LOGICAL_AND_EXPRESSION ), left( left ), right( right )
 		{
 		}
 
@@ -871,17 +740,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::LOGICAL_AND_EXPRESSION;
-		}
 	};
 
 	class LogicalOrExpressionNode: public ExpressionNode
 	{
 	public:
-		LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location ), left( left ), right( right )
+		LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::LOGICAL_OR_EXPRESSION ), left( left ), right( right )
 		{
 		}
 
@@ -898,17 +762,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::LOGICAL_OR_EXPRESSION;
-		}
 	};
 
 	class AssignmentExpressionNode: public ExpressionNode
 	{
 	public:
-		AssignmentExpressionNode( const Location &location, const ExpressionNode * const lhs, const ExpressionNode * const rhs ) : ExpressionNode( location ), lhs( lhs ), rhs( rhs )
+		AssignmentExpressionNode( const Location &location, const ExpressionNode * const lhs, const ExpressionNode * const rhs ) : ExpressionNode( location, Type::ASSIGNMENT_EXPRESSION ), lhs( lhs ), rhs( rhs )
 		{
 		}
 
@@ -925,17 +784,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ASSIGNMENT_EXPRESSION;
-		}
 	};
 
 	class BaseClassConstructorCallNode: public Node
 	{
 	public:
-		explicit BaseClassConstructorCallNode( const Location &location ) : Node( location ), baseClass( nullptr ), last( list.cbefore_begin() )
+		explicit BaseClassConstructorCallNode( const Location &location ) : Node( location, Type::BASE_CLASS_CONSTRUCTOR_CALL ), baseClass( nullptr ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -957,11 +811,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::BASE_CLASS_CONSTRUCTOR_CALL;
-		}
-
 		void AddArgument( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -971,7 +820,7 @@ namespace lyrics
 	class IncludeNode: public Node
 	{
 	public:
-		explicit IncludeNode( const Location &location ) : Node( location ), last( list.cbefore_begin() )
+		explicit IncludeNode( const Location &location ) : Node( location, Type::INCLUDE ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -991,11 +840,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::INCLUDE;
-		}
-
 		void AddPackage( IdentifierNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -1005,7 +849,7 @@ namespace lyrics
 	class ClassNode: public PrimaryExpressionNode
 	{
 	public:
-		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location ), last( list.cbefore_begin() ), baseClassConstructorCall( nullptr ), include( nullptr ), block( nullptr )
+		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location, Type::CLASS ), last( list.cbefore_begin() ), baseClassConstructorCall( nullptr ), include( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1031,11 +875,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::CLASS;
-		}
-
 		void AddArgument( ExpressionNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -1045,7 +884,7 @@ namespace lyrics
 	class PackageNode: public PrimaryExpressionNode
 	{
 	public:
-		PackageNode( const Location &location, const BlockNode * const block ) : PrimaryExpressionNode( location ), block( block )
+		PackageNode( const Location &location, const BlockNode * const block ) : PrimaryExpressionNode( location, Type::PACKAGE ), block( block )
 		{
 		}
 
@@ -1060,17 +899,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::PACKAGE;
-		}
 	};
 
 	class ImportNode: public StatementNode
 	{
 	public:
-		explicit ImportNode( const Location &location ) : StatementNode( location ), last( list.cbefore_begin() )
+		explicit ImportNode( const Location &location ) : StatementNode( location, Type::IMPORT ), last( list.cbefore_begin() )
 		{
 		}
 
@@ -1090,11 +924,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::IMPORT;
-		}
-
 		void AddIdentifier( IdentifierNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -1104,7 +933,7 @@ namespace lyrics
 	class SelectionNode: public StatementNode
 	{
 	public:
-		explicit SelectionNode( const Location &location ) : StatementNode( location )
+		SelectionNode( const Location &location, const Type type ) : StatementNode( location, type )
 		{
 		}
 
@@ -1116,7 +945,7 @@ namespace lyrics
 	class ElseIfNode: public Node
 	{
 	public:
-		explicit ElseIfNode( const Location &location ) : Node( location ), condition( nullptr ), block( nullptr )
+		explicit ElseIfNode( const Location &location ) : Node( location, Type::ELSEIF ), condition( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1133,17 +962,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::ELSEIF;
-		}
 	};
 
 	class IfNode: public SelectionNode
 	{
 	public:
-		explicit IfNode( const Location &location ) : SelectionNode( location ), last( list.cbefore_begin() ), block( nullptr )
+		explicit IfNode( const Location &location ) : SelectionNode( location, Type::IF ), last( list.cbefore_begin() ), block( nullptr )
 		{
 		}
 
@@ -1165,11 +989,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::IF;
-		}
-
 		void AddElseIf( ElseIfNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -1179,7 +998,7 @@ namespace lyrics
 	class WhenNode: public Node
 	{
 	public:
-		explicit WhenNode( const Location &location ) : Node( location ), condition( nullptr ), block( nullptr )
+		explicit WhenNode( const Location &location ) : Node( location, Type::WHEN ), condition( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1196,17 +1015,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::WHEN;
-		}
 	};
 
 	class CaseNode: public SelectionNode
 	{
 	public:
-		explicit CaseNode( const Location &location ) : SelectionNode( location ), value( nullptr ), last( list.cbefore_begin() ), block( nullptr )
+		explicit CaseNode( const Location &location ) : SelectionNode( location, Type::CASE ), value( nullptr ), last( list.cbefore_begin() ), block( nullptr )
 		{
 		}
 
@@ -1230,11 +1044,6 @@ namespace lyrics
 			return visitor.Visit( this );
 		}
 
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::CASE;
-		}
-
 		void AddWhen( WhenNode * const node )
 		{
 			last = list.insert_after( last, node );
@@ -1244,7 +1053,7 @@ namespace lyrics
 	class IterationNode: public StatementNode
 	{
 	public:
-		explicit IterationNode( const Location &location ) : StatementNode( location )
+		IterationNode( const Location &location, const Type type ) : StatementNode( location, type )
 		{
 		}
 
@@ -1256,7 +1065,7 @@ namespace lyrics
 	class WhileNode: public IterationNode
 	{
 	public:
-		explicit WhileNode( const Location &location ) : IterationNode( location ), condition( nullptr ), block( nullptr )
+		explicit WhileNode( const Location &location ) : IterationNode( location, Type::WHILE ), condition( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1273,17 +1082,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::WHILE;
-		}
 	};
 
 	class ForNode: public IterationNode
 	{
 	public:
-		explicit ForNode( const Location &location ) : IterationNode( location ), initializer( nullptr ), condition( nullptr ), iterator( nullptr ), block( nullptr )
+		explicit ForNode( const Location &location ) : IterationNode( location, Type::FOR ), initializer( nullptr ), condition( nullptr ), iterator( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1304,17 +1108,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::FOR;
-		}
 	};
 
 	class ForEachNode: public IterationNode
 	{
 	public:
-		explicit ForEachNode( const Location &location ) : IterationNode( location ), variable( nullptr ), collection( nullptr ), block( nullptr )
+		explicit ForEachNode( const Location &location ) : IterationNode( location, Type::FOREACH ), variable( nullptr ), collection( nullptr ), block( nullptr )
 		{
 		}
 
@@ -1333,17 +1132,12 @@ namespace lyrics
 		{
 			return visitor.Visit( this );
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::FOREACH;
-		}
 	};
 
 	class JumpNode: public StatementNode
 	{
 	public:
-		explicit JumpNode( const Location &location ) : StatementNode( location )
+		JumpNode( const Location &location, const Type type ) : StatementNode( location, type )
 		{
 		}
 
@@ -1355,25 +1149,20 @@ namespace lyrics
 	class BreakNode: public JumpNode
 	{
 	public:
-		explicit BreakNode( const Location &location ) : JumpNode( location )
+		explicit BreakNode( const Location &location ) : JumpNode( location, Type::BREAK )
 		{
 		}
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit();
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::BREAK;
 		}
 	};
 
 	class NextNode: public JumpNode
 	{
 	public:
-		explicit NextNode( const Location &location ) : JumpNode( location )
+		explicit NextNode( const Location &location ) : JumpNode( location, Type::NEXT )
 		{
 		}
 
@@ -1381,21 +1170,16 @@ namespace lyrics
 		{
 			return visitor.Visit();
 		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::NEXT;
-		}
 	};
 
 	class ReturnNode: public JumpNode
 	{
 	public:
-		explicit ReturnNode( const Location &location ) : JumpNode( location ), value( nullptr )
+		explicit ReturnNode( const Location &location ) : JumpNode( location, Type::RETURN ), value( nullptr )
 		{
 		}
 
-		ReturnNode( const Location &location, const ExpressionNode * const value ) : JumpNode( location ), value( value )
+		ReturnNode( const Location &location, const ExpressionNode * const value ) : JumpNode( location, Type::RETURN ), value( value )
 		{
 		}
 
@@ -1409,11 +1193,6 @@ namespace lyrics
 		virtual bool Accept( Visitor &visitor ) const
 		{
 			return visitor.Visit( this );
-		}
-
-		virtual Node::Type GetType() const
-		{
-			return Node::Type::RETURN;
 		}
 	};
 }

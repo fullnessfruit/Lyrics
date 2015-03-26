@@ -537,7 +537,7 @@ namespace lyrics
 
 			if ( node->lhs )
 			{
-				if ( node->lhs->GetType() == Node::Type::IDENTIFIER )
+				if ( node->lhs->type == Node::Type::IDENTIFIER )
 				{
 					const Scope *scope = mScopeStack.top();
 					const u16string * const identifier = static_cast<const IdentifierNode * const>( node->lhs )->identifier;

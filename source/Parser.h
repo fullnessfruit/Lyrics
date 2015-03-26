@@ -476,7 +476,7 @@ namespace lyrics
 			auto tToken = mToken;
 			ExpressionNode *expression = PrimaryExpression();
 
-			if ( expression == nullptr || ( expression->GetType() != Node::Type::IDENTIFIER && expression->GetType() != Node::Type::THIS ) )
+			if ( expression == nullptr || ( expression->type != Node::Type::IDENTIFIER && expression->type != Node::Type::THIS ) )
 			{
 				return expression;
 			}
@@ -894,7 +894,7 @@ namespace lyrics
 				}
 				else
 				{
-					if ( expression->GetType() == Node::Type::IDENTIFIER || expression->GetType() == Node::Type::MEMBER_REFERENCE || expression->GetType() == Node::Type::INDEX_REFERENCE )
+					if ( expression->type == Node::Type::IDENTIFIER || expression->type == Node::Type::MEMBER_REFERENCE || expression->type == Node::Type::INDEX_REFERENCE )
 					{
 						mToken++;
 
@@ -1509,7 +1509,7 @@ namespace lyrics
 
 			node->variable = Expression();
 
-			if ( node->variable ->GetType() == Node::Type::IDENTIFIER || node->variable ->GetType() == Node::Type::MEMBER_REFERENCE || node->variable ->GetType() == Node::Type::INDEX_REFERENCE )
+			if ( node->variable ->type == Node::Type::IDENTIFIER || node->variable ->type == Node::Type::MEMBER_REFERENCE || node->variable ->type == Node::Type::INDEX_REFERENCE )
 			{
 				if ( mToken->type == Token::Type::IN )
 				{
@@ -1524,7 +1524,7 @@ namespace lyrics
 
 					node->collection = Expression();
 
-					if ( node->collection->GetType() != Node::Type::IDENTIFIER && node->collection->GetType() != Node::Type::MEMBER_REFERENCE && node->collection->GetType() != Node::Type::INDEX_REFERENCE )
+					if ( node->collection->type != Node::Type::IDENTIFIER && node->collection->type != Node::Type::MEMBER_REFERENCE && node->collection->type != Node::Type::INDEX_REFERENCE )
 					{
 						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_LHS );
 						Utility::SafeDelete( node );
