@@ -56,8 +56,8 @@ namespace lyrics
 
 				if ( !scope )
 				{
-					mScopeStack.top()->AddVariable( node->identifier );
-					break;
+					ErrorHandler::OnError( node->location, ErrorCode::USE_OF_UNDECLARED_IDENTIFIER );
+					return false;
 				}
 			}
 

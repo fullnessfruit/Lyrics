@@ -160,6 +160,10 @@ namespace lyrics
 				Logger::Log( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ), "Incomplete foreach statement." );
 				break;
 
+			case ErrorCode::USE_OF_UNDECLARED_IDENTIFIER:
+				Logger::Log( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ), "Use of undeclared identifier." );
+				break;
+
 			case ErrorCode::DUPLICATED_IDENTIFIER:	// TODO: Unused yet.
 				Logger::Log( location, ErrorHandler::ERROR, static_cast<unsigned int>( errorCode ), "Duplicated identifier." );
 				break;
