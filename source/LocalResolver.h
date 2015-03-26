@@ -46,6 +46,13 @@ namespace lyrics
 			return canProgress;
 		}
 
+		virtual bool Visit( const IdentifierNode * const node )
+		{
+			node->GetType();	// Hide warning.
+
+			return true;
+		}
+
 		virtual bool Visit( const ArrayLiteralNode * const node )
 		{
 			bool canProgress = true;

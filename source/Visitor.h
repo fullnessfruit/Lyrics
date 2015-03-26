@@ -8,6 +8,7 @@ namespace lyrics
 	using std::size_t;
 
 	class BlockNode;
+				class IdentifierNode;
 				class ArrayLiteralNode;
 				class HashLiteralNode;
 					class HashNode;
@@ -50,6 +51,7 @@ namespace lyrics
 		static void *operator new []( size_t ) = delete;
 
 		virtual bool Visit( const BlockNode * const node ) = 0;
+		virtual bool Visit( const IdentifierNode * const node ) = 0;
 		virtual bool Visit( const ArrayLiteralNode * const node ) = 0;
 		virtual bool Visit( const HashLiteralNode * const node ) = 0;
 		virtual bool Visit( const HashNode * const node ) = 0;

@@ -188,7 +188,7 @@ namespace lyrics
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
-			return visitor.Visit();
+			return visitor.Visit( this );
 		}
 
 		virtual Node::Type GetType() const
