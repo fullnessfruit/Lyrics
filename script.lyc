@@ -6,44 +6,44 @@ s = "Cherry petals fall like teardrops..."
 a = []
 h = {}
 
-image = Image( "Graphics/illust_005_800x600.jpg" )
-text = Text()
-sound = Sound( "Audio/Title.wav" )
-video = Video( "Video/video.avi" )
+# image = Image( "Graphics/illust_005_800x600.jpg" )
+# text = Text()
+# sound = Sound( "Audio/Title.wav" )
+# video = Video( "Video/video.avi" )
 
-write( "It's a Wonderful Life", text )
+# write( "It's a Wonderful Life", text )
 
-write( text )
+# write( text )
 
-show( image, 100, 100 )
-show( 100, 100 )
-show( image )
-play( sound )
+# show( image, 100, 100 )
+# show( 100, 100 )
+# show( image )
+# play( sound )
 
 if t
-	write( s )
+#	write( s )
 end
 
 case i
 when 1 then
-	write( f )
+#	write( f )
 when 2 :
-	write( r )
+#	write( r )
 when 3
-	write( a )
+#	write( a )
 else
-	write( h )
+#	write( h )
 end
 
 case s
 when "It's a Wonderful Life" then
-	write( f )
+#	write( f )
 when "\n" :
-	write( r )
+#	write( r )
 when "\'"
-	write( a )
+#	write( a )
 else
-	write( h )
+#	write( h )
 end
 
 while i > 10 do
@@ -78,15 +78,15 @@ for j = 0, j < 10, j = j + 2
 end
 
 foreach j in a do
-	write( j )
+#	write( j )
 end
 
 foreach j in a :
-	write( j )
+#	write( j )
 end
 
 foreach j in a
-	write( j )
+#	write( j )
 end
 
 routine factorial( i )
@@ -97,7 +97,7 @@ routine factorial( i )
 	end
 end
 
-write( factorial( 9 ) )
+# write( factorial( 9 ) )
 
 routine add( a, i = 10 )
 	k = 0
