@@ -47,14 +47,14 @@ namespace lyrics
 			}
 			catch ( const ios_base::failure &e )
 			{
-				Utility::SafeDeleteArray( data );
+				Utility::SafeArrayDelete( data );
 				throw FatalErrorCode::CANNOT_READ_FILE;
 			}
 
 			input.close();
 			if ( input.rdstate() == ios_base::failbit )
 			{
-				Utility::SafeDeleteArray( data );
+				Utility::SafeArrayDelete( data );
 				throw FatalErrorCode::CANNOT_CLOSE_FILE;
 			}
 

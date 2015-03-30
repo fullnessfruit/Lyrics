@@ -32,11 +32,11 @@ namespace lyrics
 			}
 			catch ( const bad_alloc &e )
 			{
-				Utility::SafeDeleteArray( data );
+				Utility::SafeArrayDelete( data );
 				throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 			}
 
-			Utility::SafeDeleteArray( data );
+			Utility::SafeArrayDelete( data );
 
 			return text;
 		}

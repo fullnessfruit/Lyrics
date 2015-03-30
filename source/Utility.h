@@ -17,7 +17,7 @@ namespace lyrics
 		}
 
 		template <typename T>
-		static void SafeDeleteArray( T *&ptr )
+		static void SafeArrayDelete( T *&ptr )
 		{
 			delete [] ptr;
 			ptr = nullptr;
