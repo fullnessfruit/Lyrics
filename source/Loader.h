@@ -43,7 +43,7 @@ namespace lyrics
 
 			try
 			{
-				input.read( data , size );
+				input.read( data, size );
 			}
 			catch ( const ios_base::failure &e )
 			{
