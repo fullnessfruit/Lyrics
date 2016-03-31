@@ -1139,7 +1139,7 @@ namespace lyrics
 
 				elseIfNode->condition = Expression();
 
-				if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
+				if ( mToken->type == Token::Type::THEN )
 				{
 					mToken++;
 				}
@@ -1228,7 +1228,7 @@ namespace lyrics
 
 					whenNode->condition = Expression();
 
-					if ( mToken->type == Token::Type::THEN || mToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::THEN )
 					{
 						mToken++;
 					}
@@ -1305,7 +1305,7 @@ namespace lyrics
 
 			node->condition = Expression();
 
-			if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
+			if ( mToken->type == Token::Type::DO )
 			{
 				mToken++;
 			}
@@ -1371,7 +1371,7 @@ namespace lyrics
 
 					node->iterator = Expression();
 
-					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::DO )
 					{
 						mToken++;
 					}
@@ -1448,7 +1448,7 @@ namespace lyrics
 						return nullptr;
 					}
 
-					if ( mToken->type == Token::Type::DO || mToken->type == static_cast<Token::Type>( u':' ) )
+					if ( mToken->type == Token::Type::DO )
 					{
 						mToken++;
 					}
