@@ -217,7 +217,7 @@ namespace lyrics
 
 				for (;;)
 				{
-					auto tToken = mToken;
+					Location tLocation = mToken->location;
 
 					expression = Expression();
 
@@ -238,7 +238,7 @@ namespace lyrics
 						return nullptr;
 					}
 
-					node->AddHash( new HashNode( tToken->location, expression, Expression() ) );
+					node->AddHash( new HashNode( tLocation, expression, Expression() ) );
 
 					if ( mToken->type == static_cast<Token::Type>( u',' ) )
 					{
@@ -293,7 +293,7 @@ namespace lyrics
 
 					for (;;)
 					{
-						auto tToken = mToken;
+						Location tLocation = mToken->location;
 
 						if ( mToken->type != Token::Type::OUT )
 						{
@@ -336,11 +336,11 @@ namespace lyrics
 						{
 							if ( isValueParameter )
 							{
-								parameter = new ValueParameterNode( tToken->location, name );
+								parameter = new ValueParameterNode( tLocation, name );
 							}
 							else
 							{
-								parameter = new OutputParameterNode( tToken->location, name );
+								parameter = new OutputParameterNode( tLocation, name );
 							}
 						}
 						else
@@ -356,7 +356,7 @@ namespace lyrics
 
 							if ( isValueParameter )
 							{
-								parameter = new ValueParameterNode( tToken->location, name, Expression() );
+								parameter = new ValueParameterNode( tLocation, name, Expression() );
 							}
 							else
 							{
@@ -452,7 +452,7 @@ namespace lyrics
 
 		ExpressionNode *PostfixExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = PrimaryExpression();
 
 			if ( expression == nullptr || ( expression->type != Node::Type::IDENTIFIER && expression->type != Node::Type::THIS ) )
@@ -472,7 +472,7 @@ namespace lyrics
 						return nullptr;
 					}
 
-					expression = new IndexReferenceNode( tToken->location, expression, Expression() );
+					expression = new IndexReferenceNode( tLocation, expression, Expression() );
 
 					if ( mToken->type == static_cast<Token::Type>( u']' ) )
 					{
@@ -501,7 +501,7 @@ namespace lyrics
 						return nullptr;
 					}
 
-					RoutineCallNode *node = new RoutineCallNode( tToken->location, expression );
+					RoutineCallNode *node = new RoutineCallNode( tLocation, expression );
 
 					if ( mToken->type != static_cast<Token::Type>( u')' ) )
 					{
@@ -548,7 +548,7 @@ namespace lyrics
 
 					if ( mToken->type == Token::Type::IDENTIFIER )
 					{
-						expression = new MemberReferenceNode( tToken->location, expression, new IdentifierNode( mToken->location, mToken->value.identifier ) );
+						expression = new MemberReferenceNode( tLocation, expression, new IdentifierNode( mToken->location, mToken->value.identifier ) );
 
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
@@ -585,18 +585,22 @@ namespace lyrics
 			}
 			else
 			{
-				return new UnaryExpressionNode( mToken->location, mToken++->type, UnaryExpression() );
+				auto tToken = mToken++;
+
+				return new UnaryExpressionNode( tToken->location, tToken->type, UnaryExpression() );
 			}
 		}
 
 		ExpressionNode *MultiplicativeExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = UnaryExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'*' ) || mToken->type == static_cast<Token::Type>( u'/' ) || mToken->type == static_cast<Token::Type>( u'%' ) )
 			{
-				expression = new MultiplicativeExpressionNode( tToken->location, mToken++->type, expression, UnaryExpression() );
+				auto tToken = mToken++;
+
+				expression = new MultiplicativeExpressionNode( tLocation, tToken->type, expression, UnaryExpression() );
 			}
 
 			return expression;
@@ -604,12 +608,14 @@ namespace lyrics
 
 		ExpressionNode *AdditiveExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = MultiplicativeExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'+' ) || mToken->type == static_cast<Token::Type>( u'-' ) )
 			{
-				expression = new AdditiveExpressionNode( tToken->location, mToken++->type, expression, MultiplicativeExpression() );
+				auto tToken = mToken++;
+
+				expression = new AdditiveExpressionNode( tLocation, tToken->type, expression, MultiplicativeExpression() );
 			}
 
 			return expression;
@@ -617,12 +623,14 @@ namespace lyrics
 
 		ExpressionNode *ShiftExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = AdditiveExpression();
 
 			while ( mToken->type == Token::Type::SHIFT_LEFT || mToken->type == Token::Type::SHIFT_RIGHT )
 			{
-				expression = new ShiftExpressionNode( tToken->location, mToken++->type, expression, AdditiveExpression() );
+				auto tToken = mToken++;
+
+				expression = new ShiftExpressionNode( tLocation, tToken->type, expression, AdditiveExpression() );
 			}
 
 			return expression;
@@ -630,7 +638,7 @@ namespace lyrics
 
 		ExpressionNode *AndExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = ShiftExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'&' ) )
@@ -644,7 +652,7 @@ namespace lyrics
 					return nullptr;
 				}
 
-				expression = new AndExpressionNode( tToken->location, expression, ShiftExpression() );
+				expression = new AndExpressionNode( tLocation, expression, ShiftExpression() );
 			}
 
 			return expression;
@@ -652,12 +660,14 @@ namespace lyrics
 
 		ExpressionNode *OrExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = AndExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'|' ) || mToken->type == static_cast<Token::Type>( u'^' ) )
 			{
-				expression = new OrExpressionNode( tToken->location, mToken++->type, expression, AndExpression() );
+				auto tToken = mToken++;
+
+				expression = new OrExpressionNode( tLocation, tToken->type, expression, AndExpression() );
 			}
 
 			return expression;
@@ -665,12 +675,14 @@ namespace lyrics
 
 		ExpressionNode *RelationalExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = OrExpression();
 
 			while ( mToken->type == static_cast<Token::Type>( u'<' ) || mToken->type == static_cast<Token::Type>( u'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
 			{
-				expression = new RelationalExpressionNode( tToken->location, mToken++->type, expression, OrExpression() );
+				auto tToken = mToken++;
+
+				expression = new RelationalExpressionNode( tLocation, tToken->type, expression, OrExpression() );
 			}
 
 			return expression;
@@ -678,12 +690,14 @@ namespace lyrics
 
 		ExpressionNode *EqualityExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = RelationalExpression();
 
 			while ( mToken->type == Token::Type::EQUAL || mToken->type == Token::Type::NOT_EQUAL )
 			{
-				expression = new EqualityExpressionNode( tToken->location, mToken++->type, expression, RelationalExpression() );
+				auto tToken = mToken++;
+
+				expression = new EqualityExpressionNode( tLocation, tToken->type, expression, RelationalExpression() );
 			}
 
 			return expression;
@@ -691,7 +705,7 @@ namespace lyrics
 
 		ExpressionNode *LogicalAndExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = EqualityExpression();
 
 			while ( mToken->type == Token::Type::AND )
@@ -704,7 +718,7 @@ namespace lyrics
 					return nullptr;
 				}
 
-				expression = new LogicalAndExpressionNode( tToken->location, expression, EqualityExpression() );
+				expression = new LogicalAndExpressionNode( tLocation, expression, EqualityExpression() );
 			}
 
 			return expression;
@@ -712,7 +726,7 @@ namespace lyrics
 
 		ExpressionNode *LogicalOrExpression()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 			ExpressionNode *expression = LogicalAndExpression();
 
 			while ( mToken->type == Token::Type::OR )
@@ -725,7 +739,7 @@ namespace lyrics
 					return nullptr;
 				}
 
-				expression = new LogicalOrExpressionNode( tToken->location, expression, LogicalAndExpression() );
+				expression = new LogicalOrExpressionNode( tLocation, expression, LogicalAndExpression() );
 			}
 
 			return expression;
@@ -877,13 +891,13 @@ namespace lyrics
 
 		AssignmentExpressionNode *Class()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 
 			mToken++;
 			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
 				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
-				ClassNode *node = new ClassNode( tToken->location );
+				ClassNode *node = new ClassNode( tLocation );
 
 				mToken++;
 				if ( mToken->type == static_cast<Token::Type>( u'(' ) )
@@ -1019,7 +1033,7 @@ namespace lyrics
 				{
 					mToken++;
 
-					return new AssignmentExpressionNode( tToken->location, name, node );
+					return new AssignmentExpressionNode( tLocation, name, node );
 				}
 				else
 				{
@@ -1061,20 +1075,20 @@ namespace lyrics
 
 		AssignmentExpressionNode *Package()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 
 			mToken++;
 			if ( mToken->type == Token::Type::IDENTIFIER )
 			{
 				IdentifierNode *name = new IdentifierNode( mToken->location, mToken->value.identifier );
-				PackageNode *node = new PackageNode( tToken->location, Block() );
+				PackageNode *node = new PackageNode( tLocation, Block() );
 
 				mToken++;
 				if ( mToken->type == Token::Type::END )
 				{
 					mToken++;
 
-					return new AssignmentExpressionNode( tToken->location, name, node );
+					return new AssignmentExpressionNode( tLocation, name, node );
 				}
 				else
 				{
@@ -1502,17 +1516,17 @@ namespace lyrics
 
 		ReturnNode *Return()
 		{
-			auto tToken = mToken;
+			Location tLocation = mToken->location;
 
 			mToken++;
 
 			if ( mToken->type == Token::Type::END || mToken->type == Token::Type::ELSE || mToken->type == Token::Type::ELSEIF || mToken->type == Token::Type::PRIVATE || mToken->type == Token::Type::PUBLIC || mToken->type == Token::Type::WHEN || mToken->type == Token::Type::END_OF_FILE )
 			{
-				return new ReturnNode( tToken->location );
+				return new ReturnNode( tLocation );
 			}
 			else
 			{
-				return new ReturnNode( tToken->location, Expression() );
+				return new ReturnNode( tLocation, Expression() );
 			}
 		}
 	};
