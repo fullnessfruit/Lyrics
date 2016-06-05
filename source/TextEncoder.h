@@ -48,10 +48,11 @@ namespace lyrics
 					if ( data[2] != 0x00 || data[3] != 0x00 )
 					{
 						char16_t *tStr;
+						const unsigned int sizeWithoutBOM = size - 2;
 
-						for ( length = 1; ( ( char16_t * )data )[length] != 0; length++ );
+						length = sizeWithoutBOM >> 1;
 						tStr = new char16_t [length];
-						memcpy( tStr, data + 2, size );
+						memcpy( tStr, data + 2, sizeWithoutBOM);
 
 						return tStr;
 					}
