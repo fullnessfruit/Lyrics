@@ -23,7 +23,7 @@ namespace lyrics
 			case 0xEF:
 				if ( data[1] == 0xBB && data[2] == 0xBF )
 				{
-					return UTF8ToUTF16( data + 3, size - 3, length );
+					return UTF8ToUTF16( data + TextEncoder::SIZE_UTF_8_BOM, size - TextEncoder::SIZE_UTF_8_BOM, length );
 				}
 				else
 				{
@@ -48,17 +48,17 @@ namespace lyrics
 					if ( data[2] != 0x00 || data[3] != 0x00 )
 					{
 						char16_t *tStr;
-						const unsigned int sizeWithoutBOM = size - 2;
+						const unsigned int sizeWithoutBOM = size - TextEncoder::SIZE_UTF_16_BOM;
 
 						length = sizeWithoutBOM >> 1;
 						tStr = new char16_t [length];
-						memcpy( tStr, data + 2, sizeWithoutBOM);
+						memcpy( tStr, data + TextEncoder::SIZE_UTF_16_BOM, sizeWithoutBOM );
 
 						return tStr;
 					}
 					else
 					{
-						return UTF32ToUTF16( ( char32_t * )( data + 4 ), ( size - 4 ) >> 2, length );
+						return UTF32ToUTF16( ( char32_t * )( data + TextEncoder::SIZE_UTF_32_BOM ), ( size - TextEncoder::SIZE_UTF_32_BOM ) >> 2, length );
 					}
 				}
 				else
@@ -186,6 +186,11 @@ namespace lyrics
 
 			return tStr;
 		}
+
+	private:
+		static const unsigned int SIZE_UTF_8_BOM = 3;
+		static const unsigned int SIZE_UTF_16_BOM = 2;
+		static const unsigned int SIZE_UTF_32_BOM = 4;
 	};
 }
 
