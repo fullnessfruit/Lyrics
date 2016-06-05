@@ -51,10 +51,9 @@ namespace lyrics
 						size_t tLength;
 
 						for ( tLength = 1; ( ( char16_t * )data )[tLength] != 0 ; tLength++ );
-
 						tStr = new char16_t [tLength];
-
 						memcpy( tStr, data + 2, tLength );
+						length = tLength;
 
 						return tStr;
 					}
