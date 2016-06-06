@@ -58,7 +58,7 @@ namespace lyrics
 					}
 					else
 					{
-						return UTF32ToUTF16( ( char32_t * )( data + TextEncoder::SIZE_UTF_32_BOM ), ( size - TextEncoder::SIZE_UTF_32_BOM ) >> 2, length );
+						return EncodeUTF_32ToUTF_16( ( char32_t * )( data + TextEncoder::SIZE_UTF_32_BOM ), ( size - TextEncoder::SIZE_UTF_32_BOM ) >> 2, length );
 					}
 				}
 				else
@@ -147,7 +147,7 @@ namespace lyrics
 			return tStr;
 		}
 
-		char16_t *UTF32ToUTF16( const char32_t * const str, const unsigned int length, unsigned int &convertedStrLength )
+		char16_t *EncodeUTF_32ToUTF_16( const char32_t * const str, const unsigned int length, unsigned int &convertedStrLength )
 		{
 			if ( str == nullptr )
 			{
