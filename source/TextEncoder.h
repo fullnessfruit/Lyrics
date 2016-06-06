@@ -23,11 +23,11 @@ namespace lyrics
 			case 0xEF:
 				if ( data[1] == 0xBB && data[2] == 0xBF )
 				{
-					return UTF8ToUTF16( data + TextEncoder::SIZE_UTF_8_BOM, size - TextEncoder::SIZE_UTF_8_BOM, length );
+					return EncodeUTF_8ToUTF_16( data + TextEncoder::SIZE_UTF_8_BOM, size - TextEncoder::SIZE_UTF_8_BOM, length );
 				}
 				else
 				{
-					return UTF8ToUTF16( data, size, length );
+					return EncodeUTF_8ToUTF_16( data, size, length );
 				}
 				break;
 
@@ -38,7 +38,7 @@ namespace lyrics
 				}
 				else
 				{
-					return UTF8ToUTF16( data, size, length );
+					return EncodeUTF_8ToUTF_16( data, size, length );
 				}
 				break;
 
@@ -63,7 +63,7 @@ namespace lyrics
 				}
 				else
 				{
-					return UTF8ToUTF16( data, size, length );
+					return EncodeUTF_8ToUTF_16( data, size, length );
 				}
 				break;
 
@@ -74,18 +74,18 @@ namespace lyrics
 				}
 				else
 				{
-					return UTF8ToUTF16( data, size, length );
+					return EncodeUTF_8ToUTF_16( data, size, length );
 				}
 				break;
 			
 			default:
-				return UTF8ToUTF16( data, size, length );
+				return EncodeUTF_8ToUTF_16( data, size, length );
 			}
 
 			return nullptr;
 		}
 
-		char16_t *UTF8ToUTF16( const unsigned char * const str, const unsigned int length, unsigned int &convertedStrLength )
+		char16_t *EncodeUTF_8ToUTF_16( const unsigned char * const str, const unsigned int length, unsigned int &convertedStrLength )
 		{
 			if ( str == nullptr )
 			{
