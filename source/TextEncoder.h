@@ -8,7 +8,7 @@ namespace lyrics
 	class TextEncoder
 	{
 	public:
-		char16_t *EncodeToUTF16( const unsigned char * const data, const unsigned int size, unsigned int &length )
+		char16_t *EncodeToUTF_16( const unsigned char * const data, const unsigned int size, unsigned int &length )
 		{
 			using std::size_t;
 			using std::memcpy;

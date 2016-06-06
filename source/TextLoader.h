@@ -28,7 +28,7 @@ namespace lyrics
 
 			try
 			{
-				text = TextEncoder().EncodeToUTF16( ( const unsigned char * const )data, size, length );
+				text = TextEncoder().EncodeToUTF_16( ( const unsigned char * const )data, size, length );
 			}
 			catch ( const bad_alloc &e )
 			{
