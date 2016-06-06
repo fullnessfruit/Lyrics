@@ -7,7 +7,7 @@
 
 namespace lyrics
 {
-	using std::u16string;
+	using std::u32string;
 
 	struct Token
 	{
@@ -28,8 +28,8 @@ namespace lyrics
 			bool boolean;
 			long long integer;
 			double real;
-			u16string *string;
-			u16string *identifier;
+			u32string *string;
+			u32string *identifier;
 		};
 
 		Token( const Type type, const Location &location ) : type( type ), location( location )
@@ -51,12 +51,12 @@ namespace lyrics
 			value.real = real;
 		}
 
-		Token( u16string * const string, const Location &location ) : type( Type::STRING_LITERAL ), location( location )
+		Token( u32string * const string, const Location &location ) : type( Type::STRING_LITERAL ), location( location )
 		{
 			value.string = string;
 		}
 
-		Token( const Type type, u16string * const identifier, const Location &location ) : type( type ), location( location )
+		Token( const Type type, u32string * const identifier, const Location &location ) : type( type ), location( location )
 		{
 			value.identifier = identifier;
 		}

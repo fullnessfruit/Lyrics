@@ -15,7 +15,7 @@
 
 namespace lyrics
 {
-	using std::u16string;
+	using std::u32string;
 	using std::forward_list;
 
 	class Node : public Element
@@ -169,7 +169,7 @@ namespace lyrics
 	class IdentifierNode: public PrimaryExpressionNode
 	{
 	public:
-		IdentifierNode( const Location &location, const u16string * const identifier ) : PrimaryExpressionNode( location, Type::IDENTIFIER ), identifier( identifier )
+		IdentifierNode( const Location &location, const u32string * const identifier ) : PrimaryExpressionNode( location, Type::IDENTIFIER ), identifier( identifier )
 		{
 		}
 
@@ -178,7 +178,7 @@ namespace lyrics
 			delete identifier;
 		}
 
-		const u16string * const identifier;
+		const u32string * const identifier;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{
@@ -260,11 +260,11 @@ namespace lyrics
 	class StringLiteralNode: public PrimaryExpressionNode
 	{
 	public:
-		StringLiteralNode( const Location &location, u16string * const string ) : PrimaryExpressionNode( location, Type::STRING_LITERAL ), string( string )
+		StringLiteralNode( const Location &location, u32string * const string ) : PrimaryExpressionNode( location, Type::STRING_LITERAL ), string( string )
 		{
 		}
 
-		u16string * const string;
+		u32string * const string;
 
 		virtual bool Accept( Visitor &visitor ) const
 		{

@@ -9,7 +9,7 @@
 
 namespace lyrics
 {
-	using std::u16string;
+	using std::u32string;
 	using std::forward_list;
 	using std::unordered_set;
 
@@ -42,7 +42,7 @@ namespace lyrics
 			mLastChild = mChildren.insert_after( mLastChild, child );
 		}
 
-		bool IsExist( const u16string * const identifier ) const
+		bool IsExist( const u32string * const identifier ) const
 		{
 			auto iterator = mEntities.find( *identifier );
 
@@ -56,7 +56,7 @@ namespace lyrics
 			}
 		}
 
-		void AddVariable( const u16string * const entity )
+		void AddVariable( const u32string * const entity )
 		{
 			mEntities.insert( *entity );
 		}
@@ -65,7 +65,7 @@ namespace lyrics
 		const Scope * const mParent;
 		forward_list<Scope *> mChildren;
 		forward_list<Scope *>::const_iterator mLastChild;
-		unordered_set<u16string> mEntities;
+		unordered_set<u32string> mEntities;
 	};
 }
 

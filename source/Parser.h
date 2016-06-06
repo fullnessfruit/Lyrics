@@ -128,13 +128,13 @@ namespace lyrics
 			case Token::Type::ROUTINE:
 				return RoutineLiteral( mToken++ );
 
-			case static_cast<Token::Type>( u'(' ):
+			case static_cast<Token::Type>( U'(' ):
 				return ParenthesizedExpression();
 
-			case static_cast<Token::Type>( u'[' ):
+			case static_cast<Token::Type>( U'[' ):
 				return ArrayLiteral();
 
-			case static_cast<Token::Type>( u'{' ):
+			case static_cast<Token::Type>( U'{' ):
 				return HashLiteral();
 			
 			case Token::Type::THIS:
@@ -161,13 +161,13 @@ namespace lyrics
 				return nullptr;
 			}
 
-			if ( mToken->type != static_cast<Token::Type>( u']' ) )
+			if ( mToken->type != static_cast<Token::Type>( U']' ) )
 			{
 				for (;;)
 				{
 					node->AddExpression( Expression() );
 
-					if ( mToken->type == static_cast<Token::Type>( u',' ) )
+					if ( mToken->type == static_cast<Token::Type>( U',' ) )
 					{
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
@@ -176,12 +176,12 @@ namespace lyrics
 							Utility::SafeDelete( node );
 							return nullptr;
 						}
-						else if ( mToken->type == static_cast<Token::Type>( u']' ) )
+						else if ( mToken->type == static_cast<Token::Type>( U']' ) )
 						{
 							break;
 						}
 					}
-					else if ( mToken->type == static_cast<Token::Type>( u']' ) )
+					else if ( mToken->type == static_cast<Token::Type>( U']' ) )
 					{
 						break;
 					}
@@ -211,7 +211,7 @@ namespace lyrics
 				return nullptr;
 			}
 
-			if ( mToken->type != static_cast<Token::Type>( u'}' ) )
+			if ( mToken->type != static_cast<Token::Type>( U'}' ) )
 			{
 				ExpressionNode *expression;
 
@@ -221,7 +221,7 @@ namespace lyrics
 
 					expression = Expression();
 
-					if ( mToken->type != static_cast<Token::Type>( u':' ) )
+					if ( mToken->type != static_cast<Token::Type>( U':' ) )
 					{
 						ErrorHandler::OnError( mToken->location, ErrorCode::EXPECTED_HASH );
 						Utility::SafeDelete( expression );
@@ -240,7 +240,7 @@ namespace lyrics
 
 					node->AddHash( new HashNode( tLocation, expression, Expression() ) );
 
-					if ( mToken->type == static_cast<Token::Type>( u',' ) )
+					if ( mToken->type == static_cast<Token::Type>( U',' ) )
 					{
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
@@ -249,12 +249,12 @@ namespace lyrics
 							Utility::SafeDelete( node );
 							return nullptr;
 						}
-						else if ( mToken->type == static_cast<Token::Type>( u'}' ) )
+						else if ( mToken->type == static_cast<Token::Type>( U'}' ) )
 						{
 							break;
 						}
 					}
-					else if ( mToken->type == static_cast<Token::Type>( u'}' ) )
+					else if ( mToken->type == static_cast<Token::Type>( U'}' ) )
 					{
 						break;
 					}
@@ -274,7 +274,7 @@ namespace lyrics
 
 		RoutineLiteralNode *RoutineLiteral( forward_list<Token>::const_iterator token )
 		{
-			if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+			if ( mToken->type == static_cast<Token::Type>( U'(' ) )
 			{
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
@@ -285,7 +285,7 @@ namespace lyrics
 
 				RoutineLiteralNode *node = new RoutineLiteralNode( token->location );
 
-				if ( mToken->type != static_cast<Token::Type>( u')' ) )
+				if ( mToken->type != static_cast<Token::Type>( U')' ) )
 				{
 					ParameterNode *parameter;
 					bool isValueParameter;
@@ -332,7 +332,7 @@ namespace lyrics
 							return nullptr;
 						}
 
-						if ( mToken->type != static_cast<Token::Type>( u'=' ) )
+						if ( mToken->type != static_cast<Token::Type>( U'=' ) )
 						{
 							if ( isValueParameter )
 							{
@@ -369,7 +369,7 @@ namespace lyrics
 
 						node->AddParameter( parameter );
 
-						if ( mToken->type == static_cast<Token::Type>( u',' ) )
+						if ( mToken->type == static_cast<Token::Type>( U',' ) )
 						{
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
@@ -379,7 +379,7 @@ namespace lyrics
 								return nullptr;
 							}
 						}
-						else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+						else if ( mToken->type == static_cast<Token::Type>( U')' ) )
 						{
 							break;
 						}
@@ -436,7 +436,7 @@ namespace lyrics
 
 			node->expression = Expression();
 
-			if ( mToken->type == static_cast<Token::Type>( u')' ) )
+			if ( mToken->type == static_cast<Token::Type>( U')' ) )
 			{
 				mToken++;
 
@@ -462,7 +462,7 @@ namespace lyrics
 
 			for (;;)
 			{
-				if ( mToken->type == static_cast<Token::Type>( u'[' ) )
+				if ( mToken->type == static_cast<Token::Type>( U'[' ) )
 				{
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
@@ -474,7 +474,7 @@ namespace lyrics
 
 					expression = new IndexReferenceNode( tLocation, expression, Expression() );
 
-					if ( mToken->type == static_cast<Token::Type>( u']' ) )
+					if ( mToken->type == static_cast<Token::Type>( U']' ) )
 					{
 						mToken++;
 						if ( mToken->type == Token::Type::END_OF_FILE )
@@ -491,7 +491,7 @@ namespace lyrics
 						return nullptr;
 					}
 				}
-				else if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+				else if ( mToken->type == static_cast<Token::Type>( U'(' ) )
 				{
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
@@ -503,13 +503,13 @@ namespace lyrics
 
 					RoutineCallNode *node = new RoutineCallNode( tLocation, expression );
 
-					if ( mToken->type != static_cast<Token::Type>( u')' ) )
+					if ( mToken->type != static_cast<Token::Type>( U')' ) )
 					{
 						for (;;)
 						{
 							node->AddArgument( Expression() );
 
-							if ( mToken->type == static_cast<Token::Type>( u',' ) )
+							if ( mToken->type == static_cast<Token::Type>( U',' ) )
 							{
 								mToken++;
 								if ( mToken->type == Token::Type::END_OF_FILE )
@@ -519,7 +519,7 @@ namespace lyrics
 									return nullptr;
 								}
 							}
-							else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+							else if ( mToken->type == static_cast<Token::Type>( U')' ) )
 							{
 								break;
 							}
@@ -536,7 +536,7 @@ namespace lyrics
 
 					return node;
 				}
-				else if ( mToken->type == static_cast<Token::Type>( u'.' ) )
+				else if ( mToken->type == static_cast<Token::Type>( U'.' ) )
 				{
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
@@ -579,7 +579,7 @@ namespace lyrics
 				ErrorHandler::OnError( mToken->location, ErrorCode::INCOMPLETE_EXPRESSION );
 				return nullptr;
 			}
-			else if ( mToken->type != static_cast<Token::Type>( u'+' ) && mToken->type != static_cast<Token::Type>( u'-' ) && mToken->type != static_cast<Token::Type>( u'~' ) && mToken->type != static_cast<Token::Type>( u'!' ) )
+			else if ( mToken->type != static_cast<Token::Type>( U'+' ) && mToken->type != static_cast<Token::Type>( U'-' ) && mToken->type != static_cast<Token::Type>( U'~' ) && mToken->type != static_cast<Token::Type>( U'!' ) )
 			{
 				return PostfixExpression();
 			}
@@ -596,7 +596,7 @@ namespace lyrics
 			Location tLocation = mToken->location;
 			ExpressionNode *expression = UnaryExpression();
 
-			while ( mToken->type == static_cast<Token::Type>( u'*' ) || mToken->type == static_cast<Token::Type>( u'/' ) || mToken->type == static_cast<Token::Type>( u'%' ) )
+			while ( mToken->type == static_cast<Token::Type>( U'*' ) || mToken->type == static_cast<Token::Type>( U'/' ) || mToken->type == static_cast<Token::Type>( U'%' ) )
 			{
 				auto tToken = mToken++;
 
@@ -611,7 +611,7 @@ namespace lyrics
 			Location tLocation = mToken->location;
 			ExpressionNode *expression = MultiplicativeExpression();
 
-			while ( mToken->type == static_cast<Token::Type>( u'+' ) || mToken->type == static_cast<Token::Type>( u'-' ) )
+			while ( mToken->type == static_cast<Token::Type>( U'+' ) || mToken->type == static_cast<Token::Type>( U'-' ) )
 			{
 				auto tToken = mToken++;
 
@@ -641,7 +641,7 @@ namespace lyrics
 			Location tLocation = mToken->location;
 			ExpressionNode *expression = ShiftExpression();
 
-			while ( mToken->type == static_cast<Token::Type>( u'&' ) )
+			while ( mToken->type == static_cast<Token::Type>( U'&' ) )
 			{
 				mToken++;
 
@@ -663,7 +663,7 @@ namespace lyrics
 			Location tLocation = mToken->location;
 			ExpressionNode *expression = AndExpression();
 
-			while ( mToken->type == static_cast<Token::Type>( u'|' ) || mToken->type == static_cast<Token::Type>( u'^' ) )
+			while ( mToken->type == static_cast<Token::Type>( U'|' ) || mToken->type == static_cast<Token::Type>( U'^' ) )
 			{
 				auto tToken = mToken++;
 
@@ -678,7 +678,7 @@ namespace lyrics
 			Location tLocation = mToken->location;
 			ExpressionNode *expression = OrExpression();
 
-			while ( mToken->type == static_cast<Token::Type>( u'<' ) || mToken->type == static_cast<Token::Type>( u'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
+			while ( mToken->type == static_cast<Token::Type>( U'<' ) || mToken->type == static_cast<Token::Type>( U'>' ) || mToken->type == Token::Type::LESS_THAN_OR_EQUAL || mToken->type == Token::Type::GREATER_THAN_OR_EQUAL )
 			{
 				auto tToken = mToken++;
 
@@ -758,7 +758,7 @@ namespace lyrics
 					IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
 
 					mToken++;
-					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
+					if ( mToken->type == static_cast<Token::Type>( U'.' ) )
 					{
 						mToken++;
 						if ( mToken->type == Token::Type::IDENTIFIER )
@@ -766,7 +766,7 @@ namespace lyrics
 							IdentifierNode *member = new IdentifierNode( mToken->location, mToken->value.identifier );
 
 							mToken++;
-							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+							if ( mToken->type == static_cast<Token::Type>( U'(' ) )
 							{
 								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( identifier->location, identifier, member ), RoutineLiteral( tToken ) );
 							}
@@ -801,7 +801,7 @@ namespace lyrics
 					ThisNode *thisNode = new ThisNode( mToken->location );
 
 					mToken++;
-					if ( mToken->type == static_cast<Token::Type>( u'.' ) )
+					if ( mToken->type == static_cast<Token::Type>( U'.' ) )
 					{
 						mToken++;
 						if ( mToken->type == Token::Type::IDENTIFIER )
@@ -809,7 +809,7 @@ namespace lyrics
 							IdentifierNode *identifier = new IdentifierNode( mToken->location, mToken->value.identifier );
 
 							mToken++;
-							if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+							if ( mToken->type == static_cast<Token::Type>( U'(' ) )
 							{
 								return new AssignmentExpressionNode( tToken->location, new MemberReferenceNode( thisNode->location, thisNode, identifier ), RoutineLiteral( tToken ) );
 							}
@@ -860,7 +860,7 @@ namespace lyrics
 			default:
 				ExpressionNode *expression = LogicalOrExpression();
 
-				if ( expression == nullptr || mToken->type != static_cast<Token::Type>( u'=' ) )
+				if ( expression == nullptr || mToken->type != static_cast<Token::Type>( U'=' ) )
 				{
 					return expression;
 				}
@@ -900,7 +900,7 @@ namespace lyrics
 				ClassNode *node = new ClassNode( tLocation );
 
 				mToken++;
-				if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+				if ( mToken->type == static_cast<Token::Type>( U'(' ) )
 				{
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )
@@ -911,13 +911,13 @@ namespace lyrics
 						return nullptr;
 					}
 
-					if ( mToken->type != static_cast<Token::Type>( u')' ) )
+					if ( mToken->type != static_cast<Token::Type>( U')' ) )
 					{
 						for (;;)
 						{
 							node->AddArgument( Expression() );
 
-							if ( mToken->type == static_cast<Token::Type>( u',' ) )
+							if ( mToken->type == static_cast<Token::Type>( U',' ) )
 							{
 								mToken++;
 								if ( mToken->type == Token::Type::END_OF_FILE )
@@ -928,7 +928,7 @@ namespace lyrics
 									return nullptr;
 								}
 							}
-							else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+							else if ( mToken->type == static_cast<Token::Type>( U')' ) )
 							{
 								break;
 							}
@@ -951,7 +951,7 @@ namespace lyrics
 				}
 
 				mToken++;
-				if ( mToken->type == static_cast<Token::Type>( u':' ) )
+				if ( mToken->type == static_cast<Token::Type>( U':' ) )
 				{
 					node->baseClassConstructorCall = new BaseClassConstructorCallNode( mToken->location );
 
@@ -961,7 +961,7 @@ namespace lyrics
 						node->baseClassConstructorCall->baseClass = new IdentifierNode( mToken->location, mToken->value.identifier );
 
 						mToken++;
-						if ( mToken->type == static_cast<Token::Type>( u'(' ) )
+						if ( mToken->type == static_cast<Token::Type>( U'(' ) )
 						{
 							mToken++;
 							if ( mToken->type == Token::Type::END_OF_FILE )
@@ -972,13 +972,13 @@ namespace lyrics
 								return nullptr;
 							}
 
-							if ( mToken->type != static_cast<Token::Type>( u')' ) )
+							if ( mToken->type != static_cast<Token::Type>( U')' ) )
 							{
 								for (;;)
 								{
 									node->baseClassConstructorCall->AddArgument( Expression() );
 
-									if ( mToken->type == static_cast<Token::Type>( u',' ) )
+									if ( mToken->type == static_cast<Token::Type>( U',' ) )
 									{
 										mToken++;
 										if ( mToken->type == Token::Type::END_OF_FILE )
@@ -989,7 +989,7 @@ namespace lyrics
 											return nullptr;
 										}
 									}
-									else if ( mToken->type == static_cast<Token::Type>( u')' ) )
+									else if ( mToken->type == static_cast<Token::Type>( U')' ) )
 									{
 										break;
 									}
@@ -1068,7 +1068,7 @@ namespace lyrics
 					return nullptr;
 				}
 			}
-			while ( mToken->type == static_cast<Token::Type>( u',' ) );
+			while ( mToken->type == static_cast<Token::Type>( U',' ) );
 
 			return node;
 		}
@@ -1128,7 +1128,7 @@ namespace lyrics
 					return nullptr;
 				}
 			}
-			while ( mToken->type == static_cast<Token::Type>( u'.' ) );
+			while ( mToken->type == static_cast<Token::Type>( U'.' ) );
 
 			return node;
 		}
@@ -1361,7 +1361,7 @@ namespace lyrics
 
 			node->initializer = Expression();
 
-			if ( mToken->type == static_cast<Token::Type>( u',' ) )
+			if ( mToken->type == static_cast<Token::Type>( U',' ) )
 			{
 				mToken++;
 				if ( mToken->type == Token::Type::END_OF_FILE )
@@ -1373,7 +1373,7 @@ namespace lyrics
 
 				node->condition = Expression();
 
-				if ( mToken->type == static_cast<Token::Type>( u',' ) )
+				if ( mToken->type == static_cast<Token::Type>( U',' ) )
 				{
 					mToken++;
 					if ( mToken->type == Token::Type::END_OF_FILE )

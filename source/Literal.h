@@ -7,7 +7,7 @@
 
 namespace lyrics
 {
-	using std::u16string;
+	using std::u32string;
 	using std::vector;
 	using std::unordered_map;
 
@@ -20,12 +20,12 @@ namespace lyrics
 			bool boolean;
 			long long integer;
 			double real;
-			u16string *string;
+			u32string *string;
 			vector<Literal> *array;
-			unordered_map<u16string, Literal> *hash;
+			unordered_map<u32string, Literal> *hash;
 			char *routine;
 			char *object;
-			u16string *reference;
+			u32string *reference;
 		};
 
 		Literal() : type( Type::NULL_LITERAL )
@@ -52,12 +52,12 @@ namespace lyrics
 			value.array = array;
 		}
 
-		Literal( unordered_map<u16string, Literal> * const hash ) : type( Type::HASH )
+		Literal( unordered_map<u32string, Literal> * const hash ) : type( Type::HASH )
 		{
 			value.hash = hash;
 		}
 
-		Literal( const Type type, u16string * const string ) : type( type )
+		Literal( const Type type, u32string * const string ) : type( type )
 		{
 			value.string = string;
 		}

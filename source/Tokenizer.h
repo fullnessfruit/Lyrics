@@ -16,7 +16,7 @@
 namespace lyrics
 {
 	using std::string;
-	using std::u16string;
+	using std::u32string;
 	using std::forward_list;
 	using std::bad_alloc;
 
@@ -52,7 +52,7 @@ namespace lyrics
 		// TODO: mTextLength is byte of mText, not number of characters.
 		bool TokenizeUTF_16( forward_list<Token> &tokenList, Location &currentLocation )
 		{
-			char16_t tChar;
+			char32_t tChar;
 
 			if ( mOffset < mTextLength )
 			{
@@ -63,11 +63,11 @@ namespace lyrics
 				return false;
 			}
 
-			if ( ( u'A' <= tChar && tChar <= u'Z' ) || ( u'a' <= tChar && tChar <= u'z' ) || tChar == u'_' )
+			if ( ( U'A' <= tChar && tChar <= U'Z' ) || ( U'a' <= tChar && tChar <= U'z' ) || tChar == U'_' )
 			{
-				u16string *tStr = new u16string();
+				u32string *tStr = new u32string();
 				unsigned int length;
-				bool isIdentifier = tChar == u'_' ? true : false;
+				bool isIdentifier = tChar == U'_' ? true : false;
 
 				do
 				{
@@ -82,7 +82,7 @@ namespace lyrics
 						break;
 					}
 				}
-				while ( ( u'A' <= tChar && tChar <= u'Z' ) || ( u'a' <= tChar && tChar <= u'z' ) || ( ( u'0' <= tChar && tChar <= u'9' ) || tChar == u'_' ? isIdentifier = true : false ) );	// If the string includs number or _, then the string is identifier.
+				while ( ( U'A' <= tChar && tChar <= U'Z' ) || ( U'a' <= tChar && tChar <= U'z' ) || ( ( U'0' <= tChar && tChar <= U'9' ) || tChar == U'_' ? isIdentifier = true : false ) );	// If the string includs number or _, then the string is identifier.
 
 				length = tStr->length();
 
@@ -282,29 +282,29 @@ namespace lyrics
 
 				currentLocation.IncreaseColumn( length );
 			}
-			else if ( tChar == u' ' || tChar == u'\t' || tChar == u'\r' || tChar == u'\v' || tChar == u'\f' )
+			else if ( tChar == U' ' || tChar == U'\t' || tChar == U'\r' || tChar == U'\v' || tChar == U'\f' )
 			{
 				currentLocation.IncreaseColumn();
 				mOffset++;
 
 				TokenizeUTF_16( tokenList, currentLocation );
 			}
-			else if ( tChar == u'\n' )
+			else if ( tChar == U'\n' )
 			{
 				currentLocation.IncreaseLine();
 				mOffset++;
 
 				TokenizeUTF_16( tokenList, currentLocation );
 			}
-			else if ( tChar == u'.' )
+			else if ( tChar == U'.' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
 					tChar = mText[mOffset];
 
-					if ( tChar < u'0' || tChar > u'9' )
+					if ( tChar < U'0' || tChar > U'9' )
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'.' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 					else	// real
@@ -331,7 +331,7 @@ namespace lyrics
 								break;
 							}
 						}
-						while ( u'0' <= tChar && tChar <= u'9' );
+						while ( U'0' <= tChar && tChar <= U'9' );
 
 						mLastToken = tokenList.emplace_after( mLastToken, double( valueBelowDecimalPoint ) / tenPowerDecimalPlace, currentLocation );
 						currentLocation.IncreaseColumn( length );
@@ -339,87 +339,87 @@ namespace lyrics
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'.' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'.' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( tChar == u'(' || tChar == u')' || tChar == u'+' || tChar == u'-' || tChar == u'*' || tChar == u'/' || tChar == u'[' || tChar == u']' )
+			else if ( tChar == U'(' || tChar == U')' || tChar == U'+' || tChar == U'-' || tChar == U'*' || tChar == U'/' || tChar == U'[' || tChar == U']' )
 			{
 				mOffset++;
 				mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( tChar ), currentLocation );
 				currentLocation.IncreaseColumn();
 			}
-			else if ( tChar == u'<' )
+			else if ( tChar == U'<' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
 					switch ( mText[mOffset] )
 					{
-					case u'<':
+					case U'<':
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::SHIFT_LEFT, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
 						mOffset++;
 						break;
 
-					case u'=':
+					case U'=':
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::LESS_THAN_OR_EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
 						mOffset++;
 						break;
 					
 					default:
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'<' ), currentLocation );
 						currentLocation.IncreaseColumn();
 						break;
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'<' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'<' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( tChar == u'>' )
+			else if ( tChar == U'>' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
 					switch ( mText[mOffset] )
 					{
-					case u'>':
+					case U'>':
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::SHIFT_RIGHT, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
 						mOffset++;
 						break;
 
-					case u'=':
+					case U'=':
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::GREATER_THAN_OR_EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
 						mOffset++;
 						break;
 					
 					default:
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'>' ), currentLocation );
 						currentLocation.IncreaseColumn();
 						break;
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'>' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'>' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( tChar == u'=' )
+			else if ( tChar == U'=' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
-					if ( mText[mOffset] == u'=' )
+					if ( mText[mOffset] == U'=' )
 					{
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
@@ -427,23 +427,23 @@ namespace lyrics
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'=' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'=' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'=' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( tChar == u'!' )
+			else if ( tChar == U'!' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
-					if ( mText[mOffset] == u'=' )
+					if ( mText[mOffset] == U'=' )
 					{
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::NOT_EQUAL, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
@@ -451,23 +451,23 @@ namespace lyrics
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'!' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'!' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'!' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( tChar == u'&' )
+			else if ( tChar == U'&' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
-					if ( mText[mOffset] == u'&' )
+					if ( mText[mOffset] == U'&' )
 					{
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::AND, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
@@ -475,23 +475,23 @@ namespace lyrics
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'&' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'&' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'&' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( tChar == u'|' )
+			else if ( tChar == U'|' )
 			{
 				if ( ++mOffset < mTextLength )
 				{
-					if ( mText[mOffset] == u'|' )
+					if ( mText[mOffset] == U'|' )
 					{
 						mLastToken = tokenList.emplace_after( mLastToken, Token::Type::OR, currentLocation );
 						currentLocation.IncreaseColumn( 2 );
@@ -499,19 +499,19 @@ namespace lyrics
 					}
 					else
 					{
-						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
+						mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'|' ), currentLocation );
 						currentLocation.IncreaseColumn();
 					}
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( u'|' ), currentLocation );
+					mLastToken = tokenList.emplace_after( mLastToken, static_cast<Token::Type>( U'|' ), currentLocation );
 					currentLocation.IncreaseColumn();
 
 					return false;
 				}
 			}
-			else if ( u'0' <= tChar && tChar <= u'9' )
+			else if ( U'0' <= tChar && tChar <= U'9' )
 			{
 				long long integer = 0;
 				long long valueBelowDecimalPoint = 0;
@@ -535,9 +535,9 @@ namespace lyrics
 						break;
 					}
 				}
-				while ( u'0' <= tChar && tChar <= u'9' );
+				while ( U'0' <= tChar && tChar <= U'9' );
 
-				if ( mOffset >= mTextLength || tChar != u'.' )
+				if ( mOffset >= mTextLength || tChar != U'.' )
 				{
 					mLastToken = tokenList.emplace_after( mLastToken, integer, currentLocation );
 					currentLocation.IncreaseColumn( length );
@@ -550,7 +550,7 @@ namespace lyrics
 					{
 						tChar = mText[mOffset];
 
-						if ( u'0' <= tChar && tChar <= u'9' )
+						if ( U'0' <= tChar && tChar <= U'9' )
 						{
 							do
 							{
@@ -569,7 +569,7 @@ namespace lyrics
 									break;
 								}
 							}
-							while ( u'0' <= tChar && tChar <= u'9' );
+							while ( U'0' <= tChar && tChar <= U'9' );
 						}
 					}
 
@@ -577,9 +577,9 @@ namespace lyrics
 					currentLocation.IncreaseColumn( length );
 				}
 			}
-			else if ( tChar == u'\"' )
+			else if ( tChar == U'\"' )
 			{
-				u16string *tStr;
+				u32string *tStr;
 
 				unsigned int lineFeed = 0;
 				unsigned int length = 0;
@@ -595,7 +595,7 @@ namespace lyrics
 					return false;
 				}
 
-				tStr = new u16string();
+				tStr = new u32string();
 
 				length++;
 				do
@@ -616,67 +616,67 @@ namespace lyrics
 
 						switch ( tChar )
 						{
-						case u'n':
-							tStr->push_back( u'\n' );
+						case U'n':
+							tStr->push_back( U'\n' );
 							length += 2;
 							break;
 
-						case u't':
-							tStr->push_back( u'\t' );
+						case U't':
+							tStr->push_back( U'\t' );
 							length += 2;
 							break;
 
-						case u'0':
-							tStr->push_back( u'\0' );
+						case U'0':
+							tStr->push_back( U'\0' );
 							length += 2;
 							break;
 
-						case u'r':
-							tStr->push_back( u'\r' );
+						case U'r':
+							tStr->push_back( U'\r' );
 							length += 2;
 							break;
 
-						case u'\'':
-							tStr->push_back( u'\'' );
+						case U'\'':
+							tStr->push_back( U'\'' );
 							length += 2;
 							break;
 
-						case u'\"':
-							tStr->push_back( u'\"' );
+						case U'\"':
+							tStr->push_back( U'\"' );
 							length += 2;
 							break;
 
-						case u'\\':
-							tStr->push_back( u'\\' );
+						case U'\\':
+							tStr->push_back( U'\\' );
 							length += 2;
 							break;
 
-						case u'a':
-							tStr->push_back( u'\a' );
+						case U'a':
+							tStr->push_back( U'\a' );
 							length += 2;
 							break;
 
-						case u'b':
-							tStr->push_back( u'\b' );
+						case U'b':
+							tStr->push_back( U'\b' );
 							length += 2;
 							break;
 
-						case u'f':
-							tStr->push_back( u'\f' );
+						case U'f':
+							tStr->push_back( U'\f' );
 							length += 2;
 							break;
 
-						case u'v':
-							tStr->push_back( u'\v' );
+						case U'v':
+							tStr->push_back( U'\v' );
 							length += 2;
 							break;
 
-						case u'\n':
+						case U'\n':
 							lineFeed++;
 							length = 0;
 							break;
 
-						case u'\r':
+						case U'\r':
 							if ( ++mOffset < mTextLength )
 							{
 								tChar = mText[mOffset];
@@ -744,7 +744,7 @@ namespace lyrics
 				}
 				currentLocation.IncreaseColumn( length );
 			}
-			else if ( tChar == u'#' )
+			else if ( tChar == U'#' )
 			{
 				do
 				{
@@ -757,11 +757,11 @@ namespace lyrics
 						return false;
 					}
 				}
-				while ( tChar != u'\r' && tChar != u'\n' );
+				while ( tChar != U'\r' && tChar != U'\n' );
 
 				TokenizeUTF_16( tokenList, currentLocation );
 			}
-			else if ( tChar == u'{' || tChar == u'}' || tChar == u',' || tChar == u':' || tChar == u'~' || tChar == u'%' || tChar == u'^' )
+			else if ( tChar == U'{' || tChar == U'}' || tChar == U',' || tChar == U':' || tChar == U'~' || tChar == U'%' || tChar == U'^' )
 			{
 				mOffset++;
 
@@ -793,62 +793,62 @@ namespace lyrics
 		}
 
 	private:
-		static const u16string BREAK;
-		static const u16string CASE;
-		static const u16string CLASS;
-		static const u16string DO;
-		static const u16string END;
-		static const u16string ELSE;
-		static const u16string ELSEIF;
-		static const u16string FALSE;
-		static const u16string FOR;
-		static const u16string FOREACH;
-		static const u16string IF;
-		static const u16string IMPORT;
-		static const u16string IN;
-		static const u16string INCLUDE;
-		static const u16string NEXT;
-		static const u16string NULL_TOKEN;
-		static const u16string OUT;
-		static const u16string PACKAGE;
-		static const u16string PRIVATE;
-		static const u16string PUBLIC;
-		static const u16string RETURN;
-		static const u16string ROUTINE;
-		static const u16string THEN;
-		static const u16string THIS;
-		static const u16string TRUE;
-		static const u16string WHEN;
-		static const u16string WHILE;
+		static const u32string BREAK;
+		static const u32string CASE;
+		static const u32string CLASS;
+		static const u32string DO;
+		static const u32string END;
+		static const u32string ELSE;
+		static const u32string ELSEIF;
+		static const u32string FALSE;
+		static const u32string FOR;
+		static const u32string FOREACH;
+		static const u32string IF;
+		static const u32string IMPORT;
+		static const u32string IN;
+		static const u32string INCLUDE;
+		static const u32string NEXT;
+		static const u32string NULL_TOKEN;
+		static const u32string OUT;
+		static const u32string PACKAGE;
+		static const u32string PRIVATE;
+		static const u32string PUBLIC;
+		static const u32string RETURN;
+		static const u32string ROUTINE;
+		static const u32string THEN;
+		static const u32string THIS;
+		static const u32string TRUE;
+		static const u32string WHEN;
+		static const u32string WHILE;
 
 		// Unicode class Zs
-//		static constexpr char16_t SPACE = 0x0020u;
-		static constexpr char16_t NO_BREAK_SPACE = 0x00A0u;
-		static constexpr char16_t OGHAM_SPACE_MARK = 0x1680u;
-		static constexpr char16_t MONGOLIAN_VOWEL_SEPARATOR = 0x180Eu;
-		static constexpr char16_t EN_QUAD = 0x2000u;
-//		static constexpr char16_t EM_QUAD = 0x2001u;
-//		static constexpr char16_t EN_SPACE = 0x2002u;
-//		static constexpr char16_t EM_SPACE = 0x2003u;
-//		static constexpr char16_t THREE_PER_EM_SPACE = 0x2004u;
-//		static constexpr char16_t FOUR_PER_EM_SPACE = 0x2005u;
-//		static constexpr char16_t SIX_PER_EM_SPACE = 0x2006u;
-//		static constexpr char16_t FIGURE_SPACE = 0x2007u;
-//		static constexpr char16_t PUNCTUATION_SPACE = 0x2008u;
-//		static constexpr char16_t THIN_SPACE = 0x2009u;
-		static constexpr char16_t HAIR_SPACE = 0x200Au;
-		static constexpr char16_t NARROW_NO_BREAK_SPACE = 0x202Fu;
-		static constexpr char16_t MEDIUM_MATHEMATICAL_SPACE = 0x205Fu;
-		static constexpr char16_t IDEOGRAPHIC_SPACE = 0x3000u;
+//		static constexpr char32_t SPACE = 0x0020u;
+		static constexpr char32_t NO_BREAK_SPACE = 0x00A0u;
+		static constexpr char32_t OGHAM_SPACE_MARK = 0x1680u;
+		static constexpr char32_t MONGOLIAN_VOWEL_SEPARATOR = 0x180Eu;
+		static constexpr char32_t EN_QUAD = 0x2000u;
+//		static constexpr char32_t EM_QUAD = 0x2001u;
+//		static constexpr char32_t EN_SPACE = 0x2002u;
+//		static constexpr char32_t EM_SPACE = 0x2003u;
+//		static constexpr char32_t THREE_PER_EM_SPACE = 0x2004u;
+//		static constexpr char32_t FOUR_PER_EM_SPACE = 0x2005u;
+//		static constexpr char32_t SIX_PER_EM_SPACE = 0x2006u;
+//		static constexpr char32_t FIGURE_SPACE = 0x2007u;
+//		static constexpr char32_t PUNCTUATION_SPACE = 0x2008u;
+//		static constexpr char32_t THIN_SPACE = 0x2009u;
+		static constexpr char32_t HAIR_SPACE = 0x200Au;
+		static constexpr char32_t NARROW_NO_BREAK_SPACE = 0x202Fu;
+		static constexpr char32_t MEDIUM_MATHEMATICAL_SPACE = 0x205Fu;
+		static constexpr char32_t IDEOGRAPHIC_SPACE = 0x3000u;
 
 		// New line character
-//		static constexpr char16_t CARRIAGE_RETURN = 0x000Du;
-//		static constexpr char16_t LINE_FEED = 0x000Au;
-		static constexpr char16_t NEXT_LINE = 0x0085u;
-		static constexpr char16_t LINE_SEPARATOR = 0x2028u;
-		static constexpr char16_t PARAGRAPH_SEPARATOR = 0x2029u;
+//		static constexpr char32_t CARRIAGE_RETURN = 0x000Du;
+//		static constexpr char32_t LINE_FEED = 0x000Au;
+		static constexpr char32_t NEXT_LINE = 0x0085u;
+		static constexpr char32_t LINE_SEPARATOR = 0x2028u;
+		static constexpr char32_t PARAGRAPH_SEPARATOR = 0x2029u;
 
-		char16_t *mText;
+		char32_t *mText;
 		unsigned int mTextLength;
 		unsigned int mOffset;
 

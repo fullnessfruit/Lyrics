@@ -13,7 +13,7 @@
 
 namespace lyrics
 {
-	using std::u16string;
+	using std::u32string;
 	using std::stack;
 
 	class LocalResolver : public Visitor
@@ -540,7 +540,7 @@ namespace lyrics
 				if ( node->lhs->type == Node::Type::IDENTIFIER )
 				{
 					const Scope *scope = mScopeStack.top();
-					const u16string * const identifier = static_cast<const IdentifierNode * const>( node->lhs )->identifier;
+					const u32string * const identifier = static_cast<const IdentifierNode * const>( node->lhs )->identifier;
 
 					while ( !scope->IsExist( identifier ) )
 					{

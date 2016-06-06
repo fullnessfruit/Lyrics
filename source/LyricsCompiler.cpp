@@ -10,36 +10,36 @@
 
 namespace lyrics
 {
-	using std::u16string;
+	using std::u32string;
 	using std::forward_list;
 
-	const u16string Tokenizer::BREAK = u"break";
-	const u16string Tokenizer::CASE = u"case";
-	const u16string Tokenizer::CLASS = u"class";
-	const u16string Tokenizer::DO = u"do";
-	const u16string Tokenizer::END = u"end";
-	const u16string Tokenizer::ELSE = u"else";
-	const u16string Tokenizer::ELSEIF = u"elseif";
-	const u16string Tokenizer::FALSE = u"false";
-	const u16string Tokenizer::FOR = u"for";
-	const u16string Tokenizer::FOREACH = u"foreach";
-	const u16string Tokenizer::IF = u"if";
-	const u16string Tokenizer::IMPORT = u"import";
-	const u16string Tokenizer::IN = u"in";
-	const u16string Tokenizer::INCLUDE = u"include";
-	const u16string Tokenizer::NEXT = u"next";
-	const u16string Tokenizer::NULL_TOKEN = u"null";
-	const u16string Tokenizer::OUT = u"out";
-	const u16string Tokenizer::PACKAGE = u"package";
-	const u16string Tokenizer::PRIVATE = u"private";
-	const u16string Tokenizer::PUBLIC = u"public";
-	const u16string Tokenizer::RETURN = u"return";
-	const u16string Tokenizer::ROUTINE = u"routine";
-	const u16string Tokenizer::THEN = u"then";
-	const u16string Tokenizer::THIS = u"this";
-	const u16string Tokenizer::TRUE = u"true";
-	const u16string Tokenizer::WHEN = u"when";
-	const u16string Tokenizer::WHILE = u"while";
+	const u32string Tokenizer::BREAK = U"break";
+	const u32string Tokenizer::CASE = U"case";
+	const u32string Tokenizer::CLASS = U"class";
+	const u32string Tokenizer::DO = U"do";
+	const u32string Tokenizer::END = U"end";
+	const u32string Tokenizer::ELSE = U"else";
+	const u32string Tokenizer::ELSEIF = U"elseif";
+	const u32string Tokenizer::FALSE = U"false";
+	const u32string Tokenizer::FOR = U"for";
+	const u32string Tokenizer::FOREACH = U"foreach";
+	const u32string Tokenizer::IF = U"if";
+	const u32string Tokenizer::IMPORT = U"import";
+	const u32string Tokenizer::IN = U"in";
+	const u32string Tokenizer::INCLUDE = U"include";
+	const u32string Tokenizer::NEXT = U"next";
+	const u32string Tokenizer::NULL_TOKEN = U"null";
+	const u32string Tokenizer::OUT = U"out";
+	const u32string Tokenizer::PACKAGE = U"package";
+	const u32string Tokenizer::PRIVATE = U"private";
+	const u32string Tokenizer::PUBLIC = U"public";
+	const u32string Tokenizer::RETURN = U"return";
+	const u32string Tokenizer::ROUTINE = U"routine";
+	const u32string Tokenizer::THEN = U"then";
+	const u32string Tokenizer::THIS = U"this";
+	const u32string Tokenizer::TRUE = U"true";
+	const u32string Tokenizer::WHEN = U"when";
+	const u32string Tokenizer::WHILE = U"while";
 
 	constexpr char ErrorHandler::WARNING[];
 	constexpr char ErrorHandler::ERROR[];

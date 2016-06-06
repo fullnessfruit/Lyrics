@@ -15,7 +15,7 @@ namespace lyrics
 	class TextLoader : public Loader
 	{
 	public:
-		char16_t *Load( const string &name, unsigned int &length )
+		char32_t *Load( const string &name, unsigned int &length )
 		{
 			using std::bad_alloc;
 
@@ -24,11 +24,11 @@ namespace lyrics
 
 			data = Loader::Load( name, size );
 
-			char16_t *text;
+			char32_t *text;
 
 			try
 			{
-				text = TextEncoder().EncodeToUTF_16( ( const unsigned char * const )data, size, length );
+				text = TextEncoder().DecodeUnicode( ( const unsigned char * const )data, size, length );
 			}
 			catch ( const bad_alloc &e )
 			{
