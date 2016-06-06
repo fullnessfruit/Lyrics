@@ -35,7 +35,7 @@ namespace lyrics
 
 			try
 			{
-				while ( Scan( tokenList, currentLocation ) );
+				while ( TokenizeUTF_16( tokenList, currentLocation ) );
 				mLastToken = tokenList.emplace_after( mLastToken, Token::Type::END_OF_FILE, currentLocation );
 			}
 			catch ( const bad_alloc &e )
@@ -50,7 +50,7 @@ namespace lyrics
 		}
 
 		// TODO: mTextLength is byte of mText, not number of characters.
-		bool Scan( forward_list<Token> &tokenList, Location &currentLocation )
+		bool TokenizeUTF_16( forward_list<Token> &tokenList, Location &currentLocation )
 		{
 			char16_t tChar;
 
@@ -287,14 +287,14 @@ namespace lyrics
 				currentLocation.IncreaseColumn();
 				mOffset++;
 
-				Scan( tokenList, currentLocation );
+				TokenizeUTF_16( tokenList, currentLocation );
 			}
 			else if ( tChar == u'\n' )
 			{
 				currentLocation.IncreaseLine();
 				mOffset++;
 
-				Scan( tokenList, currentLocation );
+				TokenizeUTF_16( tokenList, currentLocation );
 			}
 			else if ( tChar == u'.' )
 			{
@@ -759,7 +759,7 @@ namespace lyrics
 				}
 				while ( tChar != u'\r' && tChar != u'\n' );
 
-				Scan( tokenList, currentLocation );
+				TokenizeUTF_16( tokenList, currentLocation );
 			}
 			else if ( tChar == u'{' || tChar == u'}' || tChar == u',' || tChar == u':' || tChar == u'~' || tChar == u'%' || tChar == u'^' )
 			{
@@ -772,14 +772,14 @@ namespace lyrics
 			{
 				mOffset++;
 
-				Scan( tokenList, currentLocation );
+				TokenizeUTF_16( tokenList, currentLocation );
 			}
 			else if ( tChar == Tokenizer::NEXT_LINE || tChar == Tokenizer::LINE_SEPARATOR || tChar == Tokenizer::PARAGRAPH_SEPARATOR )	// New line character.
 			{
 				mOffset++;
 				currentLocation.IncreaseLine();
 
-				Scan( tokenList, currentLocation );
+				TokenizeUTF_16( tokenList, currentLocation );
 			}
 			else
 			{
