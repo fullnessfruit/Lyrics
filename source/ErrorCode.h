@@ -3,7 +3,7 @@
 
 namespace lyrics
 {
-	enum class ErrorCode: unsigned int
+	enum class ErrorCode : unsigned int
 	{
 		WRONG_CHARACTER = 2001,
 		STRING_NOT_TERMINATED,

@@ -1,11 +1,9 @@
+#ifndef SCOPE
+#define SCOPE
+
 #include <string>
 #include <forward_list>
 #include <unordered_set>
-
-#include "Utility.h"
-
-#ifndef SCOPE
-#define SCOPE
 
 namespace lyrics
 {
@@ -16,50 +14,17 @@ namespace lyrics
 	class Scope
 	{
 	public:
-		explicit Scope( Scope * const parent ) : mParent( parent ), mLastChild( mChildren.cbefore_begin() )
-		{
-			if ( parent )
-			{
-				parent->AddChlid( this );
-			}
-		}
-
-		~Scope()
-		{
-			for ( auto i : mChildren )
-			{
-				Utility::SafeDelete( i );
-			}
-		}
+		explicit Scope(Scope * const parent);
+		~Scope();
 
 		const Scope *Parent() const
 		{
 			return mParent;
 		}
 
-		void AddChlid( Scope * const child )
-		{
-			mLastChild = mChildren.insert_after( mLastChild, child );
-		}
-
-		bool IsExist( const u32string * const identifier ) const
-		{
-			auto iterator = mEntities.find( *identifier );
-
-			if ( iterator != mEntities.cend() && *iterator == *identifier )
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		void AddVariable( const u32string * const entity )
-		{
-			mEntities.insert( *entity );
-		}
+		void AddChlid(Scope * const child);
+		bool IsExist(const u32string * const identifier) const;
+		void AddVariable(const u32string * const entity);
 
 	private:
 		const Scope * const mParent;

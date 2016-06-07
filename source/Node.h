@@ -1,3 +1,6 @@
+#ifndef NODE
+#define NODE
+
 #include <string>
 #include <forward_list>
 
@@ -9,9 +12,6 @@
 #include "Element.h"
 
 #include "Utility.h"
-
-#ifndef NODE
-#define NODE
 
 namespace lyrics
 {
@@ -37,10 +37,10 @@ namespace lyrics
 					CASE,
 						WHEN,
 					WHILE, FOR, FOREACH,
-					BREAK, NEXT, RETURN
+					BREAK, NEXT, RETURN,
 		};
 
-		explicit Node( const Location &location, const Type type ) : location( location ), type( type )
+		explicit Node(const Location &location, const Type type) : location(location), type(type)
 		{
 		}
 
@@ -101,10 +101,10 @@ namespace lyrics
 			class NextNode;
 			class ReturnNode;
 
-	class StatementNode: public Node
+	class StatementNode : public Node
 	{
 	public:
-		StatementNode( const Location &location, const Type type ) : Node( location, type )
+		StatementNode(const Location &location, const Type type) : Node(location, type)
 		{
 		}
 
@@ -113,39 +113,39 @@ namespace lyrics
 		}
 	};
 
-	class BlockNode: public Node
+	class BlockNode : public Node
 	{
 	public:
-		explicit BlockNode( const Location &location ) : Node( location, Type::BLOCK ), last( list.cbefore_begin() )
+		explicit BlockNode(const Location &location) : Node(location, Type::BLOCK), last(list.cbefore_begin())
 		{
 		}
 
 		~BlockNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
 		forward_list<StatementNode *> list;
 		forward_list<StatementNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddStatement( StatementNode * const node )
+		void AddStatement(StatementNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class ExpressionNode: public StatementNode
+	class ExpressionNode : public StatementNode
 	{
 	public:
-		ExpressionNode( const Location &location, const Type type ) : StatementNode( location, type )
+		ExpressionNode(const Location &location, const Type type) : StatementNode(location, type)
 		{
 		}
 
@@ -154,10 +154,10 @@ namespace lyrics
 		}
 	};
 
-	class PrimaryExpressionNode: public ExpressionNode
+	class PrimaryExpressionNode : public ExpressionNode
 	{
 	public:
-		PrimaryExpressionNode( const Location &location, const Type type ) : ExpressionNode( location, type )
+		PrimaryExpressionNode(const Location &location, const Type type) : ExpressionNode(location, type)
 		{
 		}
 
@@ -166,10 +166,10 @@ namespace lyrics
 		}
 	};
 
-	class IdentifierNode: public PrimaryExpressionNode
+	class IdentifierNode : public PrimaryExpressionNode
 	{
 	public:
-		IdentifierNode( const Location &location, const u32string * const identifier ) : PrimaryExpressionNode( location, Type::IDENTIFIER ), identifier( identifier )
+		IdentifierNode(const Location &location, const u32string * const identifier) : PrimaryExpressionNode(location, Type::IDENTIFIER), identifier(identifier)
 		{
 		}
 
@@ -180,131 +180,131 @@ namespace lyrics
 
 		const u32string * const identifier;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class ThisNode: public PrimaryExpressionNode
+	class ThisNode : public PrimaryExpressionNode
 	{
 	public:
-		explicit ThisNode( const Location &location ) : PrimaryExpressionNode( location, Type::THIS )
+		explicit ThisNode(const Location &location) : PrimaryExpressionNode(location, Type::THIS)
 		{
 		}
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class NullLiteralNode: public PrimaryExpressionNode
+	class NullLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		explicit NullLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::NULL_LITERAL )
+		explicit NullLiteralNode(const Location &location) : PrimaryExpressionNode(location, Type::NULL_LITERAL)
 		{
 		}
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class BooleanLiteralNode: public PrimaryExpressionNode
+	class BooleanLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		BooleanLiteralNode( const Location &location, const bool boolean ) : PrimaryExpressionNode( location, Type::BOOLEAN_LITERAL ), boolean( boolean )
+		BooleanLiteralNode(const Location &location, const bool boolean) : PrimaryExpressionNode(location, Type::BOOLEAN_LITERAL), boolean(boolean)
 		{
 		}
 
 		const bool boolean;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class IntegerLiteralNode: public PrimaryExpressionNode
+	class IntegerLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		IntegerLiteralNode( const Location &location, const long long integer ) : PrimaryExpressionNode( location, Type::INTEGER_LITERAL ), integer( integer )
+		IntegerLiteralNode(const Location &location, const long long integer) : PrimaryExpressionNode(location, Type::INTEGER_LITERAL), integer(integer)
 		{
 		}
 
 		const int integer;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class RealLiteralNode: public PrimaryExpressionNode
+	class RealLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		RealLiteralNode( const Location &location, const double real ) : PrimaryExpressionNode( location, Type::REAL_LITERAL ), real( real )
+		RealLiteralNode(const Location &location, const double real) : PrimaryExpressionNode(location, Type::REAL_LITERAL), real(real)
 		{
 		}
 
 		const double real;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class StringLiteralNode: public PrimaryExpressionNode
+	class StringLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		StringLiteralNode( const Location &location, u32string * const string ) : PrimaryExpressionNode( location, Type::STRING_LITERAL ), string( string )
+		StringLiteralNode(const Location &location, u32string * const string) : PrimaryExpressionNode(location, Type::STRING_LITERAL), string(string)
 		{
 		}
 
 		u32string * const string;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class ArrayLiteralNode: public PrimaryExpressionNode
+	class ArrayLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		explicit ArrayLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::ARRAY_LITERAL ), last( list.cbefore_begin() )
+		explicit ArrayLiteralNode(const Location &location) : PrimaryExpressionNode(location, Type::ARRAY_LITERAL), last(list.cbefore_begin())
 		{
 		}
 
 		~ArrayLiteralNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddExpression( ExpressionNode * const node )
+		void AddExpression(ExpressionNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class HashNode: public Node
+	class HashNode : public Node
 	{
 	public:
-		HashNode( const Location &location, const ExpressionNode * const key, const ExpressionNode * const value ) : Node( location, Type::HASH ), key( key ), value( value )
+		HashNode(const Location &location, const ExpressionNode * const key, const ExpressionNode * const value) : Node(location, Type::HASH), key(key), value(value)
 		{
 		}
 
@@ -317,45 +317,45 @@ namespace lyrics
 		const ExpressionNode * const key;
 		const ExpressionNode * const value;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class HashLiteralNode: public PrimaryExpressionNode
+	class HashLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		explicit HashLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::HASH_LITERAL ), last( list.cbefore_begin() )
+		explicit HashLiteralNode(const Location &location) : PrimaryExpressionNode(location, Type::HASH_LITERAL), last(list.cbefore_begin())
 		{
 		}
 
 		~HashLiteralNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
 		forward_list<HashNode *> list;
 		forward_list<HashNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddHash( HashNode * const node )
+		void AddHash(HashNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class ParameterNode: public Node
+	class ParameterNode : public Node
 	{
 	public:
-		ParameterNode( const Location &location, const Type type, const IdentifierNode * const name ) : Node( location, type ), name( name )
+		ParameterNode(const Location &location, const Type type, const IdentifierNode * const name) : Node(location, type), name(name)
 		{
 		}
 
@@ -367,14 +367,14 @@ namespace lyrics
 		const IdentifierNode * const name;
 	};
 
-	class ValueParameterNode: public ParameterNode
+	class ValueParameterNode : public ParameterNode
 	{
 	public:
-		ValueParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, Type::VALUE_PARAMETER, name ), defalutArgument( nullptr )
+		ValueParameterNode(const Location &location, const IdentifierNode * const name) : ParameterNode(location, Type::VALUE_PARAMETER, name), defalutArgument(nullptr)
 		{
 		}
 
-		ValueParameterNode( const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument ) : ParameterNode( location, Type::VALUE_PARAMETER, name ), defalutArgument( defalutArgument )
+		ValueParameterNode(const Location &location, const IdentifierNode * const name, const ExpressionNode * const defalutArgument) : ParameterNode(location, Type::VALUE_PARAMETER, name), defalutArgument(defalutArgument)
 		{
 		}
 
@@ -385,80 +385,80 @@ namespace lyrics
 
 		const ExpressionNode * const defalutArgument;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class OutputParameterNode: public ParameterNode
+	class OutputParameterNode : public ParameterNode
 	{
 	public:
-		OutputParameterNode( const Location &location, const IdentifierNode * const name ) : ParameterNode( location, Type::OUTPUT_PARAMETER, name )
+		OutputParameterNode(const Location &location, const IdentifierNode * const name) : ParameterNode(location, Type::OUTPUT_PARAMETER, name)
 		{
 		}
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class RoutineLiteralNode: public PrimaryExpressionNode
+	class RoutineLiteralNode : public PrimaryExpressionNode
 	{
 	public:
-		explicit RoutineLiteralNode( const Location &location ) : PrimaryExpressionNode( location, Type::ROUTINE_LITERAL ), last( list.cbefore_begin() ), block( nullptr )
+		explicit RoutineLiteralNode(const Location &location) : PrimaryExpressionNode(location, Type::ROUTINE_LITERAL), last(list.cbefore_begin()), block(nullptr)
 		{
 		}
 
 		~RoutineLiteralNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(block);
 		}
 
 		forward_list<ParameterNode *> list;
 		forward_list<ParameterNode *>::const_iterator last;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddParameter( ParameterNode * const node )
+		void AddParameter(ParameterNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class ParenthesizedExpressionNode: public PrimaryExpressionNode
+	class ParenthesizedExpressionNode : public PrimaryExpressionNode
 	{
 	public:
-		ParenthesizedExpressionNode( const Location &location ) : PrimaryExpressionNode( location, Type::PARENTHESIZED_EXPRESSION ), expression( nullptr )
+		ParenthesizedExpressionNode(const Location &location) : PrimaryExpressionNode(location, Type::PARENTHESIZED_EXPRESSION), expression(nullptr)
 		{
 		}
 
 		~ParenthesizedExpressionNode()
 		{
-			Utility::SafeDelete( expression );
+			Utility::SafeDelete(expression);
 		}
 
 		ExpressionNode *expression;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class PostfixExpressionNode: public ExpressionNode
+	class PostfixExpressionNode : public ExpressionNode
 	{
 	public:
-		PostfixExpressionNode( const Location &location, const Type type, const ExpressionNode * const expression ) : ExpressionNode( location, type ), expression( expression )
+		PostfixExpressionNode(const Location &location, const Type type, const ExpressionNode * const expression) : ExpressionNode(location, type), expression(expression)
 		{
 		}
 
@@ -470,10 +470,10 @@ namespace lyrics
 		const ExpressionNode * const expression;
 	};
 
-	class IndexReferenceNode: public PostfixExpressionNode
+	class IndexReferenceNode : public PostfixExpressionNode
 	{
 	public:
-		IndexReferenceNode( const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index ) : PostfixExpressionNode( location, Type::INDEX_REFERENCE, expression ), index( index )
+		IndexReferenceNode(const Location &location, const ExpressionNode * const expression, const ExpressionNode * const index) : PostfixExpressionNode(location, Type::INDEX_REFERENCE, expression), index(index)
 		{
 		}
 
@@ -484,45 +484,45 @@ namespace lyrics
 
 		const ExpressionNode * const index;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class RoutineCallNode: public PostfixExpressionNode
+	class RoutineCallNode : public PostfixExpressionNode
 	{
 	public:
-		RoutineCallNode( const Location &location, const ExpressionNode * const expression ) : PostfixExpressionNode( location, Type::ROUTINE_CALL, expression ), last( list.cbefore_begin() )
+		RoutineCallNode(const Location &location, const ExpressionNode * const expression) : PostfixExpressionNode(location, Type::ROUTINE_CALL, expression), last(list.cbefore_begin())
 		{
 		}
 
 		~RoutineCallNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddArgument( ExpressionNode * const node )
+		void AddArgument(ExpressionNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class MemberReferenceNode: public PostfixExpressionNode
+	class MemberReferenceNode : public PostfixExpressionNode
 	{
 	public:
-		MemberReferenceNode( const Location &location, const ExpressionNode * const expression, const IdentifierNode * const member ) : PostfixExpressionNode( location, Type::MEMBER_REFERENCE, expression ), member( member )
+		MemberReferenceNode(const Location &location, const ExpressionNode * const expression, const IdentifierNode * const member) : PostfixExpressionNode(location, Type::MEMBER_REFERENCE, expression), member(member)
 		{
 		}
 
@@ -533,16 +533,16 @@ namespace lyrics
 
 		const IdentifierNode * const member;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class UnaryExpressionNode: public ExpressionNode
+	class UnaryExpressionNode : public ExpressionNode
 	{
 	public:
-		UnaryExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const expression ) : ExpressionNode( location, Type::UNARY_EXPRESSION ), op( op ), expression( expression )
+		UnaryExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const expression) : ExpressionNode(location, Type::UNARY_EXPRESSION), op(op), expression(expression)
 		{
 		}
 
@@ -554,16 +554,16 @@ namespace lyrics
 		const Token::Type op;
 		const ExpressionNode * const expression;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class MultiplicativeExpressionNode: public ExpressionNode
+	class MultiplicativeExpressionNode : public ExpressionNode
 	{
 	public:
-		MultiplicativeExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::MULTIPLICATIVE_EXPRESSION ), op( op ), left( left ), right( right )
+		MultiplicativeExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::MULTIPLICATIVE_EXPRESSION), op(op), left(left), right(right)
 		{
 		}
 
@@ -577,16 +577,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class AdditiveExpressionNode: public ExpressionNode
+	class AdditiveExpressionNode : public ExpressionNode
 	{
 	public:
-		AdditiveExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::ADDITIVE_EXPRESSION ), op( op ), left( left ), right( right )
+		AdditiveExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::ADDITIVE_EXPRESSION), op(op), left(left), right(right)
 		{
 		}
 
@@ -600,16 +600,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class ShiftExpressionNode: public ExpressionNode
+	class ShiftExpressionNode : public ExpressionNode
 	{
 	public:
-		ShiftExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::SHIFT_EXPRESSION ), op( op ), left( left ), right( right )
+		ShiftExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::SHIFT_EXPRESSION), op(op), left(left), right(right)
 		{
 		}
 
@@ -623,16 +623,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class AndExpressionNode: public ExpressionNode
+	class AndExpressionNode : public ExpressionNode
 	{
 	public:
-		AndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::AND_EXPRESSION ), left( left ), right( right )
+		AndExpressionNode(const Location &location, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::AND_EXPRESSION), left(left), right(right)
 		{
 		}
 
@@ -645,16 +645,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class OrExpressionNode: public ExpressionNode
+	class OrExpressionNode : public ExpressionNode
 	{
 	public:
-		OrExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::OR_EXPRESSION ), op( op ), left( left ), right( right )
+		OrExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::OR_EXPRESSION), op(op), left(left), right(right)
 		{
 		}
 
@@ -668,16 +668,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class RelationalExpressionNode: public ExpressionNode
+	class RelationalExpressionNode : public ExpressionNode
 	{
 	public:
-		RelationalExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::RELATIONAL_EXPRESSION ), op( op ), left( left ), right( right )
+		RelationalExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::RELATIONAL_EXPRESSION), op(op), left(left), right(right)
 		{
 		}
 
@@ -691,16 +691,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class EqualityExpressionNode: public ExpressionNode
+	class EqualityExpressionNode : public ExpressionNode
 	{
 	public:
-		EqualityExpressionNode( const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::EQUALITY_EXPRESSION ), op( op ), left( left ), right( right )
+		EqualityExpressionNode(const Location &location, const Token::Type op, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::EQUALITY_EXPRESSION), op(op), left(left), right(right)
 		{
 		}
 
@@ -714,16 +714,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class LogicalAndExpressionNode: public ExpressionNode
+	class LogicalAndExpressionNode : public ExpressionNode
 	{
 	public:
-		LogicalAndExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::LOGICAL_AND_EXPRESSION ), left( left ), right( right )
+		LogicalAndExpressionNode(const Location &location, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::LOGICAL_AND_EXPRESSION), left(left), right(right)
 		{
 		}
 
@@ -736,16 +736,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class LogicalOrExpressionNode: public ExpressionNode
+	class LogicalOrExpressionNode : public ExpressionNode
 	{
 	public:
-		LogicalOrExpressionNode( const Location &location, const ExpressionNode * const left, const ExpressionNode * const right ) : ExpressionNode( location, Type::LOGICAL_OR_EXPRESSION ), left( left ), right( right )
+		LogicalOrExpressionNode(const Location &location, const ExpressionNode * const left, const ExpressionNode * const right) : ExpressionNode(location, Type::LOGICAL_OR_EXPRESSION), left(left), right(right)
 		{
 		}
 
@@ -758,16 +758,16 @@ namespace lyrics
 		const ExpressionNode * const left;
 		const ExpressionNode * const right;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class AssignmentExpressionNode: public ExpressionNode
+	class AssignmentExpressionNode : public ExpressionNode
 	{
 	public:
-		AssignmentExpressionNode( const Location &location, const ExpressionNode * const lhs, const ExpressionNode * const rhs ) : ExpressionNode( location, Type::ASSIGNMENT_EXPRESSION ), lhs( lhs ), rhs( rhs )
+		AssignmentExpressionNode(const Location &location, const ExpressionNode * const lhs, const ExpressionNode * const rhs) : ExpressionNode(location, Type::ASSIGNMENT_EXPRESSION), lhs(lhs), rhs(rhs)
 		{
 		}
 
@@ -780,25 +780,25 @@ namespace lyrics
 		const ExpressionNode * const lhs;
 		const ExpressionNode * const rhs;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class BaseClassConstructorCallNode: public Node
+	class BaseClassConstructorCallNode : public Node
 	{
 	public:
-		explicit BaseClassConstructorCallNode( const Location &location ) : Node( location, Type::BASE_CLASS_CONSTRUCTOR_CALL ), baseClass( nullptr ), last( list.cbefore_begin() )
+		explicit BaseClassConstructorCallNode(const Location &location) : Node(location, Type::BASE_CLASS_CONSTRUCTOR_CALL), baseClass(nullptr), last(list.cbefore_begin())
 		{
 		}
 
 		~BaseClassConstructorCallNode()
 		{
-			Utility::SafeDelete( baseClass );
-			for ( auto i : list )
+			Utility::SafeDelete(baseClass);
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
@@ -806,62 +806,62 @@ namespace lyrics
 		forward_list<ExpressionNode *> list;
 		forward_list<ExpressionNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddArgument( ExpressionNode * const node )
+		void AddArgument(ExpressionNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class IncludeNode: public Node
+	class IncludeNode : public Node
 	{
 	public:
-		explicit IncludeNode( const Location &location ) : Node( location, Type::INCLUDE ), last( list.cbefore_begin() )
+		explicit IncludeNode(const Location &location) : Node(location, Type::INCLUDE), last(list.cbefore_begin())
 		{
 		}
 
 		~IncludeNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
 		forward_list<IdentifierNode *> list;
 		forward_list<IdentifierNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddPackage( IdentifierNode * const node )
+		void AddPackage(IdentifierNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class ClassNode: public PrimaryExpressionNode
+	class ClassNode : public PrimaryExpressionNode
 	{
 	public:
-		explicit ClassNode( const Location &location ) : PrimaryExpressionNode( location, Type::CLASS ), last( list.cbefore_begin() ), baseClassConstructorCall( nullptr ), include( nullptr ), block( nullptr )
+		explicit ClassNode(const Location &location) : PrimaryExpressionNode(location, Type::CLASS), last(list.cbefore_begin()), baseClassConstructorCall(nullptr), include(nullptr), block(nullptr)
 		{
 		}
 
 		~ClassNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
-			Utility::SafeDelete( baseClassConstructorCall );
-			Utility::SafeDelete( include );
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(baseClassConstructorCall);
+			Utility::SafeDelete(include);
+			Utility::SafeDelete(block);
 		}
 
 		forward_list<ExpressionNode *> list;
@@ -870,21 +870,21 @@ namespace lyrics
 		IncludeNode *include;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddArgument( ExpressionNode * const node )
+		void AddArgument(ExpressionNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class PackageNode: public PrimaryExpressionNode
+	class PackageNode : public PrimaryExpressionNode
 	{
 	public:
-		PackageNode( const Location &location, const BlockNode * const block ) : PrimaryExpressionNode( location, Type::PACKAGE ), block( block )
+		PackageNode(const Location &location, const BlockNode * const block) : PrimaryExpressionNode(location, Type::PACKAGE), block(block)
 		{
 		}
 
@@ -895,45 +895,45 @@ namespace lyrics
 
 		const BlockNode * const block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class ImportNode: public StatementNode
+	class ImportNode : public StatementNode
 	{
 	public:
-		explicit ImportNode( const Location &location ) : StatementNode( location, Type::IMPORT ), last( list.cbefore_begin() )
+		explicit ImportNode(const Location &location) : StatementNode(location, Type::IMPORT), last(list.cbefore_begin())
 		{
 		}
 
 		~ImportNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
 		}
 
 		forward_list<IdentifierNode *> list;
 		forward_list<IdentifierNode *>::const_iterator last;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddIdentifier( IdentifierNode * const node )
+		void AddIdentifier(IdentifierNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class SelectionNode: public StatementNode
+	class SelectionNode : public StatementNode
 	{
 	public:
-		SelectionNode( const Location &location, const Type type ) : StatementNode( location, type )
+		SelectionNode(const Location &location, const Type type) : StatementNode(location, type)
 		{
 		}
 
@@ -942,96 +942,96 @@ namespace lyrics
 		}
 	};
 
-	class ElseIfNode: public Node
+	class ElseIfNode : public Node
 	{
 	public:
-		explicit ElseIfNode( const Location &location ) : Node( location, Type::ELSEIF ), condition( nullptr ), block( nullptr )
+		explicit ElseIfNode(const Location &location) : Node(location, Type::ELSEIF), condition(nullptr), block(nullptr)
 		{
 		}
 
 		~ElseIfNode()
 		{
-			Utility::SafeDelete( condition );
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(condition);
+			Utility::SafeDelete(block);
 		}
 
 		ExpressionNode *condition;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class IfNode: public SelectionNode
+	class IfNode : public SelectionNode
 	{
 	public:
-		explicit IfNode( const Location &location ) : SelectionNode( location, Type::IF ), last( list.cbefore_begin() ), block( nullptr )
+		explicit IfNode(const Location &location) : SelectionNode(location, Type::IF), last(list.cbefore_begin()), block(nullptr)
 		{
 		}
 
 		~IfNode()
 		{
-			for ( auto i : list )
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(block);
 		}
 
 		forward_list<ElseIfNode *> list;
 		forward_list<ElseIfNode *>::const_iterator last;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddElseIf( ElseIfNode * const node )
+		void AddElseIf(ElseIfNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class WhenNode: public Node
+	class WhenNode : public Node
 	{
 	public:
-		explicit WhenNode( const Location &location ) : Node( location, Type::WHEN ), condition( nullptr ), block( nullptr )
+		explicit WhenNode(const Location &location) : Node(location, Type::WHEN), condition(nullptr), block(nullptr)
 		{
 		}
 
 		~WhenNode()
 		{
-			Utility::SafeDelete( condition );
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(condition);
+			Utility::SafeDelete(block);
 		}
 
 		ExpressionNode *condition;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class CaseNode: public SelectionNode
+	class CaseNode : public SelectionNode
 	{
 	public:
-		explicit CaseNode( const Location &location ) : SelectionNode( location, Type::CASE ), value( nullptr ), last( list.cbefore_begin() ), block( nullptr )
+		explicit CaseNode(const Location &location) : SelectionNode(location, Type::CASE), value(nullptr), last(list.cbefore_begin()), block(nullptr)
 		{
 		}
 
 		~CaseNode()
 		{
-			Utility::SafeDelete( value );
-			for ( auto i : list )
+			Utility::SafeDelete(value);
+			for (auto i : list)
 			{
-				Utility::SafeDelete( i );
+				Utility::SafeDelete(i);
 			}
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(block);
 		}
 
 		ExpressionNode *value;
@@ -1039,21 +1039,21 @@ namespace lyrics
 		forward_list<WhenNode *>::const_iterator last;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 
-		void AddWhen( WhenNode * const node )
+		void AddWhen(WhenNode * const node)
 		{
-			last = list.insert_after( last, node );
+			last = list.insert_after(last, node);
 		}
 	};
 
-	class IterationNode: public StatementNode
+	class IterationNode : public StatementNode
 	{
 	public:
-		IterationNode( const Location &location, const Type type ) : StatementNode( location, type )
+		IterationNode(const Location &location, const Type type) : StatementNode(location, type)
 		{
 		}
 
@@ -1062,41 +1062,41 @@ namespace lyrics
 		}
 	};
 
-	class WhileNode: public IterationNode
+	class WhileNode : public IterationNode
 	{
 	public:
-		explicit WhileNode( const Location &location ) : IterationNode( location, Type::WHILE ), condition( nullptr ), block( nullptr )
+		explicit WhileNode(const Location &location) : IterationNode(location, Type::WHILE), condition(nullptr), block(nullptr)
 		{
 		}
 
 		~WhileNode()
 		{
-			Utility::SafeDelete( condition );
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(condition);
+			Utility::SafeDelete(block);
 		}
 
 		ExpressionNode *condition;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class ForNode: public IterationNode
+	class ForNode : public IterationNode
 	{
 	public:
-		explicit ForNode( const Location &location ) : IterationNode( location, Type::FOR ), initializer( nullptr ), condition( nullptr ), iterator( nullptr ), block( nullptr )
+		explicit ForNode(const Location &location) : IterationNode(location, Type::FOR), initializer(nullptr), condition(nullptr), iterator(nullptr), block(nullptr)
 		{
 		}
 
 		~ForNode()
 		{
-			Utility::SafeDelete( initializer );
-			Utility::SafeDelete( condition );
-			Utility::SafeDelete( iterator );
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(initializer);
+			Utility::SafeDelete(condition);
+			Utility::SafeDelete(iterator);
+			Utility::SafeDelete(block);
 		}
 
 		ExpressionNode *initializer;
@@ -1104,40 +1104,40 @@ namespace lyrics
 		ExpressionNode *iterator;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class ForEachNode: public IterationNode
+	class ForEachNode : public IterationNode
 	{
 	public:
-		explicit ForEachNode( const Location &location ) : IterationNode( location, Type::FOREACH ), variable( nullptr ), collection( nullptr ), block( nullptr )
+		explicit ForEachNode(const Location &location) : IterationNode(location, Type::FOREACH), variable(nullptr), collection(nullptr), block(nullptr)
 		{
 		}
 
 		~ForEachNode()
 		{
-			Utility::SafeDelete( variable );
-			Utility::SafeDelete( collection );
-			Utility::SafeDelete( block );
+			Utility::SafeDelete(variable);
+			Utility::SafeDelete(collection);
+			Utility::SafeDelete(block);
 		}
 
 		ExpressionNode *variable;
 		ExpressionNode *collection;
 		BlockNode *block;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 
-	class JumpNode: public StatementNode
+	class JumpNode : public StatementNode
 	{
 	public:
-		JumpNode( const Location &location, const Type type ) : StatementNode( location, type )
+		JumpNode(const Location &location, const Type type) : StatementNode(location, type)
 		{
 		}
 
@@ -1146,40 +1146,40 @@ namespace lyrics
 		}
 	};
 
-	class BreakNode: public JumpNode
+	class BreakNode : public JumpNode
 	{
 	public:
-		explicit BreakNode( const Location &location ) : JumpNode( location, Type::BREAK )
+		explicit BreakNode(const Location &location) : JumpNode(location, Type::BREAK)
 		{
 		}
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class NextNode: public JumpNode
+	class NextNode : public JumpNode
 	{
 	public:
-		explicit NextNode( const Location &location ) : JumpNode( location, Type::NEXT )
+		explicit NextNode(const Location &location) : JumpNode(location, Type::NEXT)
 		{
 		}
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
 			return visitor.Visit();
 		}
 	};
 
-	class ReturnNode: public JumpNode
+	class ReturnNode : public JumpNode
 	{
 	public:
-		explicit ReturnNode( const Location &location ) : JumpNode( location, Type::RETURN ), value( nullptr )
+		explicit ReturnNode(const Location &location) : JumpNode(location, Type::RETURN), value(nullptr)
 		{
 		}
 
-		ReturnNode( const Location &location, const ExpressionNode * const value ) : JumpNode( location, Type::RETURN ), value( value )
+		ReturnNode(const Location &location, const ExpressionNode * const value) : JumpNode(location, Type::RETURN), value(value)
 		{
 		}
 
@@ -1190,9 +1190,9 @@ namespace lyrics
 
 		const ExpressionNode * const value;
 
-		virtual bool Accept( Visitor &visitor ) const
+		virtual bool Accept(Visitor &visitor) const
 		{
-			return visitor.Visit( this );
+			return visitor.Visit(this);
 		}
 	};
 }

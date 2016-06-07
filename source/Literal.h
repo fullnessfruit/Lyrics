@@ -1,9 +1,9 @@
+#ifndef STRUCT_LITERAL
+#define STRUCT_LITERAL
+
 #include <string>
 #include <vector>
 #include <unordered_map>
-
-#ifndef STRUCT_LITERAL
-#define STRUCT_LITERAL
 
 namespace lyrics
 {
@@ -13,7 +13,7 @@ namespace lyrics
 
 	struct Literal
 	{
-		enum struct Type: unsigned int { NULL_LITERAL, BOOLEAN, INTEGER, REAL, STRING, ARRAY, HASH, ROUTINE, IMAGE, TEXT, SOUND, VIDEO, OBJECT, REFERENCE };
+		enum struct Type : unsigned int { NULL_LITERAL, BOOLEAN, INTEGER, REAL, STRING, ARRAY, HASH, ROUTINE, IMAGE, TEXT, SOUND, VIDEO, OBJECT, REFERENCE };
 
 		union Value
 		{
@@ -28,41 +28,41 @@ namespace lyrics
 			u32string *reference;
 		};
 
-		Literal() : type( Type::NULL_LITERAL )
+		Literal() : type(Type::NULL_LITERAL)
 		{
 		}
 
-		Literal( const bool boolean ) : type( Type::BOOLEAN )
+		Literal(const bool boolean) : type(Type::BOOLEAN)
 		{
 			value.boolean = boolean;
 		}
 
-		Literal( const long long integer ) : type( Type::INTEGER )
+		Literal(const long long integer) : type(Type::INTEGER)
 		{
 			value.integer = integer;
 		}
 
-		Literal( const double real ) : type( Type::REAL )
+		Literal(const double real) : type(Type::REAL)
 		{
 			value.real = real;
 		}
 
-		Literal( vector<Literal> * const array ) : type( Type::ARRAY )
+		Literal(vector<Literal> * const array) : type(Type::ARRAY)
 		{
 			value.array = array;
 		}
 
-		Literal( unordered_map<u32string, Literal> * const hash ) : type( Type::HASH )
+		Literal(unordered_map<u32string, Literal> * const hash) : type(Type::HASH)
 		{
 			value.hash = hash;
 		}
 
-		Literal( const Type type, u32string * const string ) : type( type )
+		Literal(const Type type, u32string * const string) : type(type)
 		{
 			value.string = string;
 		}
 
-		Literal( const Type type, char * const object ) : type( type )
+		Literal(const Type type, char * const object) : type(type)
 		{
 			value.object = object;
 		}

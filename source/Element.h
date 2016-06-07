@@ -1,7 +1,7 @@
-#include "Visitor.h"
-
 #ifndef ELEMENT
 #define ELEMENT
+
+#include "Visitor.h"
 
 namespace lyrics
 {
@@ -12,7 +12,7 @@ namespace lyrics
 		{
 		}
 
-		virtual bool Accept( Visitor &visitor ) const = 0;
+		virtual bool Accept(Visitor &visitor) const = 0;
 	};
 }
 

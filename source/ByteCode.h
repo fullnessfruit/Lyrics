@@ -5,7 +5,7 @@ namespace lyrics
 {
 	struct ByteCode
 	{
-		enum class Opcode: unsigned short
+		enum class Opcode : unsigned short
 		{
 			NO_OPERATION,
 			BREAK,
@@ -25,7 +25,7 @@ namespace lyrics
 			STORE_WORD,
 			LOAD_WORD_IMMEDIATE,
 			MOVE,
-			
+
 			NOT,
 			NAND,
 			NOR,
@@ -36,7 +36,7 @@ namespace lyrics
 			OR_IMMEDIATE,
 			SHIFT_LEFT,
 			SHIFT_RIGHT,
-			
+
 			BRANCH_ON_EQUAL,
 			BRANCH_ON_NOT_EQUAL,
 			BRANCH_IF_LESS_THAN,
@@ -61,19 +61,19 @@ namespace lyrics
 			CONSTRUCT_VIDEO,
 		};
 
-		explicit ByteCode( Opcode opcode ) : opcode( opcode ), operand16( 0 ), operand32( 0 )
+		explicit ByteCode(Opcode opcode) : opcode(opcode), operand16(0), operand32(0)
 		{
 		}
 
-		ByteCode( Opcode opcode, short operand16 ) : opcode( opcode ), operand16( operand16 ), operand32( 0 )
+		ByteCode(Opcode opcode, short operand16) : opcode(opcode), operand16(operand16), operand32(0)
 		{
 		}
 
-		ByteCode( Opcode opcode, short operand16, long operand32 ) : opcode( opcode ), operand16( operand16 ), operand32( operand32 )
+		ByteCode(Opcode opcode, short operand16, long operand32) : opcode(opcode), operand16(operand16), operand32(operand32)
 		{
 		}
 
-		ByteCode( Opcode opcode, short operand16, short operand32High, short operand32Low ) : opcode( opcode ), operand16( operand16 ), operand32( operand32High << 16 | ( operand32Low & 0x0000FFFFu ) )
+		ByteCode(Opcode opcode, short operand16, short operand32High, short operand32Low) : opcode(opcode), operand16(operand16), operand32(operand32High << 16 | (operand32Low & 0x0000FFFFu))
 		{
 		}
 

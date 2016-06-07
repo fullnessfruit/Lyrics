@@ -1,8 +1,8 @@
-#include <iostream>
-#include <string>
-
 #ifndef LOCATION
 #define LOCATION
+
+#include <ostream>
+#include <string>
 
 namespace lyrics
 {
@@ -12,7 +12,7 @@ namespace lyrics
 	struct Location
 	{
 	public:
-		explicit Location( const string &fileName ) : mFileName( fileName ), mLine( 1 ), mColumn( 1 )
+		explicit Location(const string &fileName) : mFileName(fileName), mLine(1), mColumn(1)
 		{
 		}
 
@@ -27,23 +27,18 @@ namespace lyrics
 			mColumn++;
 		}
 
-		void IncreaseColumn( unsigned int length )
+		void IncreaseColumn(unsigned int length)
 		{
 			mColumn += length;
 		}
 
-		friend ostream &operator<<( ostream &out, const Location &location );
+		friend ostream &operator<<(ostream &out, const Location &location);
 
 	private:
 		const string mFileName;
 		unsigned int mLine;
 		unsigned int mColumn;
 	};
-
-	ostream &operator<<( ostream &out, const Location &location )
-	{
-		return out << location.mFileName << ':' << location.mLine << ':' << location.mColumn << ':';
-	}
 }
 
 #endif

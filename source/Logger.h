@@ -1,9 +1,9 @@
+#ifndef LOGGER
+#define LOGGER
+
 #include <iostream>
 
 #include "Location.h"
-
-#ifndef LOGGER
-#define LOGGER
 
 namespace lyrics
 {

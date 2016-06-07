@@ -3,7 +3,7 @@
 
 namespace lyrics
 {
-	enum class FatalErrorCode: unsigned int
+	enum class FatalErrorCode : unsigned int
 	{
 		NO_INPUT_FILE = 1001,
 		CANNOT_OPEN_FILE,
