@@ -1,18 +1,17 @@
+#ifndef TOKENIZER
+#define TOKENIZER
+
 #include <string>
 #include <forward_list>
 
 #include "Token.h"
 #include "Location.h"
 
-#ifndef TOKENIZER
-#define TOKENIZER
-
 namespace lyrics
 {
 	using std::string;
 	using std::u32string;
 	using std::forward_list;
-	using std::bad_alloc;
 
 	class Tokenizer
 	{

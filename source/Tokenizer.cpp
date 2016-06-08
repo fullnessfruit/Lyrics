@@ -14,6 +14,7 @@
 namespace lyrics
 {
 	using std::u32string;
+	using std::bad_alloc;
 
 	const u32string Tokenizer::BREAK = U"break";
 	const u32string Tokenizer::CASE = U"case";
