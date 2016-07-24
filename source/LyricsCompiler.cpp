@@ -3,7 +3,7 @@
 
 #include "Option.h"
 #include "FatalErrorCode.h"
-#include "ErrorHandler.h"
+#include "ErrorLogger.h"
 
 #include "Utility.h"
 
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	using lyrics::Compiler;
 	using lyrics::Utility;
 	using lyrics::FatalErrorCode;
-	using lyrics::ErrorHandler;
+	using lyrics::ErrorLogger;
 
 	const Option option = Option(argc, argv);
 	char32_t *text;
@@ -34,9 +34,12 @@ int main(int argc, char *argv[])
 		case FatalErrorCode::NOT_ENOUGH_MEMORY:
 			Utility::SafeArrayDelete(text);
 			break;
+
+		default:
+			break;
 		}
 
-		ErrorHandler::OnFatalError(fatalErrorCode);
+		ErrorLogger::FatalError(fatalErrorCode);
 		return 1;
 	}
 

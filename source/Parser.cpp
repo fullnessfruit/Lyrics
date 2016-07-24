@@ -3,7 +3,7 @@
 #include <new>
 
 #include "ErrorCode.h"
-#include "ErrorHandler.h"
+#include "ErrorLogger.h"
 
 #include "Utility.h"
 
@@ -121,7 +121,7 @@ namespace lyrics
 			return new ThisNode(mToken->location);
 
 		default:
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_PRIMARY_EXPRESSION);
 
 			mToken++;
 
@@ -136,7 +136,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -152,7 +152,7 @@ namespace lyrics
 					mToken++;
 					if (mToken->type == Token::Type::END_OF_FILE)
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL);
+						ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -167,7 +167,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_ARRAY_LITERAL);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -186,7 +186,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -203,7 +203,7 @@ namespace lyrics
 
 				if (mToken->type != static_cast<Token::Type>(U':'))
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_HASH);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_HASH);
 					Utility::SafeDelete(expression);
 					Utility::SafeDelete(node);
 					return nullptr;
@@ -212,7 +212,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
 					Utility::SafeDelete(expression);
 					Utility::SafeDelete(node);
 					return nullptr;
@@ -225,7 +225,7 @@ namespace lyrics
 					mToken++;
 					if (mToken->type == Token::Type::END_OF_FILE)
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
+						ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -240,7 +240,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_HASH_LITERAL);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -259,7 +259,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 				return nullptr;
 			}
 
@@ -284,7 +284,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+							ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(node);
 							return nullptr;
 						}
@@ -299,7 +299,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+							ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(name);
 							Utility::SafeDelete(node);
 							return nullptr;
@@ -307,7 +307,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME);
+						ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_PARAMETER_NAME);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -328,7 +328,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+							ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(name);
 							Utility::SafeDelete(node);
 							return nullptr;
@@ -340,7 +340,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT);
+							ErrorLogger::Error(mToken->location, ErrorCode::OUTPUT_PARAMETER_DEFAULT_ARGUMENT);
 							Utility::SafeDelete(name);
 							Utility::SafeDelete(node);
 							return nullptr;
@@ -354,7 +354,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+							ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(node);
 							return nullptr;
 						}
@@ -365,7 +365,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+						ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -375,7 +375,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
@@ -390,14 +390,14 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+				ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_PARAMETER);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_PARAMETER);
 			return nullptr;
 		}
 	}
@@ -409,7 +409,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -424,7 +424,7 @@ namespace lyrics
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_RIGHT_PARENTHESIS);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -447,7 +447,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_INDEX);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_INDEX);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
@@ -459,14 +459,14 @@ namespace lyrics
 					mToken++;
 					if (mToken->type == Token::Type::END_OF_FILE)
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_INDEX);
+						ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_INDEX);
 						Utility::SafeDelete(expression);
 						return nullptr;
 					}
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_INDEX);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_INDEX);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
@@ -476,7 +476,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
@@ -494,7 +494,7 @@ namespace lyrics
 							mToken++;
 							if (mToken->type == Token::Type::END_OF_FILE)
 							{
-								ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
+								ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
 								Utility::SafeDelete(node);
 								return nullptr;
 							}
@@ -505,7 +505,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
+							ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
 							Utility::SafeDelete(node);
 							return nullptr;
 						}
@@ -521,7 +521,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_MEMBER);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_MEMBER);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
@@ -533,14 +533,14 @@ namespace lyrics
 					mToken++;
 					if (mToken->type == Token::Type::END_OF_FILE)
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_MEMBER);
+						ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_MEMBER);
 						Utility::SafeDelete(expression);
 						return nullptr;
 					}
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_MEMBER);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_MEMBER);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
@@ -556,7 +556,7 @@ namespace lyrics
 	{
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 			return nullptr;
 		}
 		else if (mToken->type != static_cast<Token::Type>(U'+') && mToken->type != static_cast<Token::Type>(U'-') && mToken->type != static_cast<Token::Type>(U'~') && mToken->type != static_cast<Token::Type>(U'!'))
@@ -627,7 +627,7 @@ namespace lyrics
 
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 				Utility::SafeDelete(expression);
 				return nullptr;
 			}
@@ -693,7 +693,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 				Utility::SafeDelete(expression);
 				return nullptr;
 			}
@@ -714,7 +714,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 				Utility::SafeDelete(expression);
 				return nullptr;
 			}
@@ -738,7 +738,7 @@ namespace lyrics
 			return Package();
 
 		case Token::Type::END_OF_FILE:
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 			return nullptr;
 
 		default:
@@ -756,7 +756,7 @@ namespace lyrics
 
 					if (mToken->type == Token::Type::END_OF_FILE)
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
+						ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_EXPRESSION);
 						Utility::SafeDelete(expression);
 						return nullptr;
 					}
@@ -765,7 +765,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_LHS);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_LHS);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
@@ -789,7 +789,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 					Utility::SafeDelete(node);
 					Utility::SafeDelete(name);
 					return nullptr;
@@ -806,7 +806,7 @@ namespace lyrics
 							mToken++;
 							if (mToken->type == Token::Type::END_OF_FILE)
 							{
-								ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+								ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 								Utility::SafeDelete(node);
 								Utility::SafeDelete(name);
 								return nullptr;
@@ -818,7 +818,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+							ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 							Utility::SafeDelete(node);
 							Utility::SafeDelete(name);
 							return nullptr;
@@ -828,7 +828,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 				Utility::SafeDelete(node);
 				Utility::SafeDelete(name);
 				return nullptr;
@@ -850,7 +850,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+							ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 							Utility::SafeDelete(node);
 							Utility::SafeDelete(name);
 							return nullptr;
@@ -867,7 +867,7 @@ namespace lyrics
 									mToken++;
 									if (mToken->type == Token::Type::END_OF_FILE)
 									{
-										ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+										ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 										Utility::SafeDelete(node);
 										Utility::SafeDelete(name);
 										return nullptr;
@@ -879,7 +879,7 @@ namespace lyrics
 								}
 								else
 								{
-									ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+									ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 									Utility::SafeDelete(node);
 									Utility::SafeDelete(name);
 									return nullptr;
@@ -889,7 +889,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
+						ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CLASS_DEFINITION);
 						Utility::SafeDelete(node);
 						Utility::SafeDelete(name);
 						return nullptr;
@@ -897,7 +897,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_BASE_CLASS);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_BASE_CLASS);
 					Utility::SafeDelete(node);
 					Utility::SafeDelete(name);
 					return nullptr;
@@ -921,7 +921,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+				ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 				Utility::SafeDelete(node);
 				Utility::SafeDelete(name);
 				return nullptr;
@@ -929,7 +929,7 @@ namespace lyrics
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_CLASS_NAME);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_CLASS_NAME);
 			return nullptr;
 		}
 	}
@@ -947,7 +947,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_PACKAGE);
+				ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_PACKAGE);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
@@ -975,7 +975,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+				ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 				Utility::SafeDelete(node);
 				Utility::SafeDelete(name);
 				return nullptr;
@@ -983,7 +983,7 @@ namespace lyrics
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_PACKAGE_NAME);
 			return nullptr;
 		}
 	}
@@ -1006,7 +1006,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_IDENTIFIER);
+				ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_IDENTIFIER);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
@@ -1027,7 +1027,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT);
 				Utility::SafeDelete(elseIfNode);
 				Utility::SafeDelete(node);
 				return nullptr;
@@ -1042,7 +1042,7 @@ namespace lyrics
 
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT);
 				Utility::SafeDelete(elseIfNode);
 				Utility::SafeDelete(node);
 				return nullptr;
@@ -1062,7 +1062,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_IF_STATEMENT);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1077,14 +1077,14 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
 			}
 			else if (mToken->type != Token::Type::ELSEIF)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF);
+				ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END_ELSE_ELSEIF);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
@@ -1098,7 +1098,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1116,7 +1116,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
 					Utility::SafeDelete(whenNode);
 					Utility::SafeDelete(node);
 					return nullptr;
@@ -1131,7 +1131,7 @@ namespace lyrics
 
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
 					Utility::SafeDelete(whenNode);
 					Utility::SafeDelete(node);
 					return nullptr;
@@ -1145,7 +1145,7 @@ namespace lyrics
 					mToken++;
 					if (mToken->type == Token::Type::END_OF_FILE)
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
+						ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_CASE_STATEMENT);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -1160,7 +1160,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+						ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -1173,7 +1173,7 @@ namespace lyrics
 				}
 				else if (mToken->type != Token::Type::WHEN)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_WHEN_ELSE_ELSEIF);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1181,7 +1181,7 @@ namespace lyrics
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_WHEN);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_WHEN);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1194,7 +1194,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1208,7 +1208,7 @@ namespace lyrics
 
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_WHILE_STATEMENT);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1223,7 +1223,7 @@ namespace lyrics
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1236,7 +1236,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1248,7 +1248,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
@@ -1260,7 +1260,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1274,7 +1274,7 @@ namespace lyrics
 
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1289,21 +1289,21 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOR_STATEMENT);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1316,7 +1316,7 @@ namespace lyrics
 		mToken++;
 		if (mToken->type == Token::Type::END_OF_FILE)
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
+			ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}
@@ -1330,7 +1330,7 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1339,7 +1339,7 @@ namespace lyrics
 
 				if (node->collection->type != Node::Type::IDENTIFIER && node->collection->type != Node::Type::MEMBER_REFERENCE && node->collection->type != Node::Type::INDEX_REFERENCE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_LHS);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_LHS);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1351,7 +1351,7 @@ namespace lyrics
 
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
+					ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
@@ -1366,21 +1366,21 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_END);
+					ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_END);
 					Utility::SafeDelete(node);
 					return nullptr;
 				}
 			}
 			else
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
+				ErrorLogger::Error(mToken->location, ErrorCode::INCOMPLETE_FOREACH_STATEMENT);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
 		}
 		else
 		{
-			ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_LHS);
+			ErrorLogger::Error(mToken->location, ErrorCode::EXPECTED_LHS);
 			Utility::SafeDelete(node);
 			return nullptr;
 		}

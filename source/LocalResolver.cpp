@@ -1,7 +1,7 @@
 #include "LocalResolver.h"
 
 #include "ErrorCode.h"
-#include "ErrorHandler.h"
+#include "ErrorLogger.h"
 
 namespace lyrics
 {
@@ -42,7 +42,7 @@ namespace lyrics
 
 			if (!scope)
 			{
-				ErrorHandler::OnError(node->location, ErrorCode::USE_OF_UNDECLARED_IDENTIFIER);
+				ErrorLogger::Error(node->location, ErrorCode::USE_OF_UNDECLARED_IDENTIFIER);
 				return false;
 			}
 		}

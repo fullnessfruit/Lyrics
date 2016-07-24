@@ -39,6 +39,9 @@ namespace lyrics
 				Utility::SafeDelete(tokenList);
 				Utility::SafeDelete(root);
 				break;
+
+			default:
+				break;
 			}
 
 			throw fatalErrorCode;

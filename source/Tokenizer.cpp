@@ -6,7 +6,7 @@
 #include "WarningCode.h"
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
-#include "ErrorHandler.h"
+#include "ErrorLogger.h"
 
 #include "Utility.h"
 
@@ -598,7 +598,7 @@ namespace lyrics
 			}
 			else
 			{
-				ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
+				ErrorLogger::Error(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
 				return false;
 			}
 
@@ -615,7 +615,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
+						ErrorLogger::Error(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
 						Utility::SafeDelete(tStr);
 						return false;
 					}
@@ -689,7 +689,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
+							ErrorLogger::Error(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
 							Utility::SafeDelete(tStr);
 							return false;
 						}
@@ -701,20 +701,20 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::OnWarning(currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE);
+							ErrorLogger::Warning(currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE);
 							tStr->push_back(tChar);
 							length += 3;
 						}
 						break;
 
 					default:
-						ErrorHandler::OnWarning(currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE);
+						ErrorLogger::Warning(currentLocation, WarningCode::UNKNOWN_ESCAPE_SEQUENCE);
 						break;
 					}
 				}
 				else if (tChar == '\r' || tChar == '\n')
 				{
-					ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
+					ErrorLogger::Error(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
 					Utility::SafeDelete(tStr);
 					return true;
 				}
@@ -730,7 +730,7 @@ namespace lyrics
 				}
 				else
 				{
-					ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
+					ErrorLogger::Error(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
 					Utility::SafeDelete(tStr);
 					return false;
 				}
@@ -784,7 +784,7 @@ namespace lyrics
 		}
 		else
 		{
-			ErrorHandler::OnError(currentLocation, ErrorCode::WRONG_CHARACTER);
+			ErrorLogger::Error(currentLocation, ErrorCode::WRONG_CHARACTER);
 
 			mOffset++;
 			currentLocation.IncreaseColumn();
