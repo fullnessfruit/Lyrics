@@ -15,14 +15,9 @@ namespace lyrics
 	{
 		using std::bad_alloc;
 
-		forward_list<Token> tokenList;
+		forward_list<Token> *tokenList = Tokenizer().Tokenize(fileName);
 
-		if (!Tokenizer().Tokenize(fileName, tokenList))
-		{
-			return false;
-		}
-
-		mToken = tokenList.cbegin();
+		mToken = tokenList->cbegin();
 
 		try
 		{
@@ -30,10 +25,12 @@ namespace lyrics
 		}
 		catch (const bad_alloc &e)
 		{
+			Utility::SafeDelete(tokenList);
 			Utility::SafeDelete(root);
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}
 
+		Utility::SafeDelete(tokenList);
 		if (root)
 		{
 			return true;

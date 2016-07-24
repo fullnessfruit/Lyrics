@@ -16,7 +16,7 @@ namespace lyrics
 	class Tokenizer
 	{
 	public:
-		bool Tokenize(const string &fileName, forward_list<Token> &tokenList);
+		forward_list<Token> *Tokenize(const string &fileName);
 		bool TokenizeUnicode(forward_list<Token> &tokenList, Location &currentLocation);
 
 	private:

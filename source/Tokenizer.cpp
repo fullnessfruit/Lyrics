@@ -43,20 +43,19 @@ namespace lyrics
 	const u32string Tokenizer::WHEN = U"when";
 	const u32string Tokenizer::WHILE = U"while";
 
-	bool Tokenizer::Tokenize(const string &fileName, forward_list<Token> &tokenList)
+	forward_list<Token> *Tokenizer::Tokenize(const string &fileName)
 	{
-		mText = TextLoader().Load(fileName, mTextLength);
-
+		forward_list<Token> *tokenList = new forward_list<Token>();
 		Location currentLocation(fileName);
 
+		mText = TextLoader().Load(fileName, mTextLength);
 		mOffset = 0;
-
-		mLastToken = tokenList.cbefore_begin();
+		mLastToken = tokenList->cbefore_begin();
 
 		try
 		{
-			while (TokenizeUnicode(tokenList, currentLocation));
-			mLastToken = tokenList.emplace_after(mLastToken, Token::Type::END_OF_FILE, currentLocation);
+			while (TokenizeUnicode(*tokenList, currentLocation));
+			mLastToken = tokenList->emplace_after(mLastToken, Token::Type::END_OF_FILE, currentLocation);
 		}
 		catch (const bad_alloc &e)
 		{
@@ -65,7 +64,7 @@ namespace lyrics
 		}
 
 		Utility::SafeArrayDelete(mText);
-		return true;
+		return tokenList;
 	}
 
 	// TODO: mTextLength is byte of mText, not number of characters.
