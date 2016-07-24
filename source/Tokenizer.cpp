@@ -65,7 +65,6 @@ namespace lyrics
 		}
 
 		Utility::SafeArrayDelete(mText);
-
 		return true;
 	}
 
@@ -122,17 +121,17 @@ namespace lyrics
 					case 2u:
 						if (*tStr == Tokenizer::IF)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IF, currentLocation);
 						}
 						else if (*tStr == Tokenizer::DO)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::DO, currentLocation);
 						}
 						else if (*tStr == Tokenizer::IN)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IN, currentLocation);
 						}
 						else
@@ -144,17 +143,17 @@ namespace lyrics
 					case 3u:
 						if (*tStr == Tokenizer::END)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::END, currentLocation);
 						}
 						else if (*tStr == Tokenizer::FOR)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::FOR, currentLocation);
 						}
 						else if (*tStr == Tokenizer::OUT)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::OUT, currentLocation);
 						}
 						else
@@ -166,42 +165,42 @@ namespace lyrics
 					case 4u:
 						if (*tStr == Tokenizer::ELSE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::ELSE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::NULL_TOKEN)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::NULL_LITERAL, currentLocation);
 						}
 						else if (*tStr == Tokenizer::TRUE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, true, currentLocation);
 						}
 						else if (*tStr == Tokenizer::CASE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::CASE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::WHEN)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::WHEN, currentLocation);
 						}
 						else if (*tStr == Tokenizer::THIS)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::THIS, currentLocation);
 						}
 						else if (*tStr == Tokenizer::NEXT)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::NEXT, currentLocation);
 						}
 						else if (*tStr == Tokenizer::THEN)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::THEN, currentLocation);
 						}
 						else
@@ -213,22 +212,22 @@ namespace lyrics
 					case 5u:
 						if (*tStr == Tokenizer::WHILE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::WHILE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::BREAK)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::BREAK, currentLocation);
 						}
 						else if (*tStr == Tokenizer::FALSE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, false, currentLocation);
 						}
 						else if (*tStr == Tokenizer::CLASS)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::CLASS, currentLocation);
 						}
 						else
@@ -240,22 +239,22 @@ namespace lyrics
 					case 6u:
 						if (*tStr == Tokenizer::ELSEIF)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::ELSEIF, currentLocation);
 						}
 						else if (*tStr == Tokenizer::IMPORT)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IMPORT, currentLocation);
 						}
 						else if (*tStr == Tokenizer::RETURN)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::RETURN, currentLocation);
 						}
 						else if (*tStr == Tokenizer::PUBLIC)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PUBLIC, currentLocation);
 						}
 						else
@@ -267,22 +266,22 @@ namespace lyrics
 					case 7u:
 						if (*tStr == Tokenizer::PRIVATE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PRIVATE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::PACKAGE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PACKAGE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::FOREACH)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::FOREACH, currentLocation);
 						}
 						else if (*tStr == Tokenizer::INCLUDE)
 						{
-							delete tStr;
+							Utility::SafeDelete(tStr);
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::INCLUDE, currentLocation);
 						}
 						else
@@ -602,7 +601,6 @@ namespace lyrics
 			else
 			{
 				ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
-
 				return false;
 			}
 
@@ -620,8 +618,7 @@ namespace lyrics
 					else
 					{
 						ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
-						delete tStr;
-
+						Utility::SafeDelete(tStr);
 						return false;
 					}
 
@@ -695,8 +692,7 @@ namespace lyrics
 						else
 						{
 							ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
-							delete tStr;
-
+							Utility::SafeDelete(tStr);
 							return false;
 						}
 
@@ -721,8 +717,7 @@ namespace lyrics
 				else if (tChar == '\r' || tChar == '\n')
 				{
 					ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
-					delete tStr;
-
+					Utility::SafeDelete(tStr);
 					return true;
 				}
 				else
@@ -738,8 +733,7 @@ namespace lyrics
 				else
 				{
 					ErrorHandler::OnError(currentLocation, ErrorCode::STRING_NOT_TERMINATED);
-					delete tStr;
-
+					Utility::SafeDelete(tStr);
 					return false;
 				}
 			} while (tChar != '\"');
