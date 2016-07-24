@@ -16,7 +16,7 @@ namespace lyrics
 	class Tokenizer
 	{
 	public:
-		forward_list<Token> *Tokenize(const string &fileName);
+		forward_list<Token> *Tokenize(const string &fileName, const char32_t * const text, const unsigned int textLength);
 		bool TokenizeUnicode(forward_list<Token> &tokenList, Location &currentLocation);
 
 	private:
@@ -74,7 +74,7 @@ namespace lyrics
 		static constexpr char32_t LINE_SEPARATOR = 0x2028u;
 		static constexpr char32_t PARAGRAPH_SEPARATOR = 0x2029u;
 
-		char32_t *mText;
+		const char32_t *mText;
 		unsigned int mTextLength;
 		unsigned int mOffset;
 

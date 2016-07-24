@@ -3,7 +3,6 @@
 #include <new>
 
 #include "Scope.h"
-#include "Parser.h"
 #include "LocalResolver.h"
 #include "DereferenceChecker.h"
 #include "StaticTypeChecker.h"
@@ -11,13 +10,14 @@
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
 
+#include "Utility.h"
+
 namespace lyrics
 {
-	BlockNode *SemanticAnalyzer::SemanticAnalysis(const string &fileName)
+	BlockNode *SemanticAnalyzer::SemanticAnalysis(BlockNode *root)
 	{
 		using std::bad_alloc;
 
-		BlockNode *root = Parser().Parse(fileName);
 		Scope *top = nullptr;
 		bool canProgress = true;
 
@@ -27,7 +27,6 @@ namespace lyrics
 		}
 		catch (const bad_alloc &e)
 		{
-			Utility::SafeDelete(root);
 			Utility::SafeDelete(top);
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}

@@ -7,7 +7,6 @@
 #include "ErrorCode.h"
 #include "FatalErrorCode.h"
 #include "ErrorHandler.h"
-#include "TextLoader.h"
 
 #include "Utility.h"
 
@@ -43,12 +42,13 @@ namespace lyrics
 	const u32string Tokenizer::WHEN = U"when";
 	const u32string Tokenizer::WHILE = U"while";
 
-	forward_list<Token> *Tokenizer::Tokenize(const string &fileName)
+	forward_list<Token> *Tokenizer::Tokenize(const string &fileName, const char32_t * const text, const unsigned int textLength)
 	{
 		forward_list<Token> *tokenList = new forward_list<Token>();
 		Location currentLocation(fileName);
 
-		mText = TextLoader().Load(fileName, mTextLength);
+		mText = text;
+		mTextLength = textLength;
 		mOffset = 0;
 		mLastToken = tokenList->cbefore_begin();
 
@@ -60,11 +60,9 @@ namespace lyrics
 		catch (const bad_alloc &e)
 		{
 			Utility::SafeArrayDelete(tokenList);
-			Utility::SafeArrayDelete(mText);
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}
 
-		Utility::SafeArrayDelete(mText);
 		return tokenList;
 	}
 

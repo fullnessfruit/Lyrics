@@ -2,8 +2,6 @@
 
 #include <new>
 
-#include "Tokenizer.h"
-
 #include "ErrorCode.h"
 #include "ErrorHandler.h"
 
@@ -11,11 +9,10 @@
 
 namespace lyrics
 {
-	BlockNode *Parser::Parse(const string &fileName)
+	BlockNode *Parser::Parse(const forward_list<Token> *tokenList)
 	{
 		using std::bad_alloc;
 
-		const forward_list<Token> *tokenList = Tokenizer().Tokenize(fileName);
 		BlockNode *root = nullptr;
 
 		mToken = tokenList->cbegin();
@@ -26,7 +23,6 @@ namespace lyrics
 		}
 		catch (const bad_alloc &e)
 		{
-			Utility::SafeDelete(tokenList);
 			Utility::SafeDelete(root);
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}
@@ -36,7 +32,6 @@ namespace lyrics
 			throw FatalErrorCode::CANNOT_PARSE;
 		}
 
-		Utility::SafeDelete(tokenList);
 		return root;
 	}
 

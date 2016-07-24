@@ -12,7 +12,7 @@ namespace lyrics
 	class SemanticAnalyzer
 	{
 	public:
-		BlockNode *SemanticAnalysis(const string &fileName);
+		BlockNode *SemanticAnalysis(BlockNode *root);
 	};
 }
 
