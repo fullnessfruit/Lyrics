@@ -10,6 +10,7 @@ namespace lyrics
 		CANNOT_READ_FILE,
 		CANNOT_CLOSE_FILE,
 		NOT_ENOUGH_MEMORY,
+		CANNOT_PARSE,
 	};
 }
 

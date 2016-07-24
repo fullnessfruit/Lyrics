@@ -16,17 +16,13 @@ namespace lyrics
 			throw FatalErrorCode::NO_INPUT_FILE;
 		}
 
-		const BlockNode *root = nullptr;
-
-		if (!SemanticAnalyzer().SemanticAnalysis(option.SourceCodeFileName(), root))
+		if (!SemanticAnalyzer().SemanticAnalysis(option.SourceCodeFileName()))
 		{
-			Utility::SafeDelete(root);
 			return false;
 		}
 
 		Logger::CompilationTerminated();
 
-		Utility::SafeDelete(root);
 		return true;
 	}
 }

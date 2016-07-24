@@ -11,11 +11,12 @@
 
 namespace lyrics
 {
-	bool Parser::Parse(const string &fileName, const BlockNode *&root)
+	BlockNode *Parser::Parse(const string &fileName)
 	{
 		using std::bad_alloc;
 
-		forward_list<Token> *tokenList = Tokenizer().Tokenize(fileName);
+		const forward_list<Token> *tokenList = Tokenizer().Tokenize(fileName);
+		BlockNode *root = nullptr;
 
 		mToken = tokenList->cbegin();
 
@@ -30,15 +31,13 @@ namespace lyrics
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}
 
+		if (!root)
+		{
+			throw FatalErrorCode::CANNOT_PARSE;
+		}
+
 		Utility::SafeDelete(tokenList);
-		if (root)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return root;
 	}
 
 	BlockNode *Parser::Block()

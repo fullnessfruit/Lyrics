@@ -12,17 +12,12 @@
 
 namespace lyrics
 {
-	bool SemanticAnalyzer::SemanticAnalysis(const string &fileName, const BlockNode *&root)
+	bool SemanticAnalyzer::SemanticAnalysis(const string &fileName)
 	{
 		using std::bad_alloc;
 
+		const BlockNode *root = Parser().Parse(fileName);
 		Scope *top = nullptr;
-
-		if (!Parser().Parse(fileName, root))
-		{
-			return false;
-		}
-
 		bool canProgress = true;
 
 		try
