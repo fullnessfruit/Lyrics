@@ -9,7 +9,7 @@
 
 namespace lyrics
 {
-	bool Compiler::Compile(const Option &option) const
+	void Compiler::Compile(const Option &option) const
 	{
 		if (option.SourceCodeFileName().empty())
 		{
@@ -22,6 +22,6 @@ namespace lyrics
 		Logger::CompilationTerminated();
 
 		Utility::SafeDelete(root);
-		return true;
+		return;
 	}
 }

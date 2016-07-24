@@ -13,10 +13,7 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		if (!Compiler().Compile(option))
-		{
-			return 1;
-		}
+		Compiler().Compile(option);
 	}
 	catch (const lyrics::FatalErrorCode fatalErrorCode)
 	{

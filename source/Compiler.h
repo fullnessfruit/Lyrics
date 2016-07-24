@@ -8,7 +8,7 @@ namespace lyrics
 	class Compiler
 	{
 	public:
-		bool Compile(const Option &option) const;
+		void Compile(const Option &option) const;
 	};
 }
 
