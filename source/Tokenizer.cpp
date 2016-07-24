@@ -59,6 +59,7 @@ namespace lyrics
 		}
 		catch (const bad_alloc &e)
 		{
+			Utility::SafeArrayDelete(tokenList);
 			Utility::SafeArrayDelete(mText);
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}
