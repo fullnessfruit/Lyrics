@@ -96,7 +96,7 @@ namespace lyrics
 		return canProgress;
 	}
 
-	bool DereferenceChecker::Visit(const RoutineLiteralNode * const node)
+	bool DereferenceChecker::Visit(const FunctionLiteralNode * const node)
 	{
 		bool canProgress = true;
 
@@ -202,7 +202,7 @@ namespace lyrics
 		return canProgress;
 	}
 
-	bool DereferenceChecker::Visit(const RoutineCallNode * const node)
+	bool DereferenceChecker::Visit(const FunctionCallNode * const node)
 	{
 		bool canProgress = true;
 

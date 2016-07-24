@@ -113,7 +113,7 @@ namespace lyrics
 		return canProgress;
 	}
 
-	bool LocalResolver::Visit(const RoutineLiteralNode * const node)
+	bool LocalResolver::Visit(const FunctionLiteralNode * const node)
 	{
 		bool canProgress = true;
 
@@ -223,7 +223,7 @@ namespace lyrics
 		return canProgress;
 	}
 
-	bool LocalResolver::Visit(const RoutineCallNode * const node)
+	bool LocalResolver::Visit(const FunctionCallNode * const node)
 	{
 		bool canProgress = true;
 

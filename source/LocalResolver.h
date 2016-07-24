@@ -22,12 +22,12 @@ namespace lyrics
 		virtual bool Visit(const ArrayLiteralNode * const node);
 		virtual bool Visit(const HashLiteralNode * const node);
 		virtual bool Visit(const HashNode * const node);
-		virtual bool Visit(const RoutineLiteralNode * const node);
+		virtual bool Visit(const FunctionLiteralNode * const node);
 		virtual bool Visit(const ValueParameterNode * const node);
 		virtual bool Visit(const OutputParameterNode * const node);
 		virtual bool Visit(const ParenthesizedExpressionNode * const node);
 		virtual bool Visit(const IndexReferenceNode * const node);
-		virtual bool Visit(const RoutineCallNode * const node);
+		virtual bool Visit(const FunctionCallNode * const node);
 		virtual bool Visit(const MemberReferenceNode * const node);
 		virtual bool Visit(const UnaryExpressionNode * const node);
 		virtual bool Visit(const MultiplicativeExpressionNode * const node);

@@ -37,7 +37,6 @@ namespace lyrics
 	const u32string Tokenizer::PRIVATE = U"private";
 	const u32string Tokenizer::PUBLIC = U"public";
 	const u32string Tokenizer::RETURN = U"return";
-	const u32string Tokenizer::ROUTINE = U"routine";
 	const u32string Tokenizer::THEN = U"then";
 	const u32string Tokenizer::THIS = U"this";
 	const u32string Tokenizer::TRUE = U"true";
@@ -266,12 +265,7 @@ namespace lyrics
 						break;
 
 					case 7u:
-						if (*tStr == Tokenizer::ROUTINE)
-						{
-							delete tStr;
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::ROUTINE, currentLocation);
-						}
-						else if (*tStr == Tokenizer::PRIVATE)
+						if (*tStr == Tokenizer::PRIVATE)
 						{
 							delete tStr;
 							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PRIVATE, currentLocation);

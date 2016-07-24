@@ -58,8 +58,8 @@ namespace lyrics
 			Logger::Log(location, ErrorHandler::ERROR, static_cast<unsigned int>(errorCode), "Output parameter cannot have default argument.");
 			break;
 
-		case ErrorCode::INCOMPLETE_ROUTINE:
-			Logger::Log(location, ErrorHandler::ERROR, static_cast<unsigned int>(errorCode), "Incomplete routine.");
+		case ErrorCode::INCOMPLETE_FUNCTION:
+			Logger::Log(location, ErrorHandler::ERROR, static_cast<unsigned int>(errorCode), "Incomplete function.");
 			break;
 
 		case ErrorCode::EXPECTED_PARAMETER:
@@ -74,8 +74,8 @@ namespace lyrics
 			Logger::Log(location, ErrorHandler::ERROR, static_cast<unsigned int>(errorCode), "Expected index.");
 			break;
 
-		case ErrorCode::EXPECTED_ROUTINE_CALL:
-			Logger::Log(location, ErrorHandler::ERROR, static_cast<unsigned int>(errorCode), "Expected routine call.");
+		case ErrorCode::EXPECTED_FUNCTION_CALL:
+			Logger::Log(location, ErrorHandler::ERROR, static_cast<unsigned int>(errorCode), "Expected function call.");
 			break;
 
 		case ErrorCode::EXPECTED_MEMBER:

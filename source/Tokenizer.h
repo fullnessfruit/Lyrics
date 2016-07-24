@@ -41,7 +41,6 @@ namespace lyrics
 		static const u32string PRIVATE;
 		static const u32string PUBLIC;
 		static const u32string RETURN;
-		static const u32string ROUTINE;
 		static const u32string THEN;
 		static const u32string THIS;
 		static const u32string TRUE;

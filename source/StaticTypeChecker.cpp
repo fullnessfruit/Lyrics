@@ -96,7 +96,7 @@ namespace lyrics
 		return canProgress;
 	}
 
-	bool StaticTypeChecker::Visit(const RoutineLiteralNode * const node)
+	bool StaticTypeChecker::Visit(const FunctionLiteralNode * const node)
 	{
 		bool canProgress = true;
 
@@ -202,7 +202,7 @@ namespace lyrics
 		return canProgress;
 	}
 
-	bool StaticTypeChecker::Visit(const RoutineCallNode * const node)
+	bool StaticTypeChecker::Visit(const FunctionCallNode * const node)
 	{
 		bool canProgress = true;
 

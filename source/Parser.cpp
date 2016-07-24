@@ -114,8 +114,8 @@ namespace lyrics
 		case Token::Type::REAL_LITERAL:
 			return new RealLiteralNode(mToken->location, mToken++->value.real);
 
-		case Token::Type::ROUTINE:
-			return RoutineLiteral(mToken++);
+		case Token::Type::DO:
+			return FunctionLiteral(mToken++);
 
 		case static_cast<Token::Type>(U'(') :
 			return ParenthesizedExpression();
@@ -261,18 +261,18 @@ namespace lyrics
 		return node;
 	}
 
-	RoutineLiteralNode *Parser::RoutineLiteral(forward_list<Token>::const_iterator token)
+	FunctionLiteralNode *Parser::FunctionLiteral(forward_list<Token>::const_iterator token)
 	{
 		if (mToken->type == static_cast<Token::Type>(U'('))
 		{
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 				return nullptr;
 			}
 
-			RoutineLiteralNode *node = new RoutineLiteralNode(token->location);
+			FunctionLiteralNode *node = new FunctionLiteralNode(token->location);
 
 			if (mToken->type != static_cast<Token::Type>(U')'))
 			{
@@ -293,7 +293,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(node);
 							return nullptr;
 						}
@@ -308,7 +308,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(name);
 							Utility::SafeDelete(node);
 							return nullptr;
@@ -337,7 +337,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(name);
 							Utility::SafeDelete(node);
 							return nullptr;
@@ -363,7 +363,7 @@ namespace lyrics
 						mToken++;
 						if (mToken->type == Token::Type::END_OF_FILE)
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 							Utility::SafeDelete(node);
 							return nullptr;
 						}
@@ -374,7 +374,7 @@ namespace lyrics
 					}
 					else
 					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 						Utility::SafeDelete(node);
 						return nullptr;
 					}
@@ -384,7 +384,7 @@ namespace lyrics
 			mToken++;
 			if (mToken->type == Token::Type::END_OF_FILE)
 			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
+				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_FUNCTION);
 				Utility::SafeDelete(node);
 				return nullptr;
 			}
@@ -485,12 +485,12 @@ namespace lyrics
 				mToken++;
 				if (mToken->type == Token::Type::END_OF_FILE)
 				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL);
+					ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
 					Utility::SafeDelete(expression);
 					return nullptr;
 				}
 
-				RoutineCallNode *node = new RoutineCallNode(tLocation, expression);
+				FunctionCallNode *node = new FunctionCallNode(tLocation, expression);
 
 				if (mToken->type != static_cast<Token::Type>(U')'))
 				{
@@ -503,7 +503,7 @@ namespace lyrics
 							mToken++;
 							if (mToken->type == Token::Type::END_OF_FILE)
 							{
-								ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL);
+								ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
 								Utility::SafeDelete(node);
 								return nullptr;
 							}
@@ -514,7 +514,7 @@ namespace lyrics
 						}
 						else
 						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_ROUTINE_CALL);
+							ErrorHandler::OnError(mToken->location, ErrorCode::EXPECTED_FUNCTION_CALL);
 							Utility::SafeDelete(node);
 							return nullptr;
 						}
@@ -740,102 +740,6 @@ namespace lyrics
 
 		switch (mToken->type)
 		{
-		case Token::Type::ROUTINE:
-			mToken++;
-			if (mToken->type == Token::Type::IDENTIFIER)
-			{
-				IdentifierNode *identifier = new IdentifierNode(mToken->location, mToken->value.identifier);
-
-				mToken++;
-				if (mToken->type == static_cast<Token::Type>(U'.'))
-				{
-					mToken++;
-					if (mToken->type == Token::Type::IDENTIFIER)
-					{
-						IdentifierNode *member = new IdentifierNode(mToken->location, mToken->value.identifier);
-
-						mToken++;
-						if (mToken->type == static_cast<Token::Type>(U'('))
-						{
-							return new AssignmentExpressionNode(tToken->location, new MemberReferenceNode(identifier->location, identifier, member), RoutineLiteral(tToken));
-						}
-						else
-						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-							Utility::SafeDelete(identifier);
-							Utility::SafeDelete(member);
-							return nullptr;
-						}
-					}
-					else
-					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-						Utility::SafeDelete(identifier);
-						return nullptr;
-					}
-				}
-				else if (mToken->type == Token::Type::END_OF_FILE)
-				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-					Utility::SafeDelete(identifier);
-					return nullptr;
-				}
-				else
-				{
-					return new AssignmentExpressionNode(tToken->location, identifier, RoutineLiteral(tToken));
-				}
-			}
-			else if (mToken->type == Token::Type::THIS)
-			{
-				ThisNode *thisNode = new ThisNode(mToken->location);
-
-				mToken++;
-				if (mToken->type == static_cast<Token::Type>(U'.'))
-				{
-					mToken++;
-					if (mToken->type == Token::Type::IDENTIFIER)
-					{
-						IdentifierNode *identifier = new IdentifierNode(mToken->location, mToken->value.identifier);
-
-						mToken++;
-						if (mToken->type == static_cast<Token::Type>(U'('))
-						{
-							return new AssignmentExpressionNode(tToken->location, new MemberReferenceNode(thisNode->location, thisNode, identifier), RoutineLiteral(tToken));
-						}
-						else
-						{
-							ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-							Utility::SafeDelete(thisNode);
-							Utility::SafeDelete(identifier);
-							return nullptr;
-						}
-					}
-					else
-					{
-						ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-						Utility::SafeDelete(thisNode);
-						return nullptr;
-					}
-				}
-				else
-				{
-					ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-					Utility::SafeDelete(thisNode);
-					return nullptr;
-				}
-			}
-			else if (mToken->type == Token::Type::END_OF_FILE)
-			{
-				ErrorHandler::OnError(mToken->location, ErrorCode::INCOMPLETE_ROUTINE);
-				return nullptr;
-			}
-			else
-			{
-				mToken = tToken;
-
-				return PrimaryExpression();
-			}
-
 		case Token::Type::CLASS:
 			return Class();
 

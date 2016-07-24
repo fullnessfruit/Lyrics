@@ -25,7 +25,7 @@ namespace lyrics
 		ExpressionNode *PrimaryExpression();
 		ArrayLiteralNode *ArrayLiteral();
 		HashLiteralNode *HashLiteral();
-		RoutineLiteralNode *RoutineLiteral(forward_list<Token>::const_iterator token);
+		FunctionLiteralNode *FunctionLiteral(forward_list<Token>::const_iterator token);
 		ParenthesizedExpressionNode *ParenthesizedExpression();
 		ExpressionNode *PostfixExpression();
 		ExpressionNode *UnaryExpression();
