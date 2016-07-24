@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
 	catch (const lyrics::FatalErrorCode fatalErrorCode)
 	{
 		lyrics::ErrorHandler::OnFatalError(fatalErrorCode);
-
 		return 1;
 	}
 

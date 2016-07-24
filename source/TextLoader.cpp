@@ -32,7 +32,6 @@ namespace lyrics
 		}
 
 		Utility::SafeArrayDelete(data);
-
 		return text;
 	}
 }

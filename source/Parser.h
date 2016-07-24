@@ -15,7 +15,7 @@ namespace lyrics
 	class Parser
 	{
 	public:
-		bool Parse(const string &fileName, BlockNode *&root);
+		bool Parse(const string &fileName, const BlockNode *&root);
 	
 	private:
 		forward_list<Token>::const_iterator mToken;

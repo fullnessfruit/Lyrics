@@ -11,7 +11,7 @@
 
 namespace lyrics
 {
-	bool Parser::Parse(const string &fileName, BlockNode *&root)
+	bool Parser::Parse(const string &fileName, const BlockNode *&root)
 	{
 		using std::bad_alloc;
 

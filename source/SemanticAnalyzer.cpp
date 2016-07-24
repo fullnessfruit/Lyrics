@@ -12,7 +12,7 @@
 
 namespace lyrics
 {
-	bool SemanticAnalyzer::SemanticAnalysis(const string &fileName, BlockNode *&root)
+	bool SemanticAnalyzer::SemanticAnalysis(const string &fileName, const BlockNode *&root)
 	{
 		using std::bad_alloc;
 
@@ -41,7 +41,6 @@ namespace lyrics
 		canProgress &= StaticTypeChecker().Check(root);
 
 		Utility::SafeDelete(top);
-
 		return canProgress;
 	}
 }
