@@ -8,15 +8,16 @@
 #include "DereferenceChecker.h"
 #include "StaticTypeChecker.h"
 
+#include "ErrorCode.h"
 #include "FatalErrorCode.h"
 
 namespace lyrics
 {
-	bool SemanticAnalyzer::SemanticAnalysis(const string &fileName)
+	BlockNode *SemanticAnalyzer::SemanticAnalysis(const string &fileName)
 	{
 		using std::bad_alloc;
 
-		const BlockNode *root = Parser().Parse(fileName);
+		BlockNode *root = Parser().Parse(fileName);
 		Scope *top = nullptr;
 		bool canProgress = true;
 
@@ -30,12 +31,17 @@ namespace lyrics
 			Utility::SafeDelete(top);
 			throw FatalErrorCode::NOT_ENOUGH_MEMORY;
 		}
+		Utility::SafeDelete(top);
 
 		canProgress &= DereferenceChecker().Check(root);
 
 		canProgress &= StaticTypeChecker().Check(root);
 
-		Utility::SafeDelete(top);
-		return canProgress;
+		if (!canProgress)
+		{
+			throw ErrorCode::SEMANTIC_ERROR;
+		}
+
+		return root;
 	}
 }
