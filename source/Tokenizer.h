@@ -17,7 +17,7 @@ namespace lyrics
 	{
 	public:
 		forward_list<Token> *Tokenize(const string &fileName, const char32_t * const text, const unsigned int textLength);
-		bool TokenizeUnicode(forward_list<Token> &tokenList, Location &currentLocation);
+		bool TokenizeUnicode(forward_list<Token> *tokenList, Location &currentLocation);
 
 	private:
 		static const u32string BREAK;

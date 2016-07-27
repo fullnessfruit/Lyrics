@@ -54,7 +54,7 @@ namespace lyrics
 
 		try
 		{
-			while (TokenizeUnicode(*tokenList, currentLocation));
+			while (TokenizeUnicode(tokenList, currentLocation));
 			mLastToken = tokenList->emplace_after(mLastToken, Token::Type::END_OF_FILE, currentLocation);
 		}
 		catch (const bad_alloc &e)
@@ -67,7 +67,7 @@ namespace lyrics
 	}
 
 	// TODO: mTextLength is byte of mText, not number of characters.
-	bool Tokenizer::TokenizeUnicode(forward_list<Token> &tokenList, Location &currentLocation)
+	bool Tokenizer::TokenizeUnicode(forward_list<Token> *tokenList, Location &currentLocation)
 	{
 		char32_t tChar;
 
@@ -104,13 +104,13 @@ namespace lyrics
 
 			if (isIdentifier)
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 			}
 			else
 			{
 				if (2u > length || 7u < length)	// If the token is shorter than 2 or longer than 7, then the token is identifier.
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 				}
 				else
 				{
@@ -120,21 +120,21 @@ namespace lyrics
 						if (*tStr == Tokenizer::IF)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IF, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IF, currentLocation);
 						}
 						else if (*tStr == Tokenizer::DO)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::DO, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::DO, currentLocation);
 						}
 						else if (*tStr == Tokenizer::IN)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IN, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IN, currentLocation);
 						}
 						else
 						{
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 						}
 						break;
 
@@ -142,21 +142,21 @@ namespace lyrics
 						if (*tStr == Tokenizer::END)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::END, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::END, currentLocation);
 						}
 						else if (*tStr == Tokenizer::FOR)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::FOR, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::FOR, currentLocation);
 						}
 						else if (*tStr == Tokenizer::OUT)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::OUT, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::OUT, currentLocation);
 						}
 						else
 						{
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 						}
 						break;
 
@@ -164,46 +164,46 @@ namespace lyrics
 						if (*tStr == Tokenizer::ELSE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::ELSE, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::ELSE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::NULL_TOKEN)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::NULL_LITERAL, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::NULL_LITERAL, currentLocation);
 						}
 						else if (*tStr == Tokenizer::TRUE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, true, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, true, currentLocation);
 						}
 						else if (*tStr == Tokenizer::CASE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::CASE, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::CASE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::WHEN)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::WHEN, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::WHEN, currentLocation);
 						}
 						else if (*tStr == Tokenizer::THIS)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::THIS, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::THIS, currentLocation);
 						}
 						else if (*tStr == Tokenizer::NEXT)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::NEXT, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::NEXT, currentLocation);
 						}
 						else if (*tStr == Tokenizer::THEN)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::THEN, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::THEN, currentLocation);
 						}
 						else
 						{
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 						}
 						break;
 
@@ -211,26 +211,26 @@ namespace lyrics
 						if (*tStr == Tokenizer::WHILE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::WHILE, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::WHILE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::BREAK)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::BREAK, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::BREAK, currentLocation);
 						}
 						else if (*tStr == Tokenizer::FALSE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, false, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, false, currentLocation);
 						}
 						else if (*tStr == Tokenizer::CLASS)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::CLASS, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::CLASS, currentLocation);
 						}
 						else
 						{
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 						}
 						break;
 
@@ -238,26 +238,26 @@ namespace lyrics
 						if (*tStr == Tokenizer::ELSEIF)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::ELSEIF, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::ELSEIF, currentLocation);
 						}
 						else if (*tStr == Tokenizer::IMPORT)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IMPORT, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IMPORT, currentLocation);
 						}
 						else if (*tStr == Tokenizer::RETURN)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::RETURN, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::RETURN, currentLocation);
 						}
 						else if (*tStr == Tokenizer::PUBLIC)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PUBLIC, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::PUBLIC, currentLocation);
 						}
 						else
 						{
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 						}
 						break;
 
@@ -265,26 +265,26 @@ namespace lyrics
 						if (*tStr == Tokenizer::PRIVATE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PRIVATE, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::PRIVATE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::PACKAGE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::PACKAGE, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::PACKAGE, currentLocation);
 						}
 						else if (*tStr == Tokenizer::FOREACH)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::FOREACH, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::FOREACH, currentLocation);
 						}
 						else if (*tStr == Tokenizer::INCLUDE)
 						{
 							Utility::SafeDelete(tStr);
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::INCLUDE, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::INCLUDE, currentLocation);
 						}
 						else
 						{
-							mLastToken = tokenList.emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
+							mLastToken = tokenList->emplace_after(mLastToken, Token::Type::IDENTIFIER, tStr, currentLocation);
 						}
 						break;
 					}
@@ -315,7 +315,7 @@ namespace lyrics
 
 				if (tChar < U'0' || tChar > U'9')
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'.'), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'.'), currentLocation);
 					currentLocation.IncreaseColumn();
 				}
 				else	// real
@@ -343,13 +343,13 @@ namespace lyrics
 						}
 					} while (U'0' <= tChar && tChar <= U'9');
 
-					mLastToken = tokenList.emplace_after(mLastToken, double(valueBelowDecimalPoint) / tenPowerDecimalPlace, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, double(valueBelowDecimalPoint) / tenPowerDecimalPlace, currentLocation);
 					currentLocation.IncreaseColumn(length);
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'.'), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'.'), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -358,7 +358,7 @@ namespace lyrics
 		else if (tChar == U'(' || tChar == U')' || tChar == U'+' || tChar == U'-' || tChar == U'*' || tChar == U'/' || tChar == U'[' || tChar == U']')
 		{
 			mOffset++;
-			mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(tChar), currentLocation);
+			mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(tChar), currentLocation);
 			currentLocation.IncreaseColumn();
 		}
 		else if (tChar == U'<')
@@ -368,26 +368,26 @@ namespace lyrics
 				switch (mText[mOffset])
 				{
 				case U'<':
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::SHIFT_LEFT, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::SHIFT_LEFT, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 					break;
 
 				case U'=':
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::LESS_THAN_OR_EQUAL, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::LESS_THAN_OR_EQUAL, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 					break;
 
 				default:
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'<'), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'<'), currentLocation);
 					currentLocation.IncreaseColumn();
 					break;
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'<'), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'<'), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -400,26 +400,26 @@ namespace lyrics
 				switch (mText[mOffset])
 				{
 				case U'>':
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::SHIFT_RIGHT, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::SHIFT_RIGHT, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 					break;
 
 				case U'=':
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::GREATER_THAN_OR_EQUAL, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::GREATER_THAN_OR_EQUAL, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 					break;
 
 				default:
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'>'), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'>'), currentLocation);
 					currentLocation.IncreaseColumn();
 					break;
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'>'), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'>'), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -431,19 +431,19 @@ namespace lyrics
 			{
 				if (mText[mOffset] == U'=')
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::EQUAL, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::EQUAL, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'='), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'='), currentLocation);
 					currentLocation.IncreaseColumn();
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'='), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'='), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -455,19 +455,19 @@ namespace lyrics
 			{
 				if (mText[mOffset] == U'=')
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::NOT_EQUAL, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::NOT_EQUAL, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'!'), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'!'), currentLocation);
 					currentLocation.IncreaseColumn();
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'!'), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'!'), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -479,19 +479,19 @@ namespace lyrics
 			{
 				if (mText[mOffset] == U'&')
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::AND, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::AND, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'&'), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'&'), currentLocation);
 					currentLocation.IncreaseColumn();
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'&'), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'&'), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -503,19 +503,19 @@ namespace lyrics
 			{
 				if (mText[mOffset] == U'|')
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, Token::Type::OR, currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, Token::Type::OR, currentLocation);
 					currentLocation.IncreaseColumn(2);
 					mOffset++;
 				}
 				else
 				{
-					mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'|'), currentLocation);
+					mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'|'), currentLocation);
 					currentLocation.IncreaseColumn();
 				}
 			}
 			else
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(U'|'), currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(U'|'), currentLocation);
 				currentLocation.IncreaseColumn();
 
 				return false;
@@ -548,7 +548,7 @@ namespace lyrics
 
 			if (mOffset >= mTextLength || tChar != U'.')
 			{
-				mLastToken = tokenList.emplace_after(mLastToken, integer, currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, integer, currentLocation);
 				currentLocation.IncreaseColumn(length);
 			}
 			else
@@ -581,7 +581,7 @@ namespace lyrics
 					}
 				}
 
-				mLastToken = tokenList.emplace_after(mLastToken, integer + double(valueBelowDecimalPoint) / tenPowerDecimalPlace, currentLocation);
+				mLastToken = tokenList->emplace_after(mLastToken, integer + double(valueBelowDecimalPoint) / tenPowerDecimalPlace, currentLocation);
 				currentLocation.IncreaseColumn(length);
 			}
 		}
@@ -738,7 +738,7 @@ namespace lyrics
 			mOffset++;
 			length++;
 
-			mLastToken = tokenList.emplace_after(mLastToken, tStr, currentLocation);
+			mLastToken = tokenList->emplace_after(mLastToken, tStr, currentLocation);
 
 			while (lineFeed--)
 			{
@@ -766,7 +766,7 @@ namespace lyrics
 		{
 			mOffset++;
 
-			mLastToken = tokenList.emplace_after(mLastToken, static_cast<Token::Type>(tChar), currentLocation);
+			mLastToken = tokenList->emplace_after(mLastToken, static_cast<Token::Type>(tChar), currentLocation);
 			currentLocation.IncreaseColumn();
 		}
 		else if (tChar == Tokenizer::NO_BREAK_SPACE || tChar == Tokenizer::OGHAM_SPACE_MARK || tChar == Tokenizer::MONGOLIAN_VOWEL_SEPARATOR || (tChar >= Tokenizer::EN_QUAD && tChar <= Tokenizer::HAIR_SPACE) || tChar == Tokenizer::NARROW_NO_BREAK_SPACE || tChar == Tokenizer::MEDIUM_MATHEMATICAL_SPACE || tChar == Tokenizer::IDEOGRAPHIC_SPACE)	// Unicode class Zs except space character.
