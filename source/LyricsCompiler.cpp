@@ -4,13 +4,10 @@
 #include "FatalErrorCode.h"
 #include "ErrorLogger.h"
 
-#include "Utility.h"
-
 int main(int argc, char *argv[])
 {
 	using lyrics::Option;
 	using lyrics::Compiler;
-	using lyrics::Utility;
 	using lyrics::FatalErrorCode;
 	using lyrics::ErrorLogger;
 
