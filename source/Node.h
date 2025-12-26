@@ -234,7 +234,7 @@ namespace lyrics
 		{
 		}
 
-		const int integer;
+		const long long integer;
 
 		virtual bool Accept(Visitor &visitor) const
 		{
