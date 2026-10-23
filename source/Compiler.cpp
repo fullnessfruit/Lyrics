@@ -1,5 +1,7 @@
 #include "Compiler.h"
 
+#include <memory>
+
 #include "TextLoader.h"
 #include "Tokenizer.h"
 #include "Parser.h"
@@ -7,8 +9,6 @@
 
 #include "FatalErrorCode.h"
 #include "Logger.h"
-
-#include "Utility.h"
 
 namespace lyrics
 {
@@ -19,40 +19,18 @@ namespace lyrics
 			throw FatalErrorCode::NO_INPUT_FILE;
 		}
 
-		char32_t *text = nullptr;
-		forward_list<Token> *tokenList = nullptr;
-		BlockNode *root = nullptr;
-
-		try
 		{
 			unsigned int textLength;
 
-			text = TextLoader().Load(option.SourceCodeFileName(), textLength);
+			std::unique_ptr<char32_t[]> text(TextLoader().Load(option.SourceCodeFileName(), textLength));
 
-			tokenList = Tokenizer().Tokenize(option.SourceCodeFileName(), text, textLength);
-			Utility::SafeArrayDelete(text);
+			std::unique_ptr<forward_list<Token>> tokenList(Tokenizer().Tokenize(option.SourceCodeFileName(), text.get(), textLength));
+			text.reset();
 
-			root = Parser().Parse(tokenList);
-			Utility::SafeDelete(tokenList);
+			std::unique_ptr<BlockNode> root(Parser().Parse(tokenList.get()));
+			tokenList.reset();
 
-			root = SemanticAnalyzer().SemanticAnalysis(root);
-			Utility::SafeDelete(root);
-		}
-		catch (const FatalErrorCode fatalErrorCode)
-		{
-			switch (fatalErrorCode)
-			{
-			case FatalErrorCode::NOT_ENOUGH_MEMORY:
-				Utility::SafeArrayDelete(text);
-				Utility::SafeDelete(tokenList);
-				Utility::SafeDelete(root);
-				break;
-
-			default:
-				break;
-			}
-
-			throw fatalErrorCode;
+			SemanticAnalyzer().SemanticAnalysis(root.get());
 		}
 		Logger::CompilationTerminated();
 
